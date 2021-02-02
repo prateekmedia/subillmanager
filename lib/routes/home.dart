@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils.dart';
+import '../widgets.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -112,111 +113,6 @@ class HomeScreen extends StatelessWidget {
               trailing: "₹150",
             ),
           ],
-        ),
-      ],
-    );
-  }
-
-  // ignore: non_constant_identifier_names
-  Widget AwesomeMonthBill(BuildContext context, {String title, List<Widget> children}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-        ),
-        Container(
-          child: Column(children: children),
-        ),
-      ],
-    );
-  }
-
-  // ignore: non_constant_identifier_names
-  ListTile AwesomeListTile(BuildContext context,
-      {IconData icon, String title, String subtitle, String trailing}) {
-    return ListTile(
-      tileColor: Colors.white,
-      leading: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Color(0xFFF4F4F4),
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Icon(
-              icon,
-              color: primaryColor,
-            ),
-          ),
-        ],
-      ),
-      title: Text(
-        title,
-        style: TextStyle(fontWeight: FontWeight.w600, color: primaryColor),
-      ),
-      subtitle: Text(
-        subtitle,
-        style: TextStyle(color: primaryColor),
-      ),
-      trailing: Text(
-        trailing,
-        style: TextStyle(fontWeight: FontWeight.w600, color: primaryColor, fontSize: 18),
-      ),
-      contentPadding: EdgeInsets.all(10),
-    );
-  }
-
-  // ignore: non_constant_identifier_names
-  Widget AwesomePopCard(BuildContext context,
-      {List<Widget> headerChildren,
-      List<Widget> footerChildren,
-      double cardBorderRadius = 25,
-      EdgeInsets footerPadding = const EdgeInsets.symmetric(horizontal: 15)}) {
-    return Column(
-      children: [
-        Container(
-          color: primaryColor,
-          padding: EdgeInsets.fromLTRB(10, 40, 10, 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: headerChildren,
-          ),
-        ),
-        Expanded(
-          child: Stack(
-            children: [
-              Container(
-                height: 30,
-                color: primaryColor,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(cardBorderRadius),
-                      topLeft: Radius.circular(cardBorderRadius)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: primaryColor.brighten(30).withOpacity(0.5),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                  color: context.isDark ? Colors.grey[900].brighten(5) : grey,
-                ),
-                padding: footerPadding,
-                width: double.infinity,
-                child: ListView(
-                  children: footerChildren,
-                  physics: BouncingScrollPhysics(),
-                ),
-              ),
-            ],
-          ),
         ),
       ],
     );
