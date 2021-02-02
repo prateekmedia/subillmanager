@@ -12,9 +12,18 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: MaterialColor(primaryColor.value, colorSwatch),
         primaryColor: primaryColor,
+        brightness: Brightness.light,
         accentColor: MaterialColor(primaryColor.value, colorSwatch).shade700,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
+      darkTheme: ThemeData(
+        primarySwatch: MaterialColor(primaryColor.value, colorSwatch),
+        primaryColor: primaryColor,
+        brightness: Brightness.dark,
+        accentColor: MaterialColor(primaryColor.value, colorSwatch).shade700,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      themeMode: ThemeMode.light,
       home: MyHomePage(title: 'SUBILLMANAGER'),
       debugShowCheckedModeBanner: false,
     );
@@ -36,17 +45,14 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        centerTitle: true,
-      ),
       body: [
         HomeScreen(),
-        ProfileScreen(),
-      ][currentIndex],
+        SettingsScreen(),
+      ].map((e) => e).toList()[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: primaryColor,
-        unselectedItemColor: Colors.blueGrey,
+        unselectedItemColor: Color(0xFF6C86A4),
+        backgroundColor: grey,
         currentIndex: currentIndex,
         onTap: (index) => setState(() => currentIndex = index),
         items: [
@@ -55,9 +61,9 @@ class _MyHomePageState extends State<MyHomePage> {
               activeIcon: Icon(Icons.account_balance),
               label: 'Home'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle_outlined),
-              activeIcon: Icon(Icons.account_circle),
-              label: 'Profile'),
+              icon: Icon(Icons.settings_outlined),
+              activeIcon: Icon(Icons.settings),
+              label: 'Settings'),
         ],
       ),
       floatingActionButton: FloatingActionButton(

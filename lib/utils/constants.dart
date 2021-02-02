@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-var primaryColor = Color(0xFF1D4B9C);
+Color primaryColor = Color(0xFF1D4B9C);
+Color grey = Color(0xFFF9F9FC);
 
 Map<int, Color> colorSwatch = {
   50: primaryColor.withOpacity(.1),
