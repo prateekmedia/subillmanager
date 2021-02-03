@@ -5,17 +5,30 @@ import '../utils.dart';
 // ignore: non_constant_identifier_names
 Widget AwesomePopCard(BuildContext context,
     {List<Widget> headerChildren,
+    MainAxisAlignment headerMainAxisAlignment = MainAxisAlignment.spaceBetween,
+    CrossAxisAlignment headerCrossAxisAlignment = CrossAxisAlignment.center,
     List<Widget> footerChildren,
     double cardBorderRadius = 25,
-    EdgeInsets footerPadding = const EdgeInsets.symmetric(horizontal: 15)}) {
+    EdgeInsets footerPadding = const EdgeInsets.symmetric(horizontal: 15),
+    bool centerWidget = true,
+    String tag = "random"}) {
+  var listView = ListView(
+    shrinkWrap: centerWidget,
+    children: footerChildren,
+    physics: BouncingScrollPhysics(),
+  );
   return Column(
     children: [
-      Container(
-        color: primaryColor,
-        padding: EdgeInsets.fromLTRB(10, 40, 10, 20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: headerChildren,
+      Hero(
+        tag: tag,
+        child: Container(
+          color: primaryColor,
+          padding: EdgeInsets.fromLTRB(10, 40, 10, 20),
+          child: Row(
+            mainAxisAlignment: headerMainAxisAlignment,
+            crossAxisAlignment: headerCrossAxisAlignment,
+            children: headerChildren,
+          ),
         ),
       ),
       Expanded(
@@ -42,10 +55,11 @@ Widget AwesomePopCard(BuildContext context,
               ),
               padding: footerPadding,
               width: double.infinity,
-              child: ListView(
-                children: footerChildren,
-                physics: BouncingScrollPhysics(),
-              ),
+              child: centerWidget
+                  ? Center(
+                      child: listView,
+                    )
+                  : listView,
             ),
           ],
         ),

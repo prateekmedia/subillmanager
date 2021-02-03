@@ -5,7 +5,7 @@ extension usefulExtensions on BuildContext {
   Brightness get brightness => Theme.of(this).brightness;
   bool get isDark => this.brightness == Brightness.dark;
 
-  TextTheme get textTheme => Theme.of(this).textTheme;
+  TextTheme get texttheme => Theme.of(this).textTheme;
   Color get primaryColor => Theme.of(this).primaryColor;
   Color get accentColor => Theme.of(this).accentColor;
 }

@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:get_storage/get_storage.dart';
 import '../utils.dart';
 import '../widgets.dart';
+
+final box = GetStorage();
 
 class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AwesomePopCard(
       context,
+      tag: "header",
       headerChildren: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10),
           child: Text("Settings",
-              style: context.textTheme.headline4
+              style: context.texttheme.headline6
                   .copyWith(color: Colors.white, fontWeight: FontWeight.w600)),
         ),
       ],
+      centerWidget: false,
       footerChildren: [
         ListTile(
           leading: Icon(Icons.data_usage),
@@ -42,27 +47,20 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
   Future<void> _authenticate() async {
     bool authenticated = false;
     try {
-      setState(() {
-        _authorized = false;
-      });
+      setState(() => _authorized = false);
       authenticated = await auth.authenticateWithBiometrics(
           localizedReason: 'Scan your fingerprint to Update Credentials',
           useErrorDialogs: true,
           stickyAuth: true);
       if (!mounted) return;
 
-      setState(() {
-        _authorized = false;
-      });
+      setState(() => _authorized = false);
     } on PlatformException catch (e) {
       print(e);
     }
     if (!mounted) return;
 
-    final message = authenticated ? true : false;
-    setState(() {
-      _authorized = message;
-    });
+    setState(() => _authorized = authenticated);
   }
 
   bool _authorized = false;
@@ -74,9 +72,13 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
 
   @override
   Widget build(BuildContext context) {
+    final spreadID = TextEditingController(text: box.read("spreadID"));
+    final googleID = TextEditingController(text: box.read("googleID"));
+    GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     return Scaffold(
       body: AwesomePopCard(
         context,
+        tag: "header",
         headerChildren: [
           IconButton(
             onPressed: () => Navigator.pop(context),
@@ -84,17 +86,61 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
               Icons.chevron_left,
               color: Colors.white,
             ),
-          )
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Text("Update Credentials",
+                style: context.texttheme.headline6
+                    .copyWith(color: Colors.white, fontWeight: FontWeight.w600)),
+          ),
         ],
+        headerMainAxisAlignment: MainAxisAlignment.start,
         footerChildren: !_authorized
             ? [
-                Text(_authorized ? "Secure Hi" : "You are not authenticated."),
-                FlatButton(
-                  onPressed: _authenticate,
-                  child: Text("Auth Now"),
+                Column(
+                  children: [
+                    Text("You are not authenticated."),
+                    FlatButton(
+                      onPressed: _authenticate,
+                      child: Text("Auth Now"),
+                    ),
+                  ],
                 ),
               ]
-            : [Text("Lets Go")],
+            : [
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Spreadsheet ID"),
+                      TextFormField(
+                        controller: spreadID,
+                        decoration: InputDecoration(),
+                      ),
+                      SizedBox(height: 50),
+                      Text("Google Client ID"),
+                      TextFormField(
+                        controller: googleID,
+                        decoration: InputDecoration(),
+                        maxLines: null,
+                      ),
+                    ],
+                  ),
+                )
+              ],
+      ),
+      floatingActionButton: Visibility(
+        visible: _authorized,
+        child: FloatingActionButton(
+          onPressed: () {
+            if (spreadID.text.trim().length > 0) box.write("spreadID", spreadID.text);
+            if (googleID.text.trim().length > 0) box.write("googleID", googleID.text);
+            Navigator.pop(context);
+          },
+          child: Icon(Icons.check),
+        ),
       ),
     );
   }

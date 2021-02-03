@@ -11,6 +11,8 @@ dependencies:
     sdk: flutter
   gsheets: ^0.2.6
   local_auth: ^0.6.3+4
+  get_storage: ^1.4.0 
+  flutter_hooks:
 
 dev_dependencies:
   flutter_test:
