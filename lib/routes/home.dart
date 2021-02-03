@@ -110,6 +110,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                               title: snapshot.data[1][0].split(" ")[0],
                               subtitle: "Feb 1",
                               trailing: snapshot.data[3].reversed.toList()[i],
+                              offset: Offset(1, -4),
                             ),
                           if (showOnly.value == 0 || showOnly.value == 2)
                             AwesomeListTile(
@@ -118,6 +119,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                               title: snapshot.data[4][0].split(" ")[0],
                               subtitle: "Feb 1",
                               trailing: snapshot.data[6].reversed.toList()[i],
+                              offset: Offset(1, 4),
                             ),
                         ],
                       ),
