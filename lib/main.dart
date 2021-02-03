@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:get/get.dart';
 import 'package:gsheets/gsheets.dart';
 import 'package:intl/intl.dart';
+import 'package:local_auth/local_auth.dart';
 import 'routes.dart';
 import 'models.dart';
 import 'utils.dart';
@@ -49,16 +51,19 @@ class MyHomePage extends HookWidget {
   Spreadsheet ss;
   Worksheet sheet;
 
-  Future<Worksheet> initSheet() async {
+  Future<List<List<String>>> initSheet() async {
     _credentials = box.read("googleID");
     _spreadsheetId = box.read("spreadID");
-    gsheets = GSheets(_credentials);
+    if (_credentials != null && _credentials.trim().length > 0) {
+      gsheets = GSheets(_credentials);
 
-    // fetch spreadsheet by its id
-    ss = await gsheets.spreadsheet(_spreadsheetId);
-    // get worksheet by its index
-    sheet = ss.worksheetByIndex(0);
-    return _credentials != null ? sheet.values.allColumns() : [];
+      // fetch spreadsheet by its id
+      ss = await gsheets.spreadsheet(_spreadsheetId);
+      // get worksheet by its index
+      sheet = ss.worksheetByIndex(0);
+      return sheet.values.allColumns();
+    }
+    return [];
   }
 
   @override
@@ -103,8 +108,8 @@ class MyHomePage extends HookWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () =>
-            Get.bottomSheet(BottomSheet(getTaskAsync: _getTaskAsync, formKey: _formKey)),
+        onPressed: () => Get.bottomSheet(
+            BottomSheet(getTaskAsync: _getTaskAsync, getWorksheet: sheet, formKey: _formKey)),
         child: Icon(Icons.add),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       ),
@@ -114,28 +119,50 @@ class MyHomePage extends HookWidget {
 }
 
 class BottomSheet extends HookWidget {
-  const BottomSheet({
+  BottomSheet({
     Key key,
-    @required Future<Worksheet> getTaskAsync,
+    @required Future<List<List<String>>> getTaskAsync,
+    @required this.getWorksheet,
     @required GlobalKey<FormState> formKey,
   })  : _getTaskAsync = getTaskAsync,
         _formKey = formKey,
         super(key: key);
 
-  final Future<Worksheet> _getTaskAsync;
+  final Future<List<List<String>>> _getTaskAsync;
+  final Worksheet getWorksheet;
   final GlobalKey<FormState> _formKey;
+  final LocalAuthentication auth = LocalAuthentication();
 
   @override
   Widget build(BuildContext context) {
     final _dateController = useTextEditingController(
       text: DateFormat('MMMM dd').format(DateTime.now()),
     );
-    final getWorkSheet = useMemoized(() async => (await _getTaskAsync).values.allColumns());
     final _unitController = useTextEditingController(text: "256.0");
     final pageNo = useState<int>(0); // Up to 1 as there are two people
     final listBills = useState<List<BillModel>>([]);
+    final _authorized = useState<bool>(false);
+    Future<void> _authenticate() async {
+      bool authenticated = false;
+      try {
+        _authorized.value = false;
+        authenticated = await auth.authenticateWithBiometrics(
+            localizedReason: 'Scan your fingerprint to Add a Field',
+            useErrorDialogs: true,
+            stickyAuth: true);
+
+        _authorized.value = false;
+      } on PlatformException catch (e) {
+        print(e);
+      }
+
+      _authorized.value = authenticated;
+    }
+
+    if (!_authorized.value) _authenticate();
+
     return FutureBuilder(
-        future: getWorkSheet,
+        future: _getTaskAsync,
         builder: (context, snapshot) {
           return Container(
               color: Colors.white,
@@ -144,94 +171,102 @@ class BottomSheet extends HookWidget {
               child: Center(
                 child: ListView(
                   shrinkWrap: true,
-                  children: [
-                    snapshot.hasData && snapshot.data.length > 0
-                        ? Form(
-                            key: _formKey,
-                            child: Column(
-                              children: [
-                                Container(
-                                    padding: EdgeInsets.symmetric(vertical: 20),
-                                    child:
-                                        Text("Add New Bill", style: context.texttheme.headline6)),
-                                Text([
-                                  snapshot.data[1][0].split(" ")[0],
-                                  snapshot.data[4][0].split(" ")[0],
-                                ][pageNo.value]),
-                                TextFormField(
-                                  controller: _dateController,
-                                  enabled: (pageNo.value == 0) ? true : false,
-                                  decoration: InputDecoration(),
-                                ),
-                                TextFormField(
-                                  controller: _unitController,
-                                  decoration: InputDecoration(),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    if (pageNo.value == 0)
-                                      FlatButton(
-                                        onPressed: () => Navigator.pop(context),
-                                        child: Text("CLOSE"),
+                  children: _authorized.value
+                      ? [
+                          snapshot.hasData && snapshot.data.length > 0
+                              ? Form(
+                                  key: _formKey,
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                          padding: EdgeInsets.symmetric(vertical: 20),
+                                          child: Text("Add New Bill",
+                                              style: context.texttheme.headline6)),
+                                      Text(
+                                          [
+                                            snapshot.data[1][0].split(" ")[0],
+                                            snapshot.data[4][0].split(" ")[0],
+                                          ][pageNo.value],
+                                          style:
+                                              context.texttheme.bodyText1.copyWith(fontSize: 18)),
+                                      TextFormField(
+                                        controller: _dateController,
+                                        enabled: (pageNo.value == 0) ? true : false,
+                                        decoration: InputDecoration(),
                                       ),
-                                    if (pageNo.value == 0)
-                                      FlatButton(
-                                        onPressed: () {
-                                          listBills.value.add(BillModel(
-                                            id: 1,
-                                            date: _dateController.text,
-                                            unit: _unitController.text,
-                                          ));
-                                          _dateController.text =
-                                              DateFormat('MMMM dd').format(DateTime.now());
-                                          _unitController.text = "256.0";
-                                          pageNo.value = 1;
-                                        },
-                                        child: Text("NEXT"),
+                                      TextFormField(
+                                        controller: _unitController,
+                                        decoration: InputDecoration(),
                                       ),
-                                    if (pageNo.value == 1)
-                                      FlatButton(
-                                        onPressed: () {
-                                          _dateController.text = listBills.value[0].date;
-                                          _unitController.text = listBills.value[0].unit;
-                                          listBills.value.removeAt(0);
-                                          pageNo.value = 0;
-                                        },
-                                        child: Text("BACK"),
-                                      ),
-                                    if (pageNo.value == 1)
-                                      FlatButton(
-                                        onPressed: () async {
-                                          listBills.value.add(BillModel(
-                                            id: 4,
-                                            date: _dateController.text,
-                                            unit: _unitController.text,
-                                          ));
-                                          var cell1 = await (await _getTaskAsync)
-                                              .cells
-                                              .cell(row: snapshot.data[0].length, column: 0);
-                                          var cell2 = await (await _getTaskAsync)
-                                              .cells
-                                              .cell(row: snapshot.data[0].length, column: 1);
-                                          var cell5 = await (await _getTaskAsync)
-                                              .cells
-                                              .cell(row: snapshot.data[0].length, column: 4);
-                                          await cell1.post(listBills.value[0].date);
-                                          await cell2.post(listBills.value[0].unit);
-                                          await cell5.post(listBills.value[1].unit);
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          if (pageNo.value == 0)
+                                            FlatButton(
+                                              onPressed: () => Navigator.pop(context),
+                                              child: Text("CLOSE"),
+                                            ),
+                                          if (pageNo.value == 0)
+                                            FlatButton(
+                                              onPressed: () {
+                                                listBills.value.add(BillModel(
+                                                  id: 1,
+                                                  date: _dateController.text,
+                                                  unit: _unitController.text,
+                                                ));
+                                                _dateController.text =
+                                                    DateFormat('MMMM dd').format(DateTime.now());
+                                                _unitController.text = "256.0";
+                                                pageNo.value = 1;
+                                              },
+                                              child: Text("NEXT"),
+                                            ),
+                                          if (pageNo.value == 1)
+                                            FlatButton(
+                                              onPressed: () {
+                                                _dateController.text = listBills.value[0].date;
+                                                _unitController.text = listBills.value[0].unit;
+                                                listBills.value.removeAt(0);
+                                                pageNo.value = 0;
+                                              },
+                                              child: Text("BACK"),
+                                            ),
+                                          if (pageNo.value == 1)
+                                            FlatButton(
+                                              onPressed: () async {
+                                                listBills.value.add(BillModel(
+                                                  id: 4,
+                                                  date: _dateController.text,
+                                                  unit: _unitController.text,
+                                                ));
+                                                var cell1 = await getWorksheet.cells.cell(
+                                                    row: snapshot.data[0].length + 1, column: 1);
+                                                var cell2 = await getWorksheet.cells.cell(
+                                                    row: snapshot.data[0].length + 1, column: 2);
+                                                var cell5 = await getWorksheet.cells.cell(
+                                                    row: snapshot.data[0].length + 1, column: 5);
+                                                await cell1.post(listBills.value[0].date);
+                                                await cell2.post(listBills.value[0].unit);
+                                                await cell5.post(listBills.value[1].unit);
 
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text("DONE"),
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text("DONE"),
+                                            ),
+                                        ],
                                       ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          )
-                        : Center(child: CircularProgressIndicator()),
-                  ],
+                                    ],
+                                  ),
+                                )
+                              : Center(child: CircularProgressIndicator()),
+                        ]
+                      : [
+                          Center(child: Text("You are not authenticated.")),
+                          FlatButton(
+                            onPressed: _authenticate,
+                            child: Text("Auth Now"),
+                          ),
+                        ],
                 ),
               ));
         });

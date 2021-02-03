@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:gsheets/gsheets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import '../utils.dart';
 import '../widgets.dart';
 
 class HomeScreen extends StatefulHookWidget {
-  final Future<Worksheet> getTaskAsync;
+  final Future<List<List<String>>> getTaskAsync;
 
   HomeScreen(this.getTaskAsync);
   @override
@@ -17,10 +16,9 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
   Widget build(BuildContext context) {
     super.build(context);
 
-    final getWorkSheet = useMemoized(() async => (await widget.getTaskAsync).values.allColumns());
     final showOnly = useState<int>(0);
     return FutureBuilder<List<List<String>>>(
-        future: getWorkSheet,
+        future: widget.getTaskAsync,
         builder: (context, snapshot) {
           bool hasData = snapshot.hasData && snapshot.data.length > 0;
           return AwesomePopCard(

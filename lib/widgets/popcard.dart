@@ -21,47 +21,45 @@ Widget AwesomePopCard(BuildContext context,
     children: [
       Hero(
         tag: tag,
-        child: Container(
-          color: primaryColor,
-          padding: EdgeInsets.fromLTRB(10, 40, 10, 20),
-          child: Row(
-            mainAxisAlignment: headerMainAxisAlignment,
-            crossAxisAlignment: headerCrossAxisAlignment,
-            children: headerChildren,
+        child: Material(
+          type: MaterialType.transparency,
+          child: Container(
+            color: primaryColor,
+            padding: EdgeInsets.fromLTRB(10, 40, 10, 20),
+            child: Row(
+              mainAxisAlignment: headerMainAxisAlignment,
+              crossAxisAlignment: headerCrossAxisAlignment,
+              children: headerChildren,
+            ),
           ),
         ),
       ),
       Expanded(
-        child: Stack(
-          children: [
-            Container(
-              height: 30,
-              color: primaryColor,
+        child: Container(
+          color: primaryColor,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(cardBorderRadius),
+                  topLeft: Radius.circular(cardBorderRadius)),
+              boxShadow: [
+                BoxShadow(
+                  color: primaryColor.brighten(30).withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 3),
+                ),
+              ],
+              color: context.isDark ? Colors.grey[900].brighten(5) : grey,
             ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(cardBorderRadius),
-                    topLeft: Radius.circular(cardBorderRadius)),
-                boxShadow: [
-                  BoxShadow(
-                    color: primaryColor.brighten(30).withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-                color: context.isDark ? Colors.grey[900].brighten(5) : grey,
-              ),
-              padding: footerPadding,
-              width: double.infinity,
-              child: centerWidget
-                  ? Center(
-                      child: listView,
-                    )
-                  : listView,
-            ),
-          ],
+            padding: footerPadding,
+            width: double.infinity,
+            child: centerWidget
+                ? Center(
+                    child: listView,
+                  )
+                : listView,
+          ),
         ),
       ),
     ],
