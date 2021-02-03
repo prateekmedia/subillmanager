@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../utils.dart';
 import '../widgets.dart';
@@ -29,8 +31,19 @@ class SettingsScreen extends StatelessWidget {
           trailing: Icon(Icons.chevron_right),
           onTap: () => Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ConfigureCredentials()),
+            CupertinoPageRoute(builder: (context) => ConfigureCredentials()),
           ),
+        ),
+        ListTile(
+          title: Text("Dark Mode"),
+          leading: Icon(Icons.nightlight_round),
+          trailing: CupertinoSwitch(
+            value: context.isDark,
+            activeColor: primaryColor.brighten(20),
+            onChanged: (v) =>
+                Get.changeThemeMode(context.isDark ? ThemeMode.light : ThemeMode.dark),
+          ),
+          onTap: () => Get.changeThemeMode(context.isDark ? ThemeMode.light : ThemeMode.dark),
         ),
       ],
     );

@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         accentColor: MaterialColor(primaryColor.value, colorSwatch).shade700,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      themeMode: ThemeMode.light,
+      themeMode: ThemeMode.system,
       home: MyHomePage(),
       debugShowCheckedModeBanner: false,
     );
@@ -87,9 +87,9 @@ class MyHomePage extends HookWidget {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: primaryColor,
-        unselectedItemColor: Color(0xFF6C86A4),
-        backgroundColor: grey,
+        selectedItemColor: context.isDark ? primaryColor.brighten(50) : primaryColor,
+        unselectedItemColor: context.isDark ? Color(0xFF6C86A4).brighten(50) : Color(0xFF6C86A4),
+        backgroundColor: context.isDark ? Colors.grey[900].brighten(12) : grey,
         currentIndex: currentIndex.value,
         onTap: (index) {
           currentIndex.value = index;
@@ -165,9 +165,14 @@ class BottomSheet extends HookWidget {
         future: _getTaskAsync,
         builder: (context, snapshot) {
           return Container(
-              color: Colors.white,
               height: 400,
               padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                  color: context.isDark ? Colors.grey[900] : Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  )),
               child: Center(
                 child: ListView(
                   shrinkWrap: true,

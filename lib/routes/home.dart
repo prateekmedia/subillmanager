@@ -57,10 +57,9 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                       children: [
                         SizedBox(
                           child: Text("Recent Bills",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5
-                                  .copyWith(color: primaryColor, fontWeight: FontWeight.w600)),
+                              style: Theme.of(context).textTheme.headline5.copyWith(
+                                  color: context.isDark ? primaryColor.brighten(60) : primaryColor,
+                                  fontWeight: FontWeight.w600)),
                         ),
                       ],
                     ),
@@ -70,19 +69,31 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                           onPressed: () => showOnly.value = 0,
                           child: Text("All",
                               style: TextStyle(
-                                  color: showOnly.value == 0 ? primaryColor : Colors.grey)),
+                                  color: showOnly.value == 0
+                                      ? context.isDark
+                                          ? primaryColor.brighten(60)
+                                          : primaryColor
+                                      : Colors.grey)),
                         ),
                         FlatButton(
                           onPressed: () => showOnly.value = 1,
                           child: Text(snapshot.data[1][0].split(" ")[0],
                               style: TextStyle(
-                                  color: showOnly.value == 1 ? primaryColor : Colors.grey)),
+                                  color: showOnly.value == 1
+                                      ? context.isDark
+                                          ? primaryColor.brighten(60)
+                                          : primaryColor
+                                      : Colors.grey)),
                         ),
                         FlatButton(
                           onPressed: () => showOnly.value = 2,
                           child: Text(snapshot.data[4][0].split(" ")[0],
                               style: TextStyle(
-                                  color: showOnly.value == 2 ? primaryColor : Colors.grey)),
+                                  color: showOnly.value == 2
+                                      ? context.isDark
+                                          ? primaryColor.brighten(60)
+                                          : primaryColor
+                                      : Colors.grey)),
                         ),
                       ],
                     ),
