@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                 children: [
                   Text(
                     (hasData)
-                        ? "₹${(double.parse(snapshot.data[3].reversed.toList()[0].substring(1)) + double.parse(snapshot.data[6].reversed.toList()[0].substring(1)).toStringAsFixed(1)}"
+                        ? "₹${(double.parse(snapshot.data[3].reversed.toList()[0].substring(1)) + double.parse(snapshot.data[6].reversed.toList()[0].substring(1))).toStringAsFixed(1)}"
                         : "₹0.0",
                     style: Theme.of(context).textTheme.headline5.copyWith(color: Colors.white),
                   ),
