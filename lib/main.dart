@@ -219,8 +219,6 @@ class BottomSheet extends HookWidget {
                                                   date: _dateController.text,
                                                   unit: _unitController.text,
                                                 ));
-                                                _dateController.text =
-                                                    DateFormat('MMMM dd').format(DateTime.now());
                                                 _unitController.text = "256.0";
                                                 pageNo.value = 1;
                                               },
