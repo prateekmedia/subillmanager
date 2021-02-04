@@ -18,6 +18,10 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    GetStorage().writeIfNull("thememode", 0);
+    int themeMod() => GetStorage().read("thememode");
+
+    final availableThemeModes = [ThemeMode.system, ThemeMode.light, ThemeMode.dark];
     return GetMaterialApp(
       title: 'SUbillManager',
       theme: ThemeData(
@@ -34,7 +38,7 @@ class MyApp extends StatelessWidget {
         accentColor: MaterialColor(primaryColor.value, colorSwatch).shade700,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      themeMode: ThemeMode.system,
+      themeMode: availableThemeModes[themeMod()],
       home: MyHomePage(),
       debugShowCheckedModeBanner: false,
     );
@@ -88,7 +92,8 @@ class MyHomePage extends HookWidget {
       ),
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: context.isDark ? primaryColor.brighten(50) : primaryColor,
-        unselectedItemColor: context.isDark ? Color(0xFF6C86A4).brighten(50) : Color(0xFF6C86A4),
+        unselectedItemColor:
+            context.isDark ? Color(0xFF6C86A4).brighten(50).withAlpha(170) : Color(0xFF6C86A4),
         backgroundColor: context.isDark ? Colors.grey[900].brighten(12) : grey,
         currentIndex: currentIndex.value,
         onTap: (index) {

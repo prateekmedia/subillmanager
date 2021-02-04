@@ -40,8 +40,11 @@ class SettingsScreen extends StatelessWidget {
           trailing: CupertinoSwitch(
             value: context.isDark,
             activeColor: primaryColor.brighten(20),
-            onChanged: (v) =>
-                Get.changeThemeMode(context.isDark ? ThemeMode.light : ThemeMode.dark),
+            onChanged: (v) {
+              Get.changeThemeMode(context.isDark ? ThemeMode.light : ThemeMode.dark);
+              GetStorage().write("thememode", v ? 2 : 1);
+              print(GetStorage().read("thememode"));
+            },
           ),
           onTap: () => Get.changeThemeMode(context.isDark ? ThemeMode.light : ThemeMode.dark),
         ),

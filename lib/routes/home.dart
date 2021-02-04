@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                         SizedBox(
                           child: Text("Recent Bills",
                               style: Theme.of(context).textTheme.headline5.copyWith(
-                                  color: context.isDark ? primaryColor.brighten(60) : primaryColor,
+                                  color: context.isDark ? primaryColor.brighten(90) : primaryColor,
                                   fontWeight: FontWeight.w600)),
                         ),
                       ],
@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                               style: TextStyle(
                                   color: showOnly.value == 0
                                       ? context.isDark
-                                          ? primaryColor.brighten(60)
+                                          ? primaryColor.brighten(80)
                                           : primaryColor
                                       : Colors.grey)),
                         ),
@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                               style: TextStyle(
                                   color: showOnly.value == 1
                                       ? context.isDark
-                                          ? primaryColor.brighten(60)
+                                          ? primaryColor.brighten(80)
                                           : primaryColor
                                       : Colors.grey)),
                         ),
@@ -91,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                               style: TextStyle(
                                   color: showOnly.value == 2
                                       ? context.isDark
-                                          ? primaryColor.brighten(60)
+                                          ? primaryColor.brighten(80)
                                           : primaryColor
                                       : Colors.grey)),
                         ),
@@ -103,26 +103,43 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                         context,
                         title: snapshot.data[0].reversed.toList()[i],
                         children: [
-                          if (showOnly.value == 0 || showOnly.value == 1)
-                            AwesomeListTile(
-                              context,
-                              icon: Icons.person_outlined,
-                              title: snapshot.data[1][0].split(" ")[0],
-                              subtitle: "Feb 1",
-                              trailing: snapshot.data[3].reversed.toList()[i],
-                              offset: Offset(1, -4),
+                          SizedBox(height: 5),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: context.isDark
+                                      ? Colors.black38
+                                      : Colors.grey[200].withOpacity(0.5),
+                                  spreadRadius: 5,
+                                  blurRadius: 20,
+                                ),
+                              ],
                             ),
-                          if (showOnly.value == 0 || showOnly.value == 2)
-                            AwesomeListTile(
-                              context,
-                              icon: Icons.person_outlined,
-                              title: snapshot.data[4][0].split(" ")[0],
-                              subtitle: "Feb 1",
-                              trailing: snapshot.data[6].reversed.toList()[i],
-                              offset: Offset(1, 4),
-                            ),
+                            child: Column(children: [
+                              if (showOnly.value == 0 || showOnly.value == 1)
+                                AwesomeListTile(
+                                  context,
+                                  icon: Icons.person_outlined,
+                                  title: snapshot.data[1][0].split(" ")[0],
+                                  subtitle: "Feb 1",
+                                  trailing: snapshot.data[3].reversed.toList()[i],
+                                ),
+                              if (showOnly.value == 0 || showOnly.value == 2)
+                                AwesomeListTile(
+                                  context,
+                                  icon: Icons.person_outlined,
+                                  title: snapshot.data[4][0].split(" ")[0],
+                                  subtitle: "Feb 1",
+                                  trailing: snapshot.data[6].reversed.toList()[i],
+                                ),
+                            ]),
+                          ),
+                          SizedBox(height: 5),
                         ],
                       ),
+                    SizedBox(height: 25),
                   ]
                 : snapshot.hasData
                     ? [Center(child: Text("No Data Available, Configure Credentials first."))]
