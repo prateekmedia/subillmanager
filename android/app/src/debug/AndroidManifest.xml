@@ -1,5 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.psu.su_bill_manager">
+    package="com.psu.su_bill_manager"
+    xmlns:tools="http://schemas.android.com/tools">
+    <application
+        tools:replace="android:label"
+        android:name="io.flutter.app.FlutterApplication"
+        android:label="SUbillManager Debug">
+    </application>
     <!-- Flutter needs it to communicate with the running application
          to allow setting breakpoints, to provide hot reload, etc.
     -->
