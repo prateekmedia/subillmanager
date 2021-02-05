@@ -25,17 +25,17 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'SUbillManager',
       theme: ThemeData(
-        primarySwatch: MaterialColor(primaryColor.value, colorSwatch),
+        primarySwatch: primaryColor,
         primaryColor: primaryColor,
         brightness: Brightness.light,
-        accentColor: MaterialColor(primaryColor.value, colorSwatch).shade700,
+        accentColor: primaryColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       darkTheme: ThemeData(
-        primarySwatch: MaterialColor(primaryColor.value, colorSwatch),
+        primarySwatch: primaryColor,
         primaryColor: primaryColor,
         brightness: Brightness.dark,
-        accentColor: MaterialColor(primaryColor.value, colorSwatch).shade700,
+        accentColor: primaryColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       themeMode: availableThemeModes[themeMod()],
@@ -72,7 +72,6 @@ class MyHomePage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     final _getTaskAsync = useMemoized(() => initSheet());
     final currentIndex = useState<int>(0);
     _pageController = usePageController();
@@ -84,7 +83,7 @@ class MyHomePage extends HookWidget {
             currentIndex.value = index;
           },
           children: [
-            HomeScreen(_getTaskAsync),
+            HomeScreen(_getTaskAsync, initSheet),
             SettingsScreen(),
           ],
           physics: NeverScrollableScrollPhysics(),
@@ -114,7 +113,7 @@ class MyHomePage extends HookWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Get.bottomSheet(
-            BottomSheet(getTaskAsync: _getTaskAsync, getWorksheet: sheet, formKey: _formKey)),
+            BottomSheet(getTaskAsync: _getTaskAsync, getWorksheet: sheet, setTaskAsync: initSheet)),
         child: Icon(Icons.add),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       ),
@@ -127,19 +126,19 @@ class BottomSheet extends HookWidget {
   BottomSheet({
     Key key,
     @required Future<List<List<String>>> getTaskAsync,
+    @required this.setTaskAsync,
     @required this.getWorksheet,
-    @required GlobalKey<FormState> formKey,
   })  : _getTaskAsync = getTaskAsync,
-        _formKey = formKey,
         super(key: key);
 
   final Future<List<List<String>>> _getTaskAsync;
   final Worksheet getWorksheet;
-  final GlobalKey<FormState> _formKey;
   final LocalAuthentication auth = LocalAuthentication();
+  final Future<List<List<String>>> Function() setTaskAsync;
 
   @override
   Widget build(BuildContext context) {
+    GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     final _dateController = useTextEditingController(
       text: DateFormat('MMMM dd').format(DateTime.now()),
     );
@@ -147,6 +146,7 @@ class BottomSheet extends HookWidget {
     final pageNo = useState<int>(0); // Up to 1 as there are two people
     final listBills = useState<List<BillModel>>([]);
     final _authorized = useState<bool>(false);
+    var gTaskSync = useState(useMemoized(() => _getTaskAsync));
     Future<void> _authenticate() async {
       bool authenticated = false;
       try {
@@ -167,7 +167,7 @@ class BottomSheet extends HookWidget {
     if (!_authorized.value) _authenticate();
 
     return FutureBuilder(
-        future: _getTaskAsync,
+        future: gTaskSync.value,
         builder: (context, snapshot) {
           return Container(
               height: 400,
@@ -266,7 +266,22 @@ class BottomSheet extends HookWidget {
                                     ],
                                   ),
                                 )
-                              : Center(child: CircularProgressIndicator()),
+                              : snapshot.hasData
+                                  ? Center(
+                                      child: Text("NO Data Available, Configure Credentials First"))
+                                  : snapshot.connectionState != ConnectionState.done
+                                      ? Center(child: CircularProgressIndicator())
+                                      : snapshot.hasError
+                                          ? Column(
+                                              children: [
+                                                Text(snapshot.error.toString()),
+                                                FlatButton(
+                                                  child: Text("Refresh"),
+                                                  onPressed: () => gTaskSync.value = setTaskAsync(),
+                                                )
+                                              ],
+                                            )
+                                          : Container(),
                         ]
                       : [
                           Center(child: Text("You are not authenticated.")),

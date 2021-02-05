@@ -111,17 +111,10 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
           ),
         ],
         headerMainAxisAlignment: MainAxisAlignment.start,
+        centerWidget: !_authorized ? true : false,
         footerChildren: !_authorized
             ? [
-                Column(
-                  children: [
-                    Text("You are not authenticated."),
-                    FlatButton(
-                      onPressed: _authenticate,
-                      child: Text("Auth Now"),
-                    ),
-                  ],
-                ),
+                Text("You are not authenticated."),
               ]
             : [
                 Form(
@@ -147,16 +140,16 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
                 )
               ],
       ),
-      floatingActionButton: Visibility(
-        visible: _authorized,
-        child: FloatingActionButton(
-          onPressed: () {
-            if (spreadID.text.trim().length > 0) box.write("spreadID", spreadID.text);
-            if (googleID.text.trim().length > 0) box.write("googleID", googleID.text);
-            Navigator.pop(context);
-          },
-          child: Icon(Icons.check),
-        ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _authorized
+            ? () {
+                if (spreadID.text.trim().length > 0) box.write("spreadID", spreadID.text);
+                if (googleID.text.trim().length > 0) box.write("googleID", googleID.text);
+                Navigator.pop(context);
+              }
+            : _authenticate,
+        label: Text(_authorized ? "CONFIRM" : "AUTH NOW"),
+        icon: Icon(_authorized ? Icons.check : Icons.security_outlined),
       ),
     );
   }

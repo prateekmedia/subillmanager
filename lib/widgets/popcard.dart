@@ -14,7 +14,7 @@ Widget AwesomePopCard(BuildContext context,
     String tag = "random"}) {
   var listView = ListView(
     shrinkWrap: centerWidget,
-    children: footerChildren,
+    children: centerWidget ? [Column(children: footerChildren)] : footerChildren,
     physics: BouncingScrollPhysics(),
   );
   return Column(
@@ -54,11 +54,7 @@ Widget AwesomePopCard(BuildContext context,
             ),
             padding: footerPadding,
             width: double.infinity,
-            child: centerWidget
-                ? Center(
-                    child: listView,
-                  )
-                : listView,
+            child: centerWidget ? Center(child: listView) : listView,
           ),
         ),
       ),

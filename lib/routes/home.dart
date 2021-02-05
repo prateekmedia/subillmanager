@@ -5,8 +5,9 @@ import '../widgets.dart';
 
 class HomeScreen extends StatefulHookWidget {
   final Future<List<List<String>>> getTaskAsync;
+  final Future<List<List<String>>> Function() setTaskAsync;
 
-  HomeScreen(this.getTaskAsync);
+  HomeScreen(this.getTaskAsync, this.setTaskAsync);
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -17,8 +18,9 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
     super.build(context);
 
     final showOnly = useState<int>(0);
+    var gTaskSync = useState(useMemoized(() => widget.getTaskAsync));
     return FutureBuilder<List<List<String>>>(
-        future: widget.getTaskAsync,
+        future: gTaskSync.value,
         builder: (context, snapshot) {
           bool hasData = snapshot.hasData && snapshot.data.length > 0;
           return AwesomePopCard(
@@ -39,16 +41,17 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                   ),
                 ],
               ),
-              (hasData)
-                  ? Icon(Icons.account_circle, color: Colors.white)
-                  : IconButton(
-                      icon: Icon(
-                        Icons.refresh,
-                        color: Colors.white,
-                      ),
-                      onPressed: null,
-                    ),
+              IconButton(
+                icon: Icon(
+                  Icons.refresh,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  gTaskSync.value = widget.setTaskAsync();
+                },
+              ),
             ],
+            centerWidget: hasData ? false : true,
             footerChildren: (hasData)
                 ? [
                     Row(
@@ -98,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                       ],
                     ),
                     SizedBox(height: 20),
-                    for (int i = 0; i < snapshot.data.length - 1; i++)
+                    for (int i = 0; i < snapshot.data[0].length - 1; i++)
                       AwesomeMonthBill(
                         context,
                         title: snapshot.data[0].reversed.toList()[i],
@@ -142,8 +145,12 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                     SizedBox(height: 25),
                   ]
                 : snapshot.hasData
-                    ? [Center(child: Text("No Data Available, Configure Credentials first."))]
-                    : [Center(child: CircularProgressIndicator())],
+                    ? [Text("NO Data Available, Configure Credentials First")]
+                    : snapshot.connectionState != ConnectionState.done
+                        ? [CircularProgressIndicator()]
+                        : snapshot.hasError
+                            ? [Text(snapshot.error.toString())]
+                            : [Container()],
           );
         });
   }
