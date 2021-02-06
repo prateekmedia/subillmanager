@@ -25,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
           bool hasData = snapshot.hasData && snapshot.data.length > 0;
           return AwesomePopCard(
             context,
+            offset: Offset(-2, 3),
             headerChildren: [
               Column(
                 children: [
@@ -105,6 +106,22 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                       AwesomeMonthBill(
                         context,
                         title: snapshot.data[0].reversed.toList()[i],
+                        visible: (showOnly.value == 0)
+                            ? (double.parse(snapshot.data[3].reversed.toList()[i].substring(1)) +
+                                        double.parse(
+                                            snapshot.data[6].reversed.toList()[i].substring(1)))
+                                    .toStringAsFixed(1) !=
+                                "0.0"
+                            : (showOnly.value == 1)
+                                ? double.parse(snapshot.data[3].reversed.toList()[i].substring(1))
+                                        .toStringAsFixed(1) !=
+                                    "0.0"
+                                : (showOnly.value == 2)
+                                    ? double.parse(
+                                                snapshot.data[6].reversed.toList()[i].substring(1))
+                                            .toStringAsFixed(1) !=
+                                        "0.0"
+                                    : true,
                         children: [
                           SizedBox(height: 5),
                           Container(
@@ -125,6 +142,10 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                                 AwesomeListTile(
                                   context,
                                   icon: Icons.person_outlined,
+                                  visible: double.parse(
+                                              snapshot.data[3].reversed.toList()[i].substring(1))
+                                          .toStringAsFixed(1) !=
+                                      "0.0",
                                   title: snapshot.data[1][0].split(" ")[0],
                                   subtitle: "Feb 1",
                                   trailing: snapshot.data[3].reversed.toList()[i],
@@ -133,6 +154,10 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                                 AwesomeListTile(
                                   context,
                                   icon: Icons.person_outlined,
+                                  visible: double.parse(
+                                              snapshot.data[6].reversed.toList()[i].substring(1))
+                                          .toStringAsFixed(1) !=
+                                      "0.0",
                                   title: snapshot.data[4][0].split(" ")[0],
                                   subtitle: "Feb 1",
                                   trailing: snapshot.data[6].reversed.toList()[i],

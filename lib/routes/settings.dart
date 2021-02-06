@@ -14,6 +14,7 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return AwesomePopCard(
       context,
+      offset: Offset(2, 3),
       tag: "header",
       headerChildren: [
         Padding(
