@@ -1,4 +1,4 @@
-<p align="center"><img height=100 src="https://github.com/prateekmedia/suBillManager/blob/main/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png?raw=true"/></p>
+<p align="center"><img height=100 src="https://user-images.githubusercontent.com/41370460/107151516-f9a8f380-6988-11eb-95bf-396b927b44a6.png"/></p>
 
 
 <h2 align="center">SUbillManager</h2>
