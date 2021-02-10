@@ -147,7 +147,9 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                                           .toStringAsFixed(1) !=
                                       "0.0",
                                   title: snapshot.data[1][0].split(" ")[0],
-                                  subtitle: "Feb 1",
+                                  subtitle: double.parse(snapshot.data[2].reversed.toList()[i])
+                                          .toStringAsFixed(1) +
+                                      " UNITS",
                                   trailing: snapshot.data[3].reversed.toList()[i],
                                 ),
                               if (showOnly.value == 0 || showOnly.value == 2)
@@ -159,7 +161,9 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                                           .toStringAsFixed(1) !=
                                       "0.0",
                                   title: snapshot.data[4][0].split(" ")[0],
-                                  subtitle: "Feb 1",
+                                  subtitle: double.parse(snapshot.data[5].reversed.toList()[i])
+                                          .toStringAsFixed(1) +
+                                      " UNITS",
                                   trailing: snapshot.data[6].reversed.toList()[i],
                                 ),
                             ]),
