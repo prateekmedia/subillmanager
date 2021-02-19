@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:get_storage/get_storage.dart';
 import '../utils.dart';
 import '../widgets.dart';
 
@@ -20,8 +21,9 @@ class _HomeScreenState extends State<HomeScreen>
 
     final showOnly = useState<int>(0);
     var gTaskSync = useState(useMemoized(() => widget.getTaskAsync));
+    bool demoMode = GetStorage().read("demo");
     return FutureBuilder<List<List<String>>>(
-        future: gTaskSync.value,
+        future: demoMode ? Future.value(demoData) : gTaskSync.value,
         builder: (context, snapshot) {
           bool hasData = snapshot.hasData && snapshot.data.length > 0;
           return AwesomePopCard(
@@ -53,6 +55,10 @@ class _HomeScreenState extends State<HomeScreen>
                   color: Colors.white,
                 ),
                 onPressed: () {
+                  demoMode = GetStorage().read("demo");
+                  if (demoMode) {
+                    gTaskSync.value = Future.value(demoData);
+                  }
                   gTaskSync.value = widget.setTaskAsync();
                 },
               ),

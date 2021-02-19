@@ -9,9 +9,14 @@ Widget AwesomePopCard(BuildContext context,
     CrossAxisAlignment headerCrossAxisAlignment = CrossAxisAlignment.center,
     List<Widget> footerChildren,
     double cardBorderRadius = 25,
-    EdgeInsets footerPadding = const EdgeInsets.fromLTRB(15, 15, 15, 0),
+    EdgeInsets footerPadding = const EdgeInsets.symmetric(horizontal: 15),
     bool centerWidget = true,
     String tag = "random"}) {
+  footerChildren.insert(
+      0,
+      SizedBox(
+        height: 15,
+      ));
   var listView = ListView(
     shrinkWrap: centerWidget,
     children:

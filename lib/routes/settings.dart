@@ -1,17 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../utils.dart';
 import '../widgets.dart';
 
-final box = GetStorage();
+GetStorage box = GetStorage();
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
+    var demo = useState(box.read("demo"));
     return AwesomePopCard(
       context,
       tag: "header",
@@ -43,11 +45,30 @@ class SettingsScreen extends StatelessWidget {
             onChanged: (v) {
               Get.changeThemeMode(
                   context.isDark ? ThemeMode.light : ThemeMode.dark);
-              GetStorage().write("thememode", v ? 2 : 1);
+              box.write("thememode", v ? 2 : 1);
             },
           ),
-          onTap: () => Get.changeThemeMode(
-              context.isDark ? ThemeMode.light : ThemeMode.dark),
+          onTap: () {
+            box.write("thememode", context.isDark ? 1 : 2);
+            Get.changeThemeMode(
+                context.isDark ? ThemeMode.light : ThemeMode.dark);
+          },
+        ),
+        ListTile(
+          title: Text("Demo"),
+          leading: Icon(Icons.developer_mode_outlined),
+          trailing: CupertinoSwitch(
+            value: demo.value,
+            activeColor: primaryColor.brighten(20),
+            onChanged: (v) {
+              box.write("demo", v);
+              demo.value = v;
+            },
+          ),
+          onTap: () {
+            demo.value = !demo.value;
+            box.write("demo", demo.value);
+          },
         ),
       ],
     );
@@ -72,8 +93,7 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
       if (!mounted) return;
 
       setState(() => _authorized = false);
-    } on PlatformException catch (e) {
-      print(e);
+    } on PlatformException catch (_) {
       authenticated = true;
     }
     if (!mounted) return;
