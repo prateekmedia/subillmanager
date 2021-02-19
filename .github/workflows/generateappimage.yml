@@ -17,16 +17,26 @@ jobs:
           channel: dev
           
       - name: Get Packages
-        run: flutter pub get
-        
-      - name: Build App
-        run: flutter build linux
-
-      - name: Download AppRun
-        run: wget https://github.com/AppImage/AppImageKit SUbillManager.AppDir/AppRun/
+        run: >
+              flutter pub get 
+              flutter doctor -v
+              sudo apt install clang cmake ninja pkg-config
+              flutter doctor -v
+              flutter config --enable-linux-desktop
+      
+      - name: Download AppImageKit
+        uses: actions/checkout@v2
+        with:
+          repository: https://github.com/AppImage/AppImageKit
+          path: SUbillManager.AppDir/AppRun/
 
       - name: Download required resources to Generate AppImage
-        run: wget https://github.com/AppImage/AppImageKit/releases/download/12/appimagetool-x86_64.AppImage
+        uses: wei/wget@v1
+        with:
+          args: -O appimagetool-x86_64.AppImage https://github.com/AppImage/AppImageKit/releases/download/12/appimagetool-x86_64.AppImage
+        
+      - name: Build Linux App
+        run: flutter build linux
 
       - name: Generate AppImage
         run: ARCH=x86_64 ./appimagetool-x86_64.AppImage SUbillManager.AppDir/
@@ -42,14 +52,14 @@ jobs:
           draft: true
           prerelease: false
 
-      - name: Upload Apk to Release
+      - name: Upload AppImage to Release
         id: upload-release-assets
         uses: dwenegar/upload-release-assets@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           release_id: ${{ steps.create_release.outputs.id }}
-          assets_path: *.AppImage
+          assets_path: ./*.AppImage
 
 #      - name: Upload to Artifact
 #        uses: actions/upload-artifact@v2
