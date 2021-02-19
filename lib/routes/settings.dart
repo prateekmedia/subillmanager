@@ -14,7 +14,6 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return AwesomePopCard(
       context,
-      offset: Offset(2, 3),
       tag: "header",
       headerChildren: [
         Padding(
@@ -42,12 +41,13 @@ class SettingsScreen extends StatelessWidget {
             value: context.isDark,
             activeColor: primaryColor.brighten(20),
             onChanged: (v) {
-              Get.changeThemeMode(context.isDark ? ThemeMode.light : ThemeMode.dark);
+              Get.changeThemeMode(
+                  context.isDark ? ThemeMode.light : ThemeMode.dark);
               GetStorage().write("thememode", v ? 2 : 1);
-              print(GetStorage().read("thememode"));
             },
           ),
-          onTap: () => Get.changeThemeMode(context.isDark ? ThemeMode.light : ThemeMode.dark),
+          onTap: () => Get.changeThemeMode(
+              context.isDark ? ThemeMode.light : ThemeMode.dark),
         ),
       ],
     );
@@ -74,6 +74,7 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
       setState(() => _authorized = false);
     } on PlatformException catch (e) {
       print(e);
+      authenticated = true;
     }
     if (!mounted) return;
 
@@ -107,8 +108,8 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Text("Update Credentials",
-                style: context.texttheme.headline6
-                    .copyWith(color: Colors.white, fontWeight: FontWeight.w600)),
+                style: context.texttheme.headline6.copyWith(
+                    color: Colors.white, fontWeight: FontWeight.w600)),
           ),
         ],
         headerMainAxisAlignment: MainAxisAlignment.start,
@@ -144,8 +145,10 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _authorized
             ? () {
-                if (spreadID.text.trim().length > 0) box.write("spreadID", spreadID.text);
-                if (googleID.text.trim().length > 0) box.write("googleID", googleID.text);
+                if (spreadID.text.trim().length > 0)
+                  box.write("spreadID", spreadID.text);
+                if (googleID.text.trim().length > 0)
+                  box.write("googleID", googleID.text);
                 Navigator.pop(context);
               }
             : _authenticate,

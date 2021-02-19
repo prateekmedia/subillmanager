@@ -12,7 +12,8 @@ class HomeScreen extends StatefulHookWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMixin {
+class _HomeScreenState extends State<HomeScreen>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -25,7 +26,6 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
           bool hasData = snapshot.hasData && snapshot.data.length > 0;
           return AwesomePopCard(
             context,
-            offset: Offset(-2, 3),
             headerChildren: [
               Column(
                 children: [
@@ -33,12 +33,17 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                     (hasData)
                         ? "₹${(double.parse(snapshot.data[3].reversed.toList()[0].substring(1)) + double.parse(snapshot.data[6].reversed.toList()[0].substring(1))).toStringAsFixed(1)}"
                         : "₹0.0",
-                    style: Theme.of(context).textTheme.headline5.copyWith(color: Colors.white),
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline5
+                        .copyWith(color: Colors.white),
                   ),
                   Text(
                     "Last month bill",
-                    style:
-                        Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.grey.shade300),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        .copyWith(color: Colors.grey.shade300),
                   ),
                 ],
               ),
@@ -61,15 +66,21 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                       children: [
                         SizedBox(
                           child: Text("Recent Bills",
-                              style: Theme.of(context).textTheme.headline5.copyWith(
-                                  color: context.isDark ? primaryColor.brighten(90) : primaryColor,
-                                  fontWeight: FontWeight.w600)),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  .copyWith(
+                                      color: context.isDark
+                                          ? primaryColor.brighten(90)
+                                          : primaryColor,
+                                      fontWeight: FontWeight.w600)),
                         ),
                       ],
                     ),
+                    SizedBox(height: 16),
                     Row(
                       children: [
-                        FlatButton(
+                        TextButton(
                           onPressed: () => showOnly.value = 0,
                           child: Text("All",
                               style: TextStyle(
@@ -79,7 +90,8 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                                           : primaryColor
                                       : Colors.grey)),
                         ),
-                        FlatButton(
+                        SizedBox(width: 10),
+                        TextButton(
                           onPressed: () => showOnly.value = 1,
                           child: Text(snapshot.data[1][0].split(" ")[0],
                               style: TextStyle(
@@ -89,7 +101,8 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                                           : primaryColor
                                       : Colors.grey)),
                         ),
-                        FlatButton(
+                        SizedBox(width: 10),
+                        TextButton(
                           onPressed: () => showOnly.value = 2,
                           child: Text(snapshot.data[4][0].split(" ")[0],
                               style: TextStyle(
@@ -107,18 +120,24 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                         context,
                         title: snapshot.data[0].reversed.toList()[i],
                         visible: (showOnly.value == 0)
-                            ? (double.parse(snapshot.data[3].reversed.toList()[i].substring(1)) +
-                                        double.parse(
-                                            snapshot.data[6].reversed.toList()[i].substring(1)))
+                            ? (double.parse(snapshot.data[3].reversed
+                                            .toList()[i]
+                                            .substring(1)) +
+                                        double.parse(snapshot.data[6].reversed
+                                            .toList()[i]
+                                            .substring(1)))
                                     .toStringAsFixed(1) !=
                                 "0.0"
                             : (showOnly.value == 1)
-                                ? double.parse(snapshot.data[3].reversed.toList()[i].substring(1))
+                                ? double.parse(snapshot.data[3].reversed
+                                            .toList()[i]
+                                            .substring(1))
                                         .toStringAsFixed(1) !=
                                     "0.0"
                                 : (showOnly.value == 2)
-                                    ? double.parse(
-                                                snapshot.data[6].reversed.toList()[i].substring(1))
+                                    ? double.parse(snapshot.data[6].reversed
+                                                .toList()[i]
+                                                .substring(1))
                                             .toStringAsFixed(1) !=
                                         "0.0"
                                     : true,
@@ -142,29 +161,39 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                                 AwesomeListTile(
                                   context,
                                   icon: Icons.person_outlined,
-                                  visible: double.parse(
-                                              snapshot.data[3].reversed.toList()[i].substring(1))
+                                  visible: double.parse(snapshot
+                                              .data[3].reversed
+                                              .toList()[i]
+                                              .substring(1))
                                           .toStringAsFixed(1) !=
                                       "0.0",
                                   title: snapshot.data[1][0].split(" ")[0],
-                                  subtitle: double.parse(snapshot.data[2].reversed.toList()[i])
+                                  subtitle: double.parse(snapshot
+                                              .data[2].reversed
+                                              .toList()[i])
                                           .toStringAsFixed(1) +
-                                      " UNITS",
-                                  trailing: snapshot.data[3].reversed.toList()[i],
+                                      " UNIT",
+                                  trailing:
+                                      snapshot.data[3].reversed.toList()[i],
                                 ),
                               if (showOnly.value == 0 || showOnly.value == 2)
                                 AwesomeListTile(
                                   context,
                                   icon: Icons.person_outlined,
-                                  visible: double.parse(
-                                              snapshot.data[6].reversed.toList()[i].substring(1))
+                                  visible: double.parse(snapshot
+                                              .data[6].reversed
+                                              .toList()[i]
+                                              .substring(1))
                                           .toStringAsFixed(1) !=
                                       "0.0",
                                   title: snapshot.data[4][0].split(" ")[0],
-                                  subtitle: double.parse(snapshot.data[5].reversed.toList()[i])
+                                  subtitle: double.parse(snapshot
+                                              .data[5].reversed
+                                              .toList()[i])
                                           .toStringAsFixed(1) +
-                                      " UNITS",
-                                  trailing: snapshot.data[6].reversed.toList()[i],
+                                      " UNIT",
+                                  trailing:
+                                      snapshot.data[6].reversed.toList()[i],
                                 ),
                             ]),
                           ),
@@ -176,7 +205,11 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                 : snapshot.hasData
                     ? [Text("NO Data Available, Configure Credentials First")]
                     : snapshot.connectionState != ConnectionState.done
-                        ? [CircularProgressIndicator()]
+                        ? [
+                            CircularProgressIndicator(
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(primaryColor))
+                          ]
                         : snapshot.hasError
                             ? [Text(snapshot.error.toString())]
                             : [Container()],

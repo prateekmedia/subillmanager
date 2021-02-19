@@ -9,13 +9,13 @@ Widget AwesomePopCard(BuildContext context,
     CrossAxisAlignment headerCrossAxisAlignment = CrossAxisAlignment.center,
     List<Widget> footerChildren,
     double cardBorderRadius = 25,
-    EdgeInsets footerPadding = const EdgeInsets.symmetric(horizontal: 15),
+    EdgeInsets footerPadding = const EdgeInsets.fromLTRB(15, 15, 15, 0),
     bool centerWidget = true,
-    Offset offset = const Offset(0, 3),
     String tag = "random"}) {
   var listView = ListView(
     shrinkWrap: centerWidget,
-    children: centerWidget ? [Column(children: footerChildren)] : footerChildren,
+    children:
+        centerWidget ? [Column(children: footerChildren)] : footerChildren,
     physics: BouncingScrollPhysics(),
   );
   return Column(
@@ -43,14 +43,6 @@ Widget AwesomePopCard(BuildContext context,
               borderRadius: BorderRadius.only(
                   topRight: Radius.circular(cardBorderRadius),
                   topLeft: Radius.circular(cardBorderRadius)),
-              boxShadow: [
-                BoxShadow(
-                  color: primaryColor.brighten(30).withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                  offset: offset,
-                ),
-              ],
               color: context.isDark ? Colors.grey[900].brighten(5) : grey,
             ),
             padding: footerPadding,
