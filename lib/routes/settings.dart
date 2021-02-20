@@ -70,6 +70,26 @@ class SettingsScreen extends HookWidget {
             box.write("demo", demo.value);
           },
         ),
+        ListTile(
+          leading: Icon(Icons.remove_from_queue),
+          title: Text("Clear Data"),
+          onTap: () => Get.defaultDialog(
+              title: "Are you Sure?",
+              content: Container(
+                  child: Text(
+                      "This will reset all of your data, you may need to restart to the app to fully reset.")),
+              confirmTextColor: Colors.white,
+              cancelTextColor:
+                  context.isDarkMode ? Colors.grey[200] : primaryColor,
+              textConfirm: "OK",
+              textCancel: "CANCEL",
+              onConfirm: () {
+                GetStorage().erase();
+                resetData();
+                Get.back();
+              },
+              onCancel: Get.back),
+        ),
       ],
     );
   }
