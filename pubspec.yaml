@@ -17,6 +17,8 @@ dependencies:
   flutter_hooks: ^0.16.0
   collection: 
   hive_flutter: 
+  universal_platform : ^1.0.0-nullsafety 
+  url_strategy:
 
 dev_dependencies:
   flutter_test:

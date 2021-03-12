@@ -6,6 +6,7 @@ import 'package:local_auth/local_auth.dart';
 import 'package:hive/hive.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:universal_platform/universal_platform.dart';
 import '../utils.dart';
 import '../widgets.dart';
 
@@ -109,17 +110,18 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
   final LocalAuthentication auth = LocalAuthentication();
   Future<void> _authenticate() async {
     bool authenticated = false;
-    try {
-      setState(() => _authorized = false);
-      authenticated = await auth.authenticate(
-          localizedReason: 'Scan your fingerprint to Update Credentials',
-          useErrorDialogs: true,
-          stickyAuth: true);
-      if (!mounted) return;
-
-      setState(() => _authorized = false);
-    } on PlatformException catch (_) {
+    if (UniversalPlatform.isWeb)
       authenticated = true;
+    else {
+      try {
+        authenticated = await auth.authenticate(
+            localizedReason: 'Scan your fingerprint to Update Credentials',
+            useErrorDialogs: true,
+            stickyAuth: true);
+        if (!mounted) return;
+      } on PlatformException catch (_) {
+        authenticated = true;
+      }
     }
     if (!mounted) return;
 

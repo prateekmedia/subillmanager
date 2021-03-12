@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -10,11 +8,14 @@ import 'package:intl/intl.dart' show DateFormat;
 import 'package:local_auth/local_auth.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hive/hive.dart';
+import 'package:universal_platform/universal_platform.dart';
+import 'package:url_strategy/url_strategy.dart';
 import 'routes.dart';
 import 'models.dart';
 import 'utils.dart';
 
 void main() async {
+  setPathUrlStrategy();
   await GetStorage.init();
   await Hive.initFlutter();
   await Hive.openBox('DEMO');
@@ -88,8 +89,8 @@ class MyHomePage extends HookWidget {
     return Scaffold(
       body: Row(
         children: [
-          if (!Platform.isAndroid &&
-              !Platform.isIOS &&
+          if (!UniversalPlatform.isAndroid &&
+              !UniversalPlatform.isIOS &&
               MediaQuery.of(context).size.width > 500)
             NavigationRail(
               backgroundColor: context.primaryColor,
@@ -117,8 +118,8 @@ class MyHomePage extends HookWidget {
                   currentIndex, _getTaskAsync, _pageController, initSheet)),
         ],
       ),
-      bottomNavigationBar: (Platform.isAndroid ||
-              Platform.isIOS ||
+      bottomNavigationBar: (UniversalPlatform.isAndroid ||
+              UniversalPlatform.isIOS ||
               MediaQuery.of(context).size.width < 500)
           ? BottomNavigationBar(
               selectedItemColor:
@@ -154,20 +155,20 @@ class MyHomePage extends HookWidget {
             setTaskAsync: initSheet)),
         child: Icon(Icons.add),
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular((Platform.isAndroid ||
-                    Platform.isIOS ||
+            borderRadius: BorderRadius.circular((UniversalPlatform.isAndroid ||
+                    UniversalPlatform.isIOS ||
                     MediaQuery.of(context).size.width < 500)
                 ? 15
                 : 100)),
-        elevation: (Platform.isAndroid ||
-                Platform.isIOS ||
+        elevation: (UniversalPlatform.isAndroid ||
+                UniversalPlatform.isIOS ||
                 MediaQuery.of(context).size.width < 500)
             ? null
             : 0,
         backgroundColor: context.primaryColor,
       ),
-      floatingActionButtonLocation: (Platform.isAndroid ||
-              Platform.isIOS ||
+      floatingActionButtonLocation: (UniversalPlatform.isAndroid ||
+              UniversalPlatform.isIOS ||
               MediaQuery.of(context).size.width < 500)
           ? FloatingActionButtonLocation.miniCenterDocked
           : FloatingActionButtonLocation.miniStartFloat,
@@ -239,16 +240,17 @@ class BottomSheet extends HookWidget {
     var gTaskSync = useState(useMemoized(() => _getTaskAsync));
     Future<void> _authenticate() async {
       bool authenticated = false;
-      try {
-        _authorized.value = false;
-        authenticated = await auth.authenticate(
-            localizedReason: 'Scan your fingerprint to Add a Field',
-            useErrorDialogs: true,
-            stickyAuth: true);
-
-        _authorized.value = false;
-      } on PlatformException catch (_) {
+      if (UniversalPlatform.isWeb)
         authenticated = true;
+      else {
+        try {
+          authenticated = await auth.authenticate(
+              localizedReason: 'Scan your fingerprint to Add a Field',
+              useErrorDialogs: true,
+              stickyAuth: true);
+        } on PlatformException catch (_) {
+          authenticated = true;
+        }
       }
 
       _authorized.value = authenticated;
@@ -268,8 +270,8 @@ class BottomSheet extends HookWidget {
               children: [
                 Container(
                     constraints: BoxConstraints(maxHeight: 400),
-                    width: (Platform.isAndroid ||
-                            Platform.isIOS ||
+                    width: (UniversalPlatform.isAndroid ||
+                            UniversalPlatform.isIOS ||
                             context.width < 500)
                         ? context.width * 0.96
                         : 500,
