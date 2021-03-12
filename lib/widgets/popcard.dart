@@ -4,10 +4,10 @@ import '../utils.dart';
 
 // ignore: non_constant_identifier_names
 Widget AwesomePopCard(BuildContext context,
-    {List<Widget> headerChildren,
+    {required List<Widget> headerChildren,
     MainAxisAlignment headerMainAxisAlignment = MainAxisAlignment.spaceBetween,
     CrossAxisAlignment headerCrossAxisAlignment = CrossAxisAlignment.center,
-    List<Widget> footerChildren,
+    required List<Widget> footerChildren,
     double cardBorderRadius = 25,
     EdgeInsets footerPadding = const EdgeInsets.symmetric(horizontal: 15),
     bool centerWidget = true,
@@ -43,16 +43,18 @@ Widget AwesomePopCard(BuildContext context,
       Expanded(
         child: Container(
           color: primaryColor,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(cardBorderRadius),
-                  topLeft: Radius.circular(cardBorderRadius)),
-              color: context.isDark ? Colors.grey[900].brighten(5) : grey,
+          child: Scrollbar(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(cardBorderRadius),
+                    topLeft: Radius.circular(cardBorderRadius)),
+                color: context.isDark ? Colors.grey[900]!.brighten(5) : grey,
+              ),
+              padding: footerPadding,
+              width: double.infinity,
+              child: centerWidget ? Center(child: listView) : listView,
             ),
-            padding: footerPadding,
-            width: double.infinity,
-            child: centerWidget ? Center(child: listView) : listView,
           ),
         ),
       ),

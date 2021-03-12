@@ -5,10 +5,10 @@ import '../utils.dart';
 // ignore: non_constant_identifier_names
 Widget AwesomeListTile(
   BuildContext context, {
-  IconData icon,
-  String title,
-  String subtitle,
-  String trailing,
+  IconData? icon,
+  String? title,
+  String? subtitle,
+  String? trailing,
   bool visible = true,
 }) {
   return visible
@@ -32,17 +32,17 @@ Widget AwesomeListTile(
             ],
           ),
           title: Text(
-            title,
+            title!,
             style: TextStyle(
                 fontWeight: FontWeight.w600,
                 color: context.isDark ? primaryColor.brighten(75) : primaryColor),
           ),
           subtitle: Text(
-            subtitle,
+            subtitle!,
             style: TextStyle(color: context.isDark ? primaryColor.brighten(75) : primaryColor),
           ),
           trailing: Text(
-            trailing,
+            trailing!,
             style: TextStyle(
                 fontWeight: FontWeight.w600,
                 color: context.isDark ? primaryColor.brighten(75) : primaryColor,

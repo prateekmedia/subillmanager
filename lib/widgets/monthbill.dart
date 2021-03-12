@@ -3,7 +3,7 @@ import '../utils.dart';
 
 // ignore: non_constant_identifier_names
 Widget AwesomeMonthBill(BuildContext context,
-    {String title, Widget trailing, List<Widget> children, bool visible = true}) {
+    {String? title, Widget? trailing, List<Widget>? children, bool visible = true}) {
   return visible
       ? Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -14,7 +14,7 @@ Widget AwesomeMonthBill(BuildContext context,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    title,
+                    title!,
                     style: TextStyle(
                         fontSize: 16, color: context.isDark ? Colors.grey[400] : Colors.grey[600]),
                   ),
@@ -23,7 +23,7 @@ Widget AwesomeMonthBill(BuildContext context,
               ),
             ),
             Container(
-              child: Column(children: children),
+              child: Column(children: children!),
             ),
           ],
         )

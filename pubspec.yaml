@@ -1,18 +1,21 @@
 name: su_bill_manager
 description: A new Flutter project.
 
+publish_to: none
+
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  gsheets: ^0.2.6
-  local_auth: ^0.6.3+4
-  get_storage: ^1.4.0 
-  flutter_hooks:
+  gsheets: ^0.3.0-nullsafety.0
+  local_auth: ^1.1.0
+  get_storage: ^2.0.1 
+  flutter_hooks: ^0.16.0
+  hive_flutter: 
 
 dev_dependencies:
   flutter_test:

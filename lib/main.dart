@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,12 +8,16 @@ import 'package:get/get.dart';
 import 'package:gsheets/gsheets.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:local_auth/local_auth.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive/hive.dart';
 import 'routes.dart';
 import 'models.dart';
 import 'utils.dart';
 
 void main() async {
   await GetStorage.init();
+  await Hive.initFlutter();
+  await Hive.openBox('DEMO');
   runApp(MyApp());
 }
 
@@ -32,14 +35,14 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'SUbillManager',
       theme: ThemeData(
-        primarySwatch: primaryColor,
+        primarySwatch: primaryColor as MaterialColor?,
         primaryColor: primaryColor,
         brightness: Brightness.light,
         accentColor: primaryColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       darkTheme: ThemeData(
-        primarySwatch: primaryColor,
+        primarySwatch: primaryColor as MaterialColor?,
         primaryColor: primaryColor,
         brightness: Brightness.dark,
         accentColor: primaryColor,
@@ -54,27 +57,27 @@ class MyApp extends StatelessWidget {
 
 // ignore: must_be_immutable
 class MyHomePage extends HookWidget {
-  PageController _pageController;
+  PageController? _pageController;
   final box = GetStorage();
-  String _credentials;
-  String _spreadsheetId;
-  GSheets gsheets;
-  Spreadsheet ss;
+  String? _credentials;
+  late String _spreadsheetId;
+  late GSheets gsheets;
+  late Spreadsheet ss;
 
   @override
   Widget build(BuildContext context) {
-    final sheet = useState<Worksheet>();
+    final sheet = useState<Worksheet?>(null);
     Future<List<List<String>>> initSheet() async {
       _credentials = box.read("googleID");
       _spreadsheetId = box.read("spreadID");
-      if (_credentials != null && _credentials.trim().length > 0) {
+      if (_credentials != null && _credentials!.trim().length > 0) {
         gsheets = GSheets(_credentials);
 
         // fetch spreadsheet by its id
         ss = await gsheets.spreadsheet(_spreadsheetId);
         // get worksheet by its index
         sheet.value = ss.worksheetByIndex(0);
-        return sheet.value.values.allColumns();
+        return sheet.value!.values.allColumns();
       }
       return [];
     }
@@ -93,7 +96,7 @@ class MyHomePage extends HookWidget {
               selectedIndex: currentIndex.value,
               onDestinationSelected: (int index) {
                 currentIndex.value = index;
-                _pageController.animateToPage(index,
+                _pageController!.animateToPage(index,
                     duration: Duration(milliseconds: 150),
                     curve: Curves.fastLinearToSlowEaseIn);
               },
@@ -124,11 +127,11 @@ class MyHomePage extends HookWidget {
                   ? Color(0xFF6C86A4).brighten(50).withAlpha(170)
                   : Color(0xFF6C86A4),
               backgroundColor:
-                  context.isDark ? Colors.grey[900].brighten(12) : grey,
+                  context.isDark ? Colors.grey[900]!.brighten(12) : grey,
               currentIndex: currentIndex.value,
               onTap: (index) {
                 currentIndex.value = index;
-                _pageController.animateToPage(index,
+                _pageController!.animateToPage(index,
                     duration: Duration(milliseconds: 150),
                     curve: Curves.easeOut);
               },
@@ -172,7 +175,7 @@ class MyHomePage extends HookWidget {
   }
 
   NavigationRailDestination navRailDestColor(BuildContext context,
-      {IconData icon, IconData activeIcon, String label}) {
+      {IconData? icon, IconData? activeIcon, required String label}) {
     return NavigationRailDestination(
       icon: Icon(icon, color: Color(0xFF6C86A4).brighten(70).withAlpha(210)),
       selectedIcon: Icon(
@@ -189,7 +192,7 @@ class MyHomePage extends HookWidget {
   SizedBox mainContent(
       var currentIndex,
       Future<List<List<String>>> _getTaskAsync,
-      PageController pageController,
+      PageController? pageController,
       Function initSheet) {
     return SizedBox.expand(
       child: PageView(
@@ -198,7 +201,8 @@ class MyHomePage extends HookWidget {
           currentIndex.value = index;
         },
         children: [
-          HomeScreen(_getTaskAsync, initSheet),
+          HomeScreen(_getTaskAsync,
+              initSheet as Future<List<List<String>>> Function()),
           SettingsScreen(),
         ],
         physics: NeverScrollableScrollPhysics(),
@@ -209,25 +213,26 @@ class MyHomePage extends HookWidget {
 
 class BottomSheet extends HookWidget {
   BottomSheet({
-    Key key,
-    @required Future<List<List<String>>> getTaskAsync,
-    @required this.setTaskAsync,
-    @required this.getWorksheet,
-  })  : _getTaskAsync = getTaskAsync,
+    Key? key,
+    required Future<List<List<String>>> getTaskAsync,
+    required this.setTaskAsync,
+    required this.getWorksheet,
+  })   : _getTaskAsync = getTaskAsync,
         super(key: key);
 
   final Future<List<List<String>>> _getTaskAsync;
-  final Worksheet getWorksheet;
+  final Worksheet? getWorksheet;
   final LocalAuthentication auth = LocalAuthentication();
   final Future<List<List<String>>> Function() setTaskAsync;
 
   @override
   Widget build(BuildContext context) {
     GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    final _dateController = useTextEditingController(
+    final TextEditingController? _dateController = useTextEditingController(
       text: DateFormat('MMMM dd').format(DateTime.now()),
     );
-    final _unitController = useTextEditingController(text: "256.0");
+    final TextEditingController? _unitController =
+        useTextEditingController(text: "256.0");
     final pageNo = useState<int>(0); // Up to 1 as there are two people
     final listBills = useState<List<BillModel>>([]);
     final _authorized = useState<bool>(false);
@@ -236,7 +241,7 @@ class BottomSheet extends HookWidget {
       bool authenticated = false;
       try {
         _authorized.value = false;
-        authenticated = await auth.authenticateWithBiometrics(
+        authenticated = await auth.authenticate(
             localizedReason: 'Scan your fingerprint to Add a Field',
             useErrorDialogs: true,
             stickyAuth: true);
@@ -253,8 +258,9 @@ class BottomSheet extends HookWidget {
     bool demoMode = GetStorage().read("demo");
     final loading = useState<bool>(false);
 
-    return FutureBuilder(
-        future: demoMode ? Future.value(demoData) : gTaskSync.value,
+    return FutureBuilder<List>(
+        future:
+            Future.value(Hive.box('DEMO').get('demo', defaultValue: demoData)),
         builder: (context, snapshot) {
           return SingleChildScrollView(
             child: Column(
@@ -280,7 +286,7 @@ class BottomSheet extends HookWidget {
                           ? [
                               !loading.value &&
                                       snapshot.hasData &&
-                                      snapshot.data.length > 0
+                                      snapshot.data!.length > 0
                                   ? Form(
                                       key: _formKey,
                                       child: Column(
@@ -297,13 +303,13 @@ class BottomSheet extends HookWidget {
                                                           .headline6)),
                                               Text(
                                                   " ( ${[
-                                                    snapshot.data[1][0]
+                                                    snapshot.data![1][0]
                                                         .split(" ")[0],
-                                                    snapshot.data[4][0]
+                                                    snapshot.data![4][0]
                                                         .split(" ")[0],
                                                   ][pageNo.value]} )",
                                                   style: context
-                                                      .texttheme.bodyText1
+                                                      .texttheme.bodyText1!
                                                       .copyWith(fontSize: 18)),
                                             ],
                                           ),
@@ -328,7 +334,7 @@ class BottomSheet extends HookWidget {
                                                 TextButton(
                                                   style: TextButton.styleFrom(
                                                       primary: context.textTheme
-                                                          .headline6.color
+                                                          .headline6!.color!
                                                           .withAlpha(180)),
                                                   onPressed: () =>
                                                       Navigator.pop(context),
@@ -338,15 +344,15 @@ class BottomSheet extends HookWidget {
                                                 TextButton(
                                                   style: TextButton.styleFrom(
                                                       primary: context.textTheme
-                                                          .headline6.color),
+                                                          .headline6!.color),
                                                   onPressed: () {
                                                     listBills.value
                                                         .add(BillModel(
                                                       id: 1,
                                                       date:
-                                                          _dateController.text,
+                                                          _dateController!.text,
                                                       unit:
-                                                          _unitController.text,
+                                                          _unitController!.text,
                                                     ));
                                                     _unitController.text =
                                                         "256.0";
@@ -358,13 +364,15 @@ class BottomSheet extends HookWidget {
                                                 TextButton(
                                                   style: TextButton.styleFrom(
                                                       primary: context.textTheme
-                                                          .headline6.color
+                                                          .headline6!.color!
                                                           .withAlpha(180)),
                                                   onPressed: () {
-                                                    _dateController.text =
-                                                        listBills.value[0].date;
-                                                    _unitController.text =
-                                                        listBills.value[0].unit;
+                                                    _dateController!.text =
+                                                        listBills
+                                                            .value[0].date!;
+                                                    _unitController!.text =
+                                                        listBills
+                                                            .value[0].unit!;
                                                     listBills.value.removeAt(0);
                                                     pageNo.value = 0;
                                                   },
@@ -374,7 +382,7 @@ class BottomSheet extends HookWidget {
                                                 TextButton(
                                                   style: TextButton.styleFrom(
                                                       primary: context.textTheme
-                                                          .headline6.color),
+                                                          .headline6!.color),
                                                   onPressed: demoMode
                                                       ? () {
                                                           Get.back();
@@ -393,35 +401,35 @@ class BottomSheet extends HookWidget {
                                                               .add(BillModel(
                                                             id: 4,
                                                             date:
-                                                                _dateController
+                                                                _dateController!
                                                                     .text,
                                                             unit:
-                                                                _unitController
+                                                                _unitController!
                                                                     .text,
                                                           ));
-                                                          var cell1 = await getWorksheet
+                                                          var cell1 = await getWorksheet!
                                                               .cells
                                                               .cell(
                                                                   row: snapshot
-                                                                          .data[
+                                                                          .data![
                                                                               0]
                                                                           .length +
                                                                       1,
                                                                   column: 1);
-                                                          var cell2 = await getWorksheet
+                                                          var cell2 = await getWorksheet!
                                                               .cells
                                                               .cell(
                                                                   row: snapshot
-                                                                          .data[
+                                                                          .data![
                                                                               0]
                                                                           .length +
                                                                       1,
                                                                   column: 2);
-                                                          var cell5 = await getWorksheet
+                                                          var cell5 = await getWorksheet!
                                                               .cells
                                                               .cell(
                                                                   row: snapshot
-                                                                          .data[
+                                                                          .data![
                                                                               0]
                                                                           .length +
                                                                       1,
@@ -485,7 +493,7 @@ class BottomSheet extends HookWidget {
                               SizedBox(height: 15),
                               TextButton(
                                 style: TextButton.styleFrom(
-                                    primary: context.textTheme.headline6.color
+                                    primary: context.textTheme.headline6!.color!
                                         .withAlpha(180)),
                                 onPressed: _authenticate,
                                 child: Text("Auth Now"),
@@ -499,7 +507,7 @@ class BottomSheet extends HookWidget {
   }
 
   Widget customInputField(
-      BuildContext context, TextEditingController controller,
+      BuildContext context, TextEditingController? controller,
       [bool enabled = true]) {
     return TextFormField(
       controller: controller,
@@ -508,7 +516,7 @@ class BottomSheet extends HookWidget {
       decoration: InputDecoration(
         disabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-              color: context.isDarkMode ? Colors.grey[800] : Colors.grey[200],
+              color: context.isDarkMode ? Colors.grey[800]! : Colors.grey[200]!,
               width: 1.0),
         ),
         focusedBorder: OutlineInputBorder(

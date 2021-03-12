@@ -5,7 +5,7 @@ class BillModel {
     this.unit,
   });
 
-  int id;
-  String date;
-  String unit;
+  int? id;
+  String? date;
+  String? unit;
 }

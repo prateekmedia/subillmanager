@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=subillmanager
+Comment=A simple Bill Manager
+Exec=subillmanager.sh
+Icon=subillmanager
+Categories=Office;Finance;

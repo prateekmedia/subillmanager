@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:hive/hive.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../utils.dart';
@@ -14,6 +15,7 @@ class SettingsScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     var demo = useState(box.read("demo"));
+    List demoD = Hive.box('DEMO').get('demo') ?? List.empty();
     return AwesomePopCard(
       context,
       tag: "header",
@@ -21,7 +23,7 @@ class SettingsScreen extends HookWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10),
           child: Text("Settings",
-              style: context.texttheme.headline6
+              style: context.texttheme.headline6!
                   .copyWith(color: Colors.white, fontWeight: FontWeight.w600)),
         ),
       ],
@@ -55,7 +57,8 @@ class SettingsScreen extends HookWidget {
           },
         ),
         ListTile(
-          title: Text("Demo"),
+          title: Text(
+              demoD.isEmpty || demoD == demoData ? "Demo Mode" : "Cache Mode"),
           leading: Icon(Icons.developer_mode_outlined),
           trailing: CupertinoSwitch(
             value: demo.value,
@@ -80,12 +83,14 @@ class SettingsScreen extends HookWidget {
                       "This will reset all of your data, you may need to restart to the app to fully reset.")),
               confirmTextColor: Colors.white,
               cancelTextColor:
-                  context.isDarkMode ? Colors.grey[200] : primaryColor,
+                  context.isDarkMode ? Colors.grey[200]! : primaryColor,
               textConfirm: "OK",
               textCancel: "CANCEL",
               onConfirm: () {
                 GetStorage().erase();
+                Get.changeThemeMode(ThemeMode.system);
                 resetData();
+                Hive.box('DEMO').clear();
                 Get.back();
               },
               onCancel: Get.back),
@@ -106,7 +111,7 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
     bool authenticated = false;
     try {
       setState(() => _authorized = false);
-      authenticated = await auth.authenticateWithBiometrics(
+      authenticated = await auth.authenticate(
           localizedReason: 'Scan your fingerprint to Update Credentials',
           useErrorDialogs: true,
           stickyAuth: true);
@@ -148,7 +153,7 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Text("Update Credentials",
-                style: context.texttheme.headline6.copyWith(
+                style: context.texttheme.headline6!.copyWith(
                     color: Colors.white, fontWeight: FontWeight.w600)),
           ),
         ],
