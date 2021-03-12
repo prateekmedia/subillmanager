@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hive/hive.dart';
@@ -23,10 +24,9 @@ class _HomeScreenState extends State<HomeScreen>
     final showOnly = useState<int>(0);
     var gTaskSync = useState(useMemoized(() => widget.getTaskAsync));
     var demoMode = GetStorage().read("demo");
+    List demoM = Hive.box('DEMO').get('demo', defaultValue: demoData);
     return FutureBuilder<List>(
-        future: demoMode
-            ? Future.value(Hive.box('DEMO').get('demo', defaultValue: demoData))
-            : gTaskSync.value,
+        future: demoMode ? Future.value(demoM) : gTaskSync.value,
         builder: (context, snapshot) {
           bool hasData = snapshot.hasData && snapshot.data!.length > 0;
           return AwesomePopCard(
@@ -84,13 +84,15 @@ class _HomeScreenState extends State<HomeScreen>
                       },
                     ),
                   SizedBox(width: 20),
-                  if (hasData && !demoMode)
+                  if (hasData &&
+                      !demoMode &&
+                      !DeepCollectionEquality().equals(snapshot.data, demoM))
                     IconButton(
                       icon: Icon(
                         Icons.check,
                         color: Colors.white,
                       ),
-                      tooltip: "Update Demo",
+                      tooltip: "Update Cache",
                       onPressed: () {
                         Hive.box('DEMO').put('demo', snapshot.data);
                         GetStorage().write("demo", true);
@@ -99,7 +101,10 @@ class _HomeScreenState extends State<HomeScreen>
                         });
                       },
                     ),
-                  if (!hasData && !demoMode)
+                  if (!demoMode &&
+                      (!hasData ||
+                          DeepCollectionEquality()
+                              .equals(snapshot.data, demoM)))
                     IconButton(
                       icon: Icon(
                         Icons.center_focus_strong_outlined,

@@ -15,6 +15,7 @@ dependencies:
   local_auth: ^1.1.0
   get_storage: ^2.0.1 
   flutter_hooks: ^0.16.0
+  collection: 
   hive_flutter: 
 
 dev_dependencies:
