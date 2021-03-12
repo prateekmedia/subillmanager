@@ -2,7 +2,7 @@
 set -e
 # flutter build linux
 mkdir -p SUbillManager.AppDir/usr/bin
-cp -r build/linux/*/release/bundle/* SUbillManager.AppDir/usr/bin
+cp -r build/linux/release/bundle/* SUbillManager.AppDir/usr/bin
 echo "MANUAL TODO (Once):"
 echo "- Copy AppRun from https://github.com/AppImage/AppImageKit releases into SUbillManager.AppDir/"
 echo "- Locate libunixdomainsocket.so on your PC and put it in SUbillManager.AppDir/usr/bin/lib/"
