@@ -19,11 +19,11 @@ jobs:
       - name: Get Packages
         run: >
               flutter pub get;
-              flutter doctor -v;
-              apt update;
-              apt install clang cmake ninja pkg-config:
-              flutter doctor -v;
               flutter config --enable-linux-desktop;
+              flutter doctor -v;
+              sudo apt-get update;
+              sudo apt-get install clang cmake ninja pkg-config:
+              flutter doctor -v;
       
       - name: Download AppImageKit
         uses: actions/checkout@v2
