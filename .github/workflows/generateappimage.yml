@@ -18,11 +18,12 @@ jobs:
           
       - name: Get Packages
         run: >
-              flutter pub get 
-              flutter doctor -v
-              sudo apt install clang cmake ninja pkg-config
-              flutter doctor -v
-              flutter config --enable-linux-desktop
+              flutter pub get;
+              flutter doctor -v;
+              apt update;
+              apt install clang cmake ninja pkg-config:
+              flutter doctor -v;
+              flutter config --enable-linux-desktop;
       
       - name: Download AppImageKit
         uses: actions/checkout@v2
@@ -37,8 +38,8 @@ jobs:
         
       - name: Build Linux App
         run: > 
-              flutter build linux
-              ./*.sh
+              flutter build linux;
+              ./*.sh;
 
       - name: Generate AppImage
         run: ARCH=x86_64 ./appimagetool-x86_64.AppImage SUbillManager.AppDir/
