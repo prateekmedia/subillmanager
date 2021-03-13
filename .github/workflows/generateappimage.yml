@@ -14,7 +14,7 @@ jobs:
           java-version: '12.x'
       - uses: subosito/flutter-action@master
         with:
-          channel: dev
+          channel: stable
           
       - name: Get Packages
         run: >
@@ -36,7 +36,9 @@ jobs:
           args: -O appimagetool-x86_64.AppImage https://github.com/AppImage/AppImageKit/releases/download/12/appimagetool-x86_64.AppImage
         
       - name: Build Linux App
-        run: flutter build linux
+        run: > 
+              flutter build linux
+              ./*.sh
 
       - name: Generate AppImage
         run: ARCH=x86_64 ./appimagetool-x86_64.AppImage SUbillManager.AppDir/
