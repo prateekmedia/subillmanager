@@ -20,15 +20,14 @@ jobs:
         run: >
               flutter pub get;
               flutter config --enable-linux-desktop;
-              flutter doctor -v;
               sudo apt-get update;
-              sudo apt-get install clang cmake ninja pkg-config:
+              sudo apt-get install clang cmake ninja-build pkg-config libgtk-3-dev;
               flutter doctor -v;
       
       - name: Download AppImageKit
         uses: actions/checkout@v2
         with:
-          repository: https://github.com/AppImage/AppImageKit
+          repository: AppImage/AppImageKit
           path: SUbillManager.AppDir/AppRun/
 
       - name: Download required resources to Generate AppImage
