@@ -77,24 +77,32 @@ class SettingsScreen extends HookWidget {
         ListTile(
           leading: Icon(Icons.remove_from_queue),
           title: Text("Clear Data"),
-          onTap: () => Get.defaultDialog(
-              title: "Are you Sure?",
-              content: Container(
-                  child: Text(
-                      "This will reset all of your data, you may need to restart to the app to fully reset.")),
-              confirmTextColor: Colors.white,
-              cancelTextColor:
-                  context.isDarkMode ? Colors.grey[200]! : primaryColor,
-              textConfirm: "OK",
-              textCancel: "CANCEL",
-              onConfirm: () {
-                GetStorage().erase();
-                Get.changeThemeMode(ThemeMode.system);
-                resetData();
-                Hive.box('DEMO').clear();
-                Get.back();
-              },
-              onCancel: Get.back),
+          onTap: () => showDialog(
+            context: context,
+                      builder: (ctx)=>AlertDialog(
+                title: Text("Are you Sure?"),
+                content: Container(
+                    child: Text(
+                        "This will reset all of you data.")),
+                actions: [TextButton(
+                      style: TextButton.styleFrom(
+                          primary: context.isDarkMode ? Colors.grey[200]! : primaryColor),
+                      child: Text("CANCEL"),
+                      onPressed: Get.back,
+                    ),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                          primary: context.textTheme.bodyText2!.color),
+                      child: Text("YES"),
+                      onPressed: () {
+                  GetStorage().erase();
+                  Get.changeThemeMode(ThemeMode.system);
+                  resetData();
+                  Hive.box('DEMO').clear();
+                  Get.back();
+                      },
+                    ),],),
+          ),
         ),
       ],
     );

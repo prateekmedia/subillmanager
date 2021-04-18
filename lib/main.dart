@@ -266,242 +266,247 @@ class BottomSheet extends HookWidget {
         builder: (context, snapshot) {
           return SingleChildScrollView(
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                        constraints: BoxConstraints(maxHeight: 400),
+                        width: (UniversalPlatform.isAndroid ||
+                                UniversalPlatform.isIOS ||
+                                context.width < 500)
+                            ? context.width * 0.96
+                            : 500,
+                        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+                        decoration: BoxDecoration(
+                            color: context.isDark ? Colors.grey[900] : Colors.white,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            )),
+                        child: Stack(
               children: [
-                Container(
-                    constraints: BoxConstraints(maxHeight: 400),
-                    width: (UniversalPlatform.isAndroid ||
-                            UniversalPlatform.isIOS ||
-                            context.width < 500)
-                        ? context.width * 0.96
-                        : 500,
-                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-                    decoration: BoxDecoration(
-                        color: context.isDark ? Colors.grey[900] : Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
-                        )),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: _authorized.value
-                          ? [
-                              !loading.value &&
-                                      snapshot.hasData &&
-                                      snapshot.data!.length > 0
-                                  ? Form(
-                                      key: _formKey,
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                if (demoMode) IgnorePointer(ignoring:true,child: Align(alignment: Alignment.topRight,child: Text("DEMO"))),
+                Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: _authorized.value
+                              ? [
+                                  !loading.value &&
+                                          snapshot.hasData &&
+                                          snapshot.data!.length > 0
+                                      ? Form(
+                                          key: _formKey,
+                                          child: Column(
                                             children: [
-                                              Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 5),
-                                                  child: Text("ADD NEW BILL",
-                                                      style: context.texttheme
-                                                          .headline6)),
-                                              Text(
-                                                  " ( ${[
-                                                    snapshot.data![1][0]
-                                                        .split(" ")[0],
-                                                    snapshot.data![4][0]
-                                                        .split(" ")[0],
-                                                  ][pageNo.value]} )",
-                                                  style: context
-                                                      .texttheme.bodyText1!
-                                                      .copyWith(fontSize: 18)),
-                                            ],
-                                          ),
-                                          SizedBox(height: 10),
-                                          customInputField(
-                                              context,
-                                              _dateController,
-                                              (pageNo.value == 0
-                                                  ? true
-                                                  : false)),
-                                          SizedBox(height: 10),
-                                          customInputField(
-                                              context, _unitController),
-                                          SizedBox(
-                                            height: 30,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              if (pageNo.value == 0)
-                                                TextButton(
-                                                  style: TextButton.styleFrom(
-                                                      primary: context.textTheme
-                                                          .headline6!.color!
-                                                          .withAlpha(180)),
-                                                  onPressed: () =>
-                                                      Navigator.pop(context),
-                                                  child: Text("CLOSE"),
-                                                ),
-                                              if (pageNo.value == 0)
-                                                TextButton(
-                                                  style: TextButton.styleFrom(
-                                                      primary: context.textTheme
-                                                          .headline6!.color),
-                                                  onPressed: () {
-                                                    listBills.value
-                                                        .add(BillModel(
-                                                      id: 1,
-                                                      date:
-                                                          _dateController!.text,
-                                                      unit:
-                                                          _unitController!.text,
-                                                    ));
-                                                    _unitController.text =
-                                                        "256.0";
-                                                    pageNo.value = 1;
-                                                  },
-                                                  child: Text("NEXT"),
-                                                ),
-                                              if (pageNo.value == 1)
-                                                TextButton(
-                                                  style: TextButton.styleFrom(
-                                                      primary: context.textTheme
-                                                          .headline6!.color!
-                                                          .withAlpha(180)),
-                                                  onPressed: () {
-                                                    _dateController!.text =
-                                                        listBills
-                                                            .value[0].date!;
-                                                    _unitController!.text =
-                                                        listBills
-                                                            .value[0].unit!;
-                                                    listBills.value.removeAt(0);
-                                                    pageNo.value = 0;
-                                                  },
-                                                  child: Text("BACK"),
-                                                ),
-                                              if (pageNo.value == 1)
-                                                TextButton(
-                                                  style: TextButton.styleFrom(
-                                                      primary: context.textTheme
-                                                          .headline6!.color),
-                                                  onPressed: demoMode
-                                                      ? () {
-                                                          Get.back();
-                                                          Get.showSnackbar(GetBar(
-                                                              backgroundColor:
-                                                                  primaryColor,
-                                                              duration: Duration(
-                                                                  milliseconds:
-                                                                      1500),
-                                                              message:
-                                                                  "Demo Complete"));
-                                                        }
-                                                      : () async {
-                                                          loading.value = true;
-                                                          listBills.value
-                                                              .add(BillModel(
-                                                            id: 4,
-                                                            date:
-                                                                _dateController!
-                                                                    .text,
-                                                            unit:
-                                                                _unitController!
-                                                                    .text,
-                                                          ));
-                                                          var cell1 = await getWorksheet!
-                                                              .cells
-                                                              .cell(
-                                                                  row: snapshot
-                                                                          .data![
-                                                                              0]
-                                                                          .length +
-                                                                      1,
-                                                                  column: 1);
-                                                          var cell2 = await getWorksheet!
-                                                              .cells
-                                                              .cell(
-                                                                  row: snapshot
-                                                                          .data![
-                                                                              0]
-                                                                          .length +
-                                                                      1,
-                                                                  column: 2);
-                                                          var cell5 = await getWorksheet!
-                                                              .cells
-                                                              .cell(
-                                                                  row: snapshot
-                                                                          .data![
-                                                                              0]
-                                                                          .length +
-                                                                      1,
-                                                                  column: 5);
-                                                          await cell1.post(
-                                                              listBills.value[0]
-                                                                  .date);
-                                                          await cell2.post(
-                                                              listBills.value[0]
-                                                                  .unit);
-                                                          await cell5.post(
-                                                              listBills.value[1]
-                                                                  .unit);
-                                                          Get.back();
-                                                          Get.showSnackbar(GetBar(
-                                                              backgroundColor:
-                                                                  primaryColor,
-                                                              duration: Duration(
-                                                                  milliseconds:
-                                                                      1500),
-                                                              message:
-                                                                  "Succesfully added to Sheets"));
-                                                        },
-                                                  child: Text("DONE"),
-                                                ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  : snapshot.hasData && !loading.value
-                                      ? Center(
-                                          child: Text(
-                                              "NO Data Available, Configure Credentials First"))
-                                      : snapshot.connectionState !=
-                                                  ConnectionState.done ||
-                                              loading.value
-                                          ? Center(
-                                              child: CircularProgressIndicator(
-                                              valueColor:
-                                                  AlwaysStoppedAnimation<Color>(
-                                                      primaryColor),
-                                            ))
-                                          : snapshot.hasError
-                                              ? Column(
-                                                  children: [
-                                                    Text(snapshot.error
-                                                        .toString()),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                      padding: EdgeInsets.symmetric(
+                                                          vertical: 5),
+                                                      child: Text("ADD NEW BILL",
+                                                          style: context.texttheme
+                                                              .headline6)),
+                                                  Text(
+                                                      " ( ${[
+                                                        snapshot.data![1][0]
+                                                            .split(" ")[0],
+                                                        snapshot.data![4][0]
+                                                            .split(" ")[0],
+                                                      ][pageNo.value]} )",
+                                                      style: context
+                                                          .texttheme.bodyText1!
+                                                          .copyWith(fontSize: 18)),
+                                                ],
+                                              ),
+                                              SizedBox(height: 10),
+                                              customInputField(
+                                                  context,
+                                                  _dateController,
+                                                  (pageNo.value == 0
+                                                      ? true
+                                                      : false)),
+                                              SizedBox(height: 10),
+                                              customInputField(
+                                                  context, _unitController),
+                                              SizedBox(
+                                                height: 30,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.spaceEvenly,
+                                                children: [
+                                                  if (pageNo.value == 0)
                                                     TextButton(
-                                                      child: Text("Refresh"),
+                                                      style: TextButton.styleFrom(
+                                                          primary: context.textTheme
+                                                              .headline6!.color!
+                                                              .withAlpha(180)),
                                                       onPressed: () =>
-                                                          gTaskSync.value =
-                                                              setTaskAsync(),
+                                                          Navigator.pop(context),
+                                                      child: Text("CLOSE"),
+                                                    ),
+                                                  if (pageNo.value == 0)
+                                                    TextButton(
+                                                      style: TextButton.styleFrom(
+                                                          primary: context.textTheme
+                                                              .headline6!.color),
+                                                      onPressed: () {
+                                                        listBills.value
+                                                            .add(BillModel(
+                                                          id: 1,
+                                                          date:
+                                                              _dateController!.text,
+                                                          unit:
+                                                              _unitController!.text,
+                                                        ));
+                                                        _unitController.text =
+                                                            "256.0";
+                                                        pageNo.value = 1;
+                                                      },
+                                                      child: Text("NEXT"),
+                                                    ),
+                                                  if (pageNo.value == 1)
+                                                    TextButton(
+                                                      style: TextButton.styleFrom(
+                                                          primary: context.textTheme
+                                                              .headline6!.color!
+                                                              .withAlpha(180)),
+                                                      onPressed: () {
+                                                        _dateController!.text =
+                                                            listBills
+                                                                .value[0].date!;
+                                                        _unitController!.text =
+                                                            listBills
+                                                                .value[0].unit!;
+                                                        listBills.value.removeAt(0);
+                                                        pageNo.value = 0;
+                                                      },
+                                                      child: Text("BACK"),
+                                                    ),
+                                                  if (pageNo.value == 1)
+                                                    TextButton(
+                                                      style: TextButton.styleFrom(
+                                                          primary: context.textTheme
+                                                              .headline6!.color),
+                                                      onPressed: demoMode
+                                                          ? () {
+                                                              Get.back();
+                                                              Get.showSnackbar(GetBar(
+                                                                  backgroundColor:
+                                                                      primaryColor,
+                                                                  duration: Duration(
+                                                                      milliseconds:
+                                                                          1500),
+                                                                  message:
+                                                                      "Demo Complete"));
+                                                            }
+                                                          : () async {
+                                                              loading.value = true;
+                                                              listBills.value
+                                                                  .add(BillModel(
+                                                                id: 4,
+                                                                date:
+                                                                    _dateController!
+                                                                        .text,
+                                                                unit:
+                                                                    _unitController!
+                                                                        .text,
+                                                              ));
+                                                              var cell1 = await getWorksheet!
+                                                                  .cells
+                                                                  .cell(
+                                                                      row: snapshot
+                                                                              .data![
+                                                                                  0]
+                                                                              .length +
+                                                                          1,
+                                                                      column: 1);
+                                                              var cell2 = await getWorksheet!
+                                                                  .cells
+                                                                  .cell(
+                                                                      row: snapshot
+                                                                              .data![
+                                                                                  0]
+                                                                              .length +
+                                                                          1,
+                                                                      column: 2);
+                                                              var cell5 = await getWorksheet!
+                                                                  .cells
+                                                                  .cell(
+                                                                      row: snapshot
+                                                                              .data![
+                                                                                  0]
+                                                                              .length +
+                                                                          1,
+                                                                      column: 5);
+                                                              await cell1.post(
+                                                                  listBills.value[0]
+                                                                      .date);
+                                                              await cell2.post(
+                                                                  listBills.value[0]
+                                                                      .unit);
+                                                              await cell5.post(
+                                                                  listBills.value[1]
+                                                                      .unit);
+                                                              Get.back();
+                                                              Get.showSnackbar(GetBar(
+                                                                  backgroundColor:
+                                                                      primaryColor,
+                                                                  duration: Duration(
+                                                                      milliseconds:
+                                                                          1500),
+                                                                  message:
+                                                                      "Succesfully added to Sheets"));
+                                                            },
+                                                      child: Text("DONE"),
+                                                    ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      : snapshot.hasData && !loading.value
+                                          ? Center(
+                                              child: Text(
+                                                  "NO Data Available, Configure Credentials First"))
+                                          : snapshot.connectionState !=
+                                                      ConnectionState.done ||
+                                                  loading.value
+                                              ? Center(
+                                                  child: CircularProgressIndicator(
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<Color>(
+                                                          primaryColor),
+                                                ))
+                                              : snapshot.hasError
+                                                  ? Column(
+                                                      children: [
+                                                        Text(snapshot.error
+                                                            .toString()),
+                                                        TextButton(
+                                                          child: Text("Refresh"),
+                                                          onPressed: () =>
+                                                              gTaskSync.value =
+                                                                  setTaskAsync(),
+                                                        )
+                                                      ],
                                                     )
-                                                  ],
-                                                )
-                                              : Container(),
-                            ]
-                          : [
-                              Center(child: Text("You are not authenticated.")),
-                              SizedBox(height: 15),
-                              TextButton(
-                                style: TextButton.styleFrom(
-                                    primary: context.textTheme.headline6!.color!
-                                        .withAlpha(180)),
-                                onPressed: _authenticate,
-                                child: Text("Auth Now"),
-                              ),
-                            ],
-                    )),
+                                                  : Container(),
+                                ]
+                              : [
+                                  Center(child: Text("You are not authenticated.")),
+                                  SizedBox(height: 15),
+                                  TextButton(
+                                    style: TextButton.styleFrom(
+                                        primary: context.textTheme.headline6!.color!
+                                            .withAlpha(180)),
+                                    onPressed: _authenticate,
+                                    child: Text("Auth Now"),
+                                  ),
+                                ],
+                        ),
+                  ],
+                )),
               ],
             ),
           );

@@ -75,7 +75,8 @@ android/key.properties
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
 # AppDir
-*.AppDir/usr/bin/*
+*.AppDir/data/
+*.AppDir/lib/
+*.AppDir/su_bill_manager
 *.AppDir/.DirIcon
-*.AppDir/AppRun
 *-x86_64.AppImage
