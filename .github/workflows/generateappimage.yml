@@ -23,17 +23,16 @@ jobs:
               flutter config --enable-linux-desktop;
               sudo apt-get update;
               sudo apt-get install clang cmake ninja-build pkg-config libgtk-3-dev;
-              flutter doctor -v;
 
       - name: Download required resources to Generate AppImage
         uses: wei/wget@v1
         with:
-          args: -O appimagetool-x86_64.AppImage https://github.com/AppImage/AppImageKit/releases/download/12/appimagetool-x86_64.AppImage
+          args: -O appimagetool-x86_64.AppImage https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
         
       - name: Build Linux App
         run: > 
               flutter build linux;
-              cp -r build/linux/release/bundle/* SUbillManager.AppDir;
+              cp -r build/linux/release/bundle/* AppImageBrowser.AppDir || cp -r build/linux/x64/release/bundle/* AppImageBrowser.AppDir;
               sudo chmod +x appimagetool-x86_64.AppImage;
 
       - name: Generate AppImage
