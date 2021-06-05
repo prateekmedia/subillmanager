@@ -32,7 +32,7 @@ jobs:
       - name: Build Linux App
         run: > 
               flutter build linux;
-              cp -r build/linux/release/bundle/* AppImageBrowser.AppDir || cp -r build/linux/x64/release/bundle/* AppImageBrowser.AppDir;
+              cp -r build/linux/release/bundle/* SUbillManager.AppDir/ || cp -r build/linux/x64/release/bundle/* SUbillManager.AppDir/;
               sudo chmod +x appimagetool-x86_64.AppImage;
 
       - name: Generate AppImage
