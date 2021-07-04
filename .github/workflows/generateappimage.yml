@@ -1,8 +1,6 @@
 name: FlutterAppImageCI
 
-on:
-  push: {}
-  workflow_dispatch: {}
+on: [push, workflow_dispatch]
 
 jobs:
   build:
@@ -32,7 +30,7 @@ jobs:
       - name: Build Linux App
         run: > 
               flutter build linux;
-              cp -r build/linux/release/bundle/* SUbillManager.AppDir/ || cp -r build/linux/x64/release/bundle/* SUbillManager.AppDir/;
+              cp -r build/linux/release/bundle/* SUbillManager.AppDir || cp -r build/linux/x64/release/bundle/* SUbillManager.AppDir;
               sudo chmod +x appimagetool-x86_64.AppImage;
 
       - name: Generate AppImage
@@ -46,8 +44,9 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
 
-#      - name: Upload to Artifact
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: appimage-release
-#          path: subillmanager.AppImage
+      - name: Upload to Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: appimage-release
+          path: ./subillmanager.AppImage
+
