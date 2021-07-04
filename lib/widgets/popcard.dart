@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../utils.dart';
+import '../utils/utils.dart';
 
 // ignore: non_constant_identifier_names
 Widget AwesomePopCard(BuildContext context,
@@ -18,6 +18,7 @@ Widget AwesomePopCard(BuildContext context,
         height: 15,
       ));
   var listView = ListView(
+    padding: footerPadding,
     shrinkWrap: centerWidget,
     children:
         centerWidget ? [Column(children: footerChildren)] : footerChildren,
@@ -43,18 +44,15 @@ Widget AwesomePopCard(BuildContext context,
       Expanded(
         child: Container(
           color: primaryColor,
-          child: Scrollbar(
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(cardBorderRadius),
-                    topLeft: Radius.circular(cardBorderRadius)),
-                color: context.isDark ? Colors.grey[900]!.brighten(5) : grey,
-              ),
-              padding: footerPadding,
-              width: double.infinity,
-              child: centerWidget ? Center(child: listView) : listView,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(cardBorderRadius),
+                  topLeft: Radius.circular(cardBorderRadius)),
+              color: context.isDark ? Colors.grey[900]!.brighten(5) : grey,
             ),
+            width: double.infinity,
+            child: centerWidget ? Center(child: listView) : listView,
           ),
         ),
       ),

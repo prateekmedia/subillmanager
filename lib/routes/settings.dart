@@ -7,8 +7,8 @@ import 'package:hive/hive.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:universal_platform/universal_platform.dart';
-import '../utils.dart';
-import '../widgets.dart';
+import '../utils/utils.dart';
+import '../widgets/widgets.dart';
 
 GetStorage box = GetStorage();
 
@@ -79,29 +79,33 @@ class SettingsScreen extends HookWidget {
           title: Text("Clear Data"),
           onTap: () => showDialog(
             context: context,
-                      builder: (ctx)=>AlertDialog(
-                title: Text("Are you Sure?"),
-                content: Container(
-                    child: Text(
-                        "This will reset all of you data.")),
-                actions: [TextButton(
-                      style: TextButton.styleFrom(
-                          primary: context.isDarkMode ? Colors.grey[200]! : primaryColor),
-                      child: Text("CANCEL"),
-                      onPressed: Get.back,
-                    ),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                          primary: context.textTheme.bodyText2!.color),
-                      child: Text("YES"),
-                      onPressed: () {
-                  GetStorage().erase();
-                  Get.changeThemeMode(ThemeMode.system);
-                  resetData();
-                  Hive.box('DEMO').clear();
-                  Get.back();
-                      },
-                    ),],),
+            builder: (ctx) => AlertDialog(
+              title: Text("Are you Sure?"),
+              content:
+                  Container(child: Text("This will reset all of you data.")),
+              actions: [
+                TextButton(
+                  style: TextButton.styleFrom(
+                      primary: context.isDarkMode
+                          ? Colors.grey[200]!
+                          : primaryColor),
+                  child: Text("CANCEL"),
+                  onPressed: Get.back,
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                      primary: context.textTheme.bodyText2!.color),
+                  child: Text("YES"),
+                  onPressed: () {
+                    GetStorage().erase();
+                    Get.changeThemeMode(ThemeMode.system);
+                    resetData();
+                    Hive.box('DEMO').clear();
+                    Get.back();
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ],
@@ -169,6 +173,7 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
         ],
         headerMainAxisAlignment: MainAxisAlignment.start,
         centerWidget: !_authorized ? true : false,
+        footerPadding: EdgeInsets.all(15),
         footerChildren: !_authorized
             ? [
                 Text("You are not authenticated."),

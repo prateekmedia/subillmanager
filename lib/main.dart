@@ -10,9 +10,9 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hive/hive.dart';
 import 'package:universal_platform/universal_platform.dart';
 import 'package:url_strategy/url_strategy.dart';
-import 'routes.dart';
-import 'models.dart';
-import 'utils.dart';
+import 'routes/routes.dart';
+import 'models/models.dart';
+import 'utils/utils.dart';
 
 void main() async {
   setPathUrlStrategy();
@@ -122,13 +122,10 @@ class MyHomePage extends HookWidget {
               UniversalPlatform.isIOS ||
               MediaQuery.of(context).size.width < 500)
           ? BottomNavigationBar(
-              selectedItemColor:
-                  context.isDark ? primaryColor.brighten(50) : primaryColor,
-              unselectedItemColor: context.isDark
-                  ? Color(0xFF6C86A4).brighten(50).withAlpha(170)
-                  : Color(0xFF6C86A4),
-              backgroundColor:
-                  context.isDark ? Colors.grey[900]!.brighten(12) : grey,
+              selectedItemColor: Colors.white,
+              unselectedItemColor:
+                  Color(0xFF6C86A4).brighten(70).withAlpha(210),
+              backgroundColor: context.primaryColor,
               currentIndex: currentIndex.value,
               onTap: (index) {
                 currentIndex.value = index;
@@ -154,12 +151,7 @@ class MyHomePage extends HookWidget {
             getWorksheet: sheet.value,
             setTaskAsync: initSheet)),
         child: Icon(Icons.add),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular((UniversalPlatform.isAndroid ||
-                    UniversalPlatform.isIOS ||
-                    MediaQuery.of(context).size.width < 500)
-                ? 15
-                : 100)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
         elevation: (UniversalPlatform.isAndroid ||
                 UniversalPlatform.isIOS ||
                 MediaQuery.of(context).size.width < 500)
@@ -170,7 +162,7 @@ class MyHomePage extends HookWidget {
       floatingActionButtonLocation: (UniversalPlatform.isAndroid ||
               UniversalPlatform.isIOS ||
               MediaQuery.of(context).size.width < 500)
-          ? FloatingActionButtonLocation.miniCenterDocked
+          ? FloatingActionButtonLocation.miniEndDocked
           : FloatingActionButtonLocation.miniStartFloat,
     );
   }
@@ -218,7 +210,7 @@ class BottomSheet extends HookWidget {
     required Future<List<List<String>>> getTaskAsync,
     required this.setTaskAsync,
     required this.getWorksheet,
-  })   : _getTaskAsync = getTaskAsync,
+  })  : _getTaskAsync = getTaskAsync,
         super(key: key);
 
   final Future<List<List<String>>> _getTaskAsync;
@@ -266,26 +258,30 @@ class BottomSheet extends HookWidget {
         builder: (context, snapshot) {
           return SingleChildScrollView(
             child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                        constraints: BoxConstraints(maxHeight: 400),
-                        width: (UniversalPlatform.isAndroid ||
-                                UniversalPlatform.isIOS ||
-                                context.width < 500)
-                            ? context.width * 0.96
-                            : 500,
-                        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-                        decoration: BoxDecoration(
-                            color: context.isDark ? Colors.grey[900] : Colors.white,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20),
-                            )),
-                        child: Stack(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                if (demoMode) IgnorePointer(ignoring:true,child: Align(alignment: Alignment.topRight,child: Text("DEMO"))),
-                Column(
+                Container(
+                    constraints: BoxConstraints(maxHeight: 400),
+                    width: (UniversalPlatform.isAndroid ||
+                            UniversalPlatform.isIOS ||
+                            context.width < 500)
+                        ? context.width * 0.96
+                        : 500,
+                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+                    decoration: BoxDecoration(
+                        color: context.isDark ? Colors.grey[900] : Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        )),
+                    child: Stack(
+                      children: [
+                        if (demoMode)
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: Text("DEMO"),
+                          ),
+                        Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: _authorized.value
                               ? [
@@ -301,10 +297,13 @@ class BottomSheet extends HookWidget {
                                                     MainAxisAlignment.center,
                                                 children: [
                                                   Container(
-                                                      padding: EdgeInsets.symmetric(
-                                                          vertical: 5),
-                                                      child: Text("ADD NEW BILL",
-                                                          style: context.texttheme
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 5),
+                                                      child: Text(
+                                                          "ADD NEW BILL",
+                                                          style: context
+                                                              .texttheme
                                                               .headline6)),
                                                   Text(
                                                       " ( ${[
@@ -315,7 +314,8 @@ class BottomSheet extends HookWidget {
                                                       ][pageNo.value]} )",
                                                       style: context
                                                           .texttheme.bodyText1!
-                                                          .copyWith(fontSize: 18)),
+                                                          .copyWith(
+                                                              fontSize: 18)),
                                                 ],
                                               ),
                                               SizedBox(height: 10),
@@ -333,31 +333,40 @@ class BottomSheet extends HookWidget {
                                               ),
                                               Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.spaceEvenly,
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
                                                 children: [
                                                   if (pageNo.value == 0)
                                                     TextButton(
-                                                      style: TextButton.styleFrom(
-                                                          primary: context.textTheme
-                                                              .headline6!.color!
-                                                              .withAlpha(180)),
+                                                      style:
+                                                          TextButton.styleFrom(
+                                                              primary: context
+                                                                  .textTheme
+                                                                  .headline6!
+                                                                  .color!
+                                                                  .withAlpha(
+                                                                      180)),
                                                       onPressed: () =>
-                                                          Navigator.pop(context),
+                                                          Navigator.pop(
+                                                              context),
                                                       child: Text("CLOSE"),
                                                     ),
                                                   if (pageNo.value == 0)
                                                     TextButton(
-                                                      style: TextButton.styleFrom(
-                                                          primary: context.textTheme
-                                                              .headline6!.color),
+                                                      style:
+                                                          TextButton.styleFrom(
+                                                              primary: context
+                                                                  .textTheme
+                                                                  .headline6!
+                                                                  .color),
                                                       onPressed: () {
                                                         listBills.value
                                                             .add(BillModel(
                                                           id: 1,
-                                                          date:
-                                                              _dateController!.text,
-                                                          unit:
-                                                              _unitController!.text,
+                                                          date: _dateController!
+                                                              .text,
+                                                          unit: _unitController!
+                                                              .text,
                                                         ));
                                                         _unitController.text =
                                                             "256.0";
@@ -367,10 +376,14 @@ class BottomSheet extends HookWidget {
                                                     ),
                                                   if (pageNo.value == 1)
                                                     TextButton(
-                                                      style: TextButton.styleFrom(
-                                                          primary: context.textTheme
-                                                              .headline6!.color!
-                                                              .withAlpha(180)),
+                                                      style:
+                                                          TextButton.styleFrom(
+                                                              primary: context
+                                                                  .textTheme
+                                                                  .headline6!
+                                                                  .color!
+                                                                  .withAlpha(
+                                                                      180)),
                                                       onPressed: () {
                                                         _dateController!.text =
                                                             listBills
@@ -378,16 +391,20 @@ class BottomSheet extends HookWidget {
                                                         _unitController!.text =
                                                             listBills
                                                                 .value[0].unit!;
-                                                        listBills.value.removeAt(0);
+                                                        listBills.value
+                                                            .removeAt(0);
                                                         pageNo.value = 0;
                                                       },
                                                       child: Text("BACK"),
                                                     ),
                                                   if (pageNo.value == 1)
                                                     TextButton(
-                                                      style: TextButton.styleFrom(
-                                                          primary: context.textTheme
-                                                              .headline6!.color),
+                                                      style:
+                                                          TextButton.styleFrom(
+                                                              primary: context
+                                                                  .textTheme
+                                                                  .headline6!
+                                                                  .color),
                                                       onPressed: demoMode
                                                           ? () {
                                                               Get.back();
@@ -401,9 +418,11 @@ class BottomSheet extends HookWidget {
                                                                       "Demo Complete"));
                                                             }
                                                           : () async {
-                                                              loading.value = true;
+                                                              loading.value =
+                                                                  true;
                                                               listBills.value
-                                                                  .add(BillModel(
+                                                                  .add(
+                                                                      BillModel(
                                                                 id: 4,
                                                                 date:
                                                                     _dateController!
@@ -412,41 +431,38 @@ class BottomSheet extends HookWidget {
                                                                     _unitController!
                                                                         .text,
                                                               ));
-                                                              var cell1 = await getWorksheet!
-                                                                  .cells
-                                                                  .cell(
-                                                                      row: snapshot
-                                                                              .data![
-                                                                                  0]
-                                                                              .length +
-                                                                          1,
-                                                                      column: 1);
-                                                              var cell2 = await getWorksheet!
-                                                                  .cells
-                                                                  .cell(
-                                                                      row: snapshot
-                                                                              .data![
-                                                                                  0]
-                                                                              .length +
-                                                                          1,
-                                                                      column: 2);
-                                                              var cell5 = await getWorksheet!
-                                                                  .cells
-                                                                  .cell(
-                                                                      row: snapshot
-                                                                              .data![
-                                                                                  0]
-                                                                              .length +
-                                                                          1,
-                                                                      column: 5);
+                                                              var cell1 = await getWorksheet!.cells.cell(
+                                                                  row: snapshot
+                                                                          .data![
+                                                                              0]
+                                                                          .length +
+                                                                      1,
+                                                                  column: 1);
+                                                              var cell2 = await getWorksheet!.cells.cell(
+                                                                  row: snapshot
+                                                                          .data![
+                                                                              0]
+                                                                          .length +
+                                                                      1,
+                                                                  column: 2);
+                                                              var cell5 = await getWorksheet!.cells.cell(
+                                                                  row: snapshot
+                                                                          .data![
+                                                                              0]
+                                                                          .length +
+                                                                      1,
+                                                                  column: 5);
                                                               await cell1.post(
-                                                                  listBills.value[0]
+                                                                  listBills
+                                                                      .value[0]
                                                                       .date);
                                                               await cell2.post(
-                                                                  listBills.value[0]
+                                                                  listBills
+                                                                      .value[0]
                                                                       .unit);
                                                               await cell5.post(
-                                                                  listBills.value[1]
+                                                                  listBills
+                                                                      .value[1]
                                                                       .unit);
                                                               Get.back();
                                                               Get.showSnackbar(GetBar(
@@ -473,10 +489,11 @@ class BottomSheet extends HookWidget {
                                                       ConnectionState.done ||
                                                   loading.value
                                               ? Center(
-                                                  child: CircularProgressIndicator(
+                                                  child:
+                                                      CircularProgressIndicator(
                                                   valueColor:
-                                                      AlwaysStoppedAnimation<Color>(
-                                                          primaryColor),
+                                                      AlwaysStoppedAnimation<
+                                                          Color>(primaryColor),
                                                 ))
                                               : snapshot.hasError
                                                   ? Column(
@@ -484,7 +501,8 @@ class BottomSheet extends HookWidget {
                                                         Text(snapshot.error
                                                             .toString()),
                                                         TextButton(
-                                                          child: Text("Refresh"),
+                                                          child:
+                                                              Text("Refresh"),
                                                           onPressed: () =>
                                                               gTaskSync.value =
                                                                   setTaskAsync(),
@@ -494,19 +512,22 @@ class BottomSheet extends HookWidget {
                                                   : Container(),
                                 ]
                               : [
-                                  Center(child: Text("You are not authenticated.")),
+                                  Center(
+                                      child:
+                                          Text("You are not authenticated.")),
                                   SizedBox(height: 15),
                                   TextButton(
                                     style: TextButton.styleFrom(
-                                        primary: context.textTheme.headline6!.color!
+                                        primary: context
+                                            .textTheme.headline6!.color!
                                             .withAlpha(180)),
                                     onPressed: _authenticate,
                                     child: Text("Auth Now"),
                                   ),
                                 ],
                         ),
-                  ],
-                )),
+                      ],
+                    )),
               ],
             ),
           );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../utils.dart';
+import '../utils/utils.dart';
 
 // ignore: non_constant_identifier_names
 Widget AwesomeListTile(
@@ -26,7 +26,8 @@ Widget AwesomeListTile(
                 ),
                 child: Icon(
                   icon,
-                  color: context.isDark ? primaryColor.brighten(70) : primaryColor,
+                  color:
+                      context.isDark ? primaryColor.brighten(70) : primaryColor,
                 ),
               ),
             ],
@@ -35,17 +36,21 @@ Widget AwesomeListTile(
             title!,
             style: TextStyle(
                 fontWeight: FontWeight.w600,
-                color: context.isDark ? primaryColor.brighten(75) : primaryColor),
+                color:
+                    context.isDark ? primaryColor.brighten(75) : primaryColor),
           ),
           subtitle: Text(
             subtitle!,
-            style: TextStyle(color: context.isDark ? primaryColor.brighten(75) : primaryColor),
+            style: TextStyle(
+                color:
+                    context.isDark ? primaryColor.brighten(75) : primaryColor),
           ),
           trailing: Text(
             trailing!,
             style: TextStyle(
                 fontWeight: FontWeight.w600,
-                color: context.isDark ? primaryColor.brighten(75) : primaryColor,
+                color:
+                    context.isDark ? primaryColor.brighten(75) : primaryColor,
                 fontSize: 18),
           ),
           contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),

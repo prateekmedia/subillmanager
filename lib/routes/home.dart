@@ -3,8 +3,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hive/hive.dart';
-import '../utils.dart';
-import '../widgets.dart';
+import '../utils/utils.dart';
+import '../widgets/widgets.dart';
 
 class HomeScreen extends StatefulHookWidget {
   final Future<List<List<String>>> getTaskAsync;
@@ -267,7 +267,9 @@ class _HomeScreenState extends State<HomeScreen>
                     SizedBox(height: 25),
                   ]
                 : snapshot.hasData
-                    ? [Text("NO Data Available, Configure Credentials First")]
+                    ? [
+                        Text("NO Data Available, Configure Credentials First"),
+                      ]
                     : snapshot.connectionState != ConnectionState.done
                         ? [
                             CircularProgressIndicator(
