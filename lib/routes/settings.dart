@@ -120,16 +120,19 @@ class ConfigureCredentials extends StatefulWidget {
 
 class _ConfigureCredentialsState extends State<ConfigureCredentials> {
   final LocalAuthentication auth = LocalAuthentication();
+  bool _authorized = false;
+
   Future<void> _authenticate() async {
-    bool authenticated = false;
+    bool authenticated = _authorized;
     if (UniversalPlatform.isWeb)
       authenticated = true;
     else {
       try {
-        authenticated = await auth.authenticate(
-            localizedReason: 'Scan your fingerprint to Update Credentials',
-            useErrorDialogs: true,
-            stickyAuth: true);
+        if (!authenticated)
+          authenticated = await auth.authenticate(
+              localizedReason: 'Scan your fingerprint to Update Credentials',
+              useErrorDialogs: true,
+              stickyAuth: true);
         if (!mounted) return;
       } on PlatformException catch (_) {
         authenticated = true;
@@ -140,7 +143,6 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
     setState(() => _authorized = authenticated);
   }
 
-  bool _authorized = false;
   @override
   void initState() {
     _authenticate();

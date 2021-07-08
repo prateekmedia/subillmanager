@@ -231,15 +231,16 @@ class BottomSheet extends HookWidget {
     final _authorized = useState<bool>(false);
     var gTaskSync = useState(useMemoized(() => _getTaskAsync));
     Future<void> _authenticate() async {
-      bool authenticated = false;
+      bool authenticated = _authorized.value;
       if (UniversalPlatform.isWeb)
         authenticated = true;
       else {
         try {
-          authenticated = await auth.authenticate(
-              localizedReason: 'Scan your fingerprint to Add a Field',
-              useErrorDialogs: true,
-              stickyAuth: true);
+          if (!authenticated)
+            authenticated = await auth.authenticate(
+                localizedReason: 'Scan your fingerprint to Add a Field',
+                useErrorDialogs: true,
+                stickyAuth: true);
         } on PlatformException catch (_) {
           authenticated = true;
         }
