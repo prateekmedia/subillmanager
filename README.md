@@ -15,20 +15,20 @@
 ![](https://user-images.githubusercontent.com/41370460/108590502-e84ce780-7389-11eb-8ee5-0b83a8bf8a58.png)
 
 
-### Direct AppImage Download 
+### Direct Download 
 <a href="https://github.com/prateekmedia/suBillManager/releases/latest/"><img src="https://img.shields.io/badge/Download from Github-indigo?style=for-the-badge&logo=Github"/></a>
 
 ---
 
 ### Build from source
 
-- Download latest Flutter SDK (Currently Supported is 2.0.5)
-- Clone this repo and then 
+- Download latest Flutter SDK (>=2.2.3)
+- Clone this repo and then for building
 
-```
-# Download dependencies and Enable Linux support
-$ flutter pub get; flutter config --enable-linux-desktop
+```bash
+# Download dependencies
+$ flutter pub get; flutter create .
 
 # For Direct Testing
-$ flutter run -v -d linux
+$ flutter build <windows/apk/linux>
 ```

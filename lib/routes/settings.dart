@@ -133,7 +133,6 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
               localizedReason: 'Scan your fingerprint to Update Credentials',
               useErrorDialogs: true,
               stickyAuth: true);
-        if (!mounted) return;
       } on PlatformException catch (_) {
         authenticated = true;
       }
