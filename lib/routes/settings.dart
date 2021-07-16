@@ -128,11 +128,12 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
       authenticated = true;
     else {
       try {
-        if (!authenticated)
+        if (!authenticated) {
           authenticated = await auth.authenticate(
-              localizedReason: 'Scan your fingerprint to Update Credentials',
+              localizedReason: 'Authenticate to Update Credentials',
               useErrorDialogs: true,
               stickyAuth: true);
+        }
       } on PlatformException catch (_) {
         authenticated = true;
       }

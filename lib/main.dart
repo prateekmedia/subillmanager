@@ -236,11 +236,12 @@ class BottomSheet extends HookWidget {
         authenticated = true;
       else {
         try {
-          if (!authenticated)
+          if (!authenticated) {
             authenticated = await auth.authenticate(
-                localizedReason: 'Scan your fingerprint to Add a Field',
+                localizedReason: 'Authenticate to Add a Field',
                 useErrorDialogs: true,
                 stickyAuth: true);
+          }
         } on PlatformException catch (_) {
           authenticated = true;
         }
@@ -252,6 +253,7 @@ class BottomSheet extends HookWidget {
     if (!_authorized.value) _authenticate();
     bool demoMode = GetStorage().read("demo");
     final loading = useState<bool>(false);
+    gTaskSync.value = setTaskAsync();
 
     return FutureBuilder<List>(
         future:
