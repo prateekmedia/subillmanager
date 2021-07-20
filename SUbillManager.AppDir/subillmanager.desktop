@@ -1,9 +1,10 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Terminal=false
 Name=SUbillManager
 Comment=A simple Bill Manager
-Exec=su_bill_manager %u
+Exec=subillmanager
 Icon=subillmanager
+Terminal=false
+StartupNotify=false
 Categories=Office;Finance;

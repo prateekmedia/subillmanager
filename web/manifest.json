@@ -1,6 +1,6 @@
 {
-    "name": "su_bill_manager",
-    "short_name": "su_bill_manager",
+    "name": "subillmanager",
+    "short_name": "subillmanager",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

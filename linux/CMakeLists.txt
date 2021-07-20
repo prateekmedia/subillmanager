@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 project(runner LANGUAGES CXX)
 
-set(BINARY_NAME "su_bill_manager")
-set(APPLICATION_ID "com.psu.su_bill_manager")
+set(BINARY_NAME "subillmanager")
+set(APPLICATION_ID "com.psu.subillmanager")
 
 cmake_policy(SET CMP0063 NEW)
 

@@ -77,6 +77,6 @@ android/key.properties
 # AppDir
 *.AppDir/data/
 *.AppDir/lib/
-*.AppDir/su_bill_manager
+*.AppDir/subillmanager
 *.AppDir/.DirIcon
 *-x86_64.AppImage
