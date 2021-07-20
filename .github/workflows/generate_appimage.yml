@@ -30,11 +30,17 @@ jobs:
       - name: Build Linux App
         run: >
           flutter build linux;
-          cp -r build/linux/x64/release/bundle/* SUbillManager.AppDir;
           sudo chmod +x appimagetool-x86_64.AppImage SUbillManager.AppDir/AppRun;
 
-      - name: Generate AppImage
-        run: ARCH=x86_64 ./appimagetool-x86_64.AppImage SUbillManager.AppDir/ subillmanager-x86_64.AppImage
+      - name: Generate AppImage (x86)
+        run: >
+          cp -r build/linux/x64/release/bundle/* SUbillManager.AppDir;
+          ARCH=x86_64 ./appimagetool-x86_64.AppImage SUbillManager.AppDir/ subillmanager-x86_64.AppImage
+
+      - name: Generate AppImage (arm64)
+        run: >
+          cp -r build/linux/arm64/release/bundle/* SUbillManager.AppDir;
+          ARCH=x86_64 ./appimagetool-x86_64.AppImage SUbillManager.AppDir/ subillmanager-arm64.AppImage
 
       - name: Upload files to a GitHub release
         uses: svenstaro/upload-release-action@2.2.1
@@ -44,8 +50,15 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
 
-      - name: Upload to Artifact
-        uses: actions/upload-artifact@v2
+      - name: Upload files to a GitHub release
+        uses: svenstaro/upload-release-action@2.2.1
         with:
-          name: appimage-release
-          path: ./subillmanager-x86_64.AppImage
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: subillmanager-arm64.AppImage
+          tag: ${{ github.ref }}
+          overwrite: true
+      # - name: Upload to Artifact
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: appimage-release
+      #     path: ./subillmanager-x86_64.AppImage
