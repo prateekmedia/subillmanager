@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 
@@ -13,22 +15,24 @@ Widget AwesomePopCard(BuildContext context,
     EdgeInsets footerPadding = const EdgeInsets.symmetric(horizontal: 15),
     bool centerWidget = true,
     String tag = "random"}) {
-  headerChildren.addAll([
-    MinimizeWindowButton(
-      colors: WindowButtonColors(
-          iconNormal: context.isDark ? Colors.white : Colors.black),
-    ),
-    MaximizeWindowButton(
-      colors: WindowButtonColors(
-          iconNormal: context.isDark ? Colors.white : Colors.black),
-    ),
-    CloseWindowButton(
-      colors: WindowButtonColors(
-        iconNormal: context.isDark ? Colors.white : Colors.black,
-        mouseOver: Colors.red,
+  if (Platform.isLinux) {
+    headerChildren.addAll([
+      MinimizeWindowButton(
+        colors: WindowButtonColors(
+            iconNormal: context.isDark ? Colors.white : Colors.black),
       ),
-    )
-  ]);
+      MaximizeWindowButton(
+        colors: WindowButtonColors(
+            iconNormal: context.isDark ? Colors.white : Colors.black),
+      ),
+      CloseWindowButton(
+        colors: WindowButtonColors(
+          iconNormal: context.isDark ? Colors.white : Colors.black,
+          mouseOver: Colors.red,
+        ),
+      )
+    ]);
+  }
   footerChildren.insert(
       0,
       const SizedBox(

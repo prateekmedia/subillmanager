@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,14 +23,16 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox('DEMO');
   runApp(const MyApp());
-  doWhenWindowReady(() {
-    final win = appWindow;
-    const initialSize = Size(1280, 720);
-    win.size = initialSize;
-    win.alignment = Alignment.center;
-    win.title = "SUbillManager";
-    win.show();
-  });
+  if (Platform.isLinux) {
+    doWhenWindowReady(() {
+      final win = appWindow;
+      const initialSize = Size(1280, 720);
+      win.size = initialSize;
+      win.alignment = Alignment.center;
+      win.title = "SUbillManager";
+      win.show();
+    });
+  }
 }
 
 class MyApp extends StatelessWidget {
