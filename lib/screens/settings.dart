@@ -28,6 +28,7 @@ class SettingsScreen extends HookWidget {
               style: context.texttheme.headline6!
                   .copyWith(color: Colors.white, fontWeight: FontWeight.w600)),
         ),
+        Expanded(child: Container()),
       ],
       centerWidget: false,
       footerChildren: [
@@ -174,6 +175,7 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
                 style: context.texttheme.headline6!.copyWith(
                     color: Colors.white, fontWeight: FontWeight.w600)),
           ),
+          Expanded(child: Container()),
         ],
         headerMainAxisAlignment: MainAxisAlignment.start,
         centerWidget: !_authorized ? true : false,

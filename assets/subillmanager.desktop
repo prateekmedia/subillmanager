@@ -6,5 +6,6 @@ Comment=A simple Bill Manager
 Exec=subillmanager
 Icon=subillmanager
 Terminal=false
+StartupWMClass=subillmanager
 StartupNotify=false
 Categories=Office;Finance;
