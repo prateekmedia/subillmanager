@@ -1,4 +1,4 @@
-<p align="center"><img height=100 src="https://user-images.githubusercontent.com/41370460/107151516-f9a8f380-6988-11eb-95bf-396b927b44a6.png"/></p>
+<p align="center"><img src="https://raw.githubusercontent.com/prateekmedia/subillmanager/main/assets/subillmanager.png" height=80px/></p>
 
 
 <h2 align="center">SUbillManager</h2>
@@ -16,7 +16,7 @@
 
 
 ### Direct Download 
-<a href="https://github.com/prateekmedia/suBillManager/releases/latest/"><img src="https://img.shields.io/badge/Download from Github-indigo?style=for-the-badge&logo=Github"/></a>
+<a href="https://github.com/prateekmedia/subillmanager/releases/latest/"><img src="https://img.shields.io/badge/Download from Github-indigo?style=for-the-badge&logo=Github"/></a>
 
 ---
 

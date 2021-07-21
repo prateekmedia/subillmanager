@@ -10,6 +10,7 @@
 .history
 .svn/
 .*hidden*
+*.hide*
 
 # IntelliJ related
 *.iml
@@ -19,6 +20,11 @@
 
 # Visual Studio Code related
 .vscode/
+
+# AppImage Related
+*AppDir/*
+!*AppDir/AppRun
+*AppImage
 
 # Flutter/Dart/Pub related
 **/doc/api/
@@ -73,10 +79,3 @@ android/key.properties
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
-
-# AppDir
-*.AppDir/data/
-*.AppDir/lib/
-*.AppDir/subillmanager
-*.AppDir/.DirIcon
-*-x86_64.AppImage
