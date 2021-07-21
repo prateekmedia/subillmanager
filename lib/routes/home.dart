@@ -10,7 +10,8 @@ class HomeScreen extends StatefulHookWidget {
   final Future<List<List<String>>> getTaskAsync;
   final Future<List<List<String>>> Function() setTaskAsync;
 
-  HomeScreen(this.getTaskAsync, this.setTaskAsync);
+  const HomeScreen(this.getTaskAsync, this.setTaskAsync, {Key? key})
+      : super(key: key);
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -28,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen>
     return FutureBuilder<List>(
         future: demoMode ? Future.value(demoM) : gTaskSync.value,
         builder: (context, snapshot) {
-          bool hasData = snapshot.hasData && snapshot.data!.length > 0;
+          bool hasData = snapshot.hasData && snapshot.data!.isNotEmpty;
           return AwesomePopCard(
             context,
             headerChildren: [
@@ -56,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen>
                 children: [
                   if (demoMode)
                     IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.developer_mode,
                         color: Colors.white,
                       ),
@@ -70,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen>
                     ),
                   if (!demoMode)
                     IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.refresh,
                         color: Colors.white,
                       ),
@@ -83,12 +84,13 @@ class _HomeScreenState extends State<HomeScreen>
                         gTaskSync.value = widget.setTaskAsync();
                       },
                     ),
-                  SizedBox(width: 20),
+                  const SizedBox(width: 20),
                   if (hasData &&
                       !demoMode &&
-                      !DeepCollectionEquality().equals(snapshot.data, demoM))
+                      !const DeepCollectionEquality()
+                          .equals(snapshot.data, demoM))
                     IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.check,
                         color: Colors.white,
                       ),
@@ -103,10 +105,10 @@ class _HomeScreenState extends State<HomeScreen>
                     ),
                   if (!demoMode &&
                       (!hasData ||
-                          DeepCollectionEquality()
+                          const DeepCollectionEquality()
                               .equals(snapshot.data, demoM)))
                     IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.center_focus_strong_outlined,
                         color: Colors.white,
                       ),
@@ -141,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen>
                         ),
                       ],
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Row(
                       children: [
                         TextButton(
@@ -154,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen>
                                           : primaryColor
                                       : Colors.grey)),
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         TextButton(
                           onPressed: () => showOnly.value = 1,
                           child: Text(snapshot.data![1][0].split(" ")[0],
@@ -165,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen>
                                           : primaryColor
                                       : Colors.grey)),
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         TextButton(
                           onPressed: () => showOnly.value = 2,
                           child: Text(snapshot.data![4][0].split(" ")[0],
@@ -178,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen>
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     for (int i = 0; i < snapshot.data![0].length - 1; i++)
                       AwesomeMonthBill(
                         context,
@@ -206,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen>
                                         "0.0"
                                     : true,
                         children: [
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5),
@@ -261,14 +263,15 @@ class _HomeScreenState extends State<HomeScreen>
                                 ),
                             ]),
                           ),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                         ],
                       ),
-                    SizedBox(height: 25),
+                    const SizedBox(height: 25),
                   ]
                 : snapshot.hasData
                     ? [
-                        Text("NO Data Available, Configure Credentials First"),
+                        const Text(
+                            "NO Data Available, Configure Credentials First"),
                       ]
                     : snapshot.connectionState != ConnectionState.done
                         ? [

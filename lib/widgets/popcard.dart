@@ -14,7 +14,7 @@ Widget AwesomePopCard(BuildContext context,
     String tag = "random"}) {
   footerChildren.insert(
       0,
-      SizedBox(
+      const SizedBox(
         height: 15,
       ));
   var listView = ListView(
@@ -22,7 +22,7 @@ Widget AwesomePopCard(BuildContext context,
     shrinkWrap: centerWidget,
     children:
         centerWidget ? [Column(children: footerChildren)] : footerChildren,
-    physics: BouncingScrollPhysics(),
+    physics: const BouncingScrollPhysics(),
   );
   return Column(
     children: [
@@ -32,7 +32,7 @@ Widget AwesomePopCard(BuildContext context,
           type: MaterialType.transparency,
           child: Container(
             color: primaryColor,
-            padding: EdgeInsets.fromLTRB(10, 40, 10, 20),
+            padding: const EdgeInsets.fromLTRB(10, 40, 10, 20),
             child: Row(
               mainAxisAlignment: headerMainAxisAlignment,
               crossAxisAlignment: headerCrossAxisAlignment,

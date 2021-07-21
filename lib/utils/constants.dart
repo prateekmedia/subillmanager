@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 MaterialColor primarySwatch = Colors.indigo;
 Color primaryColor = Colors.indigo;
-Color grey = Color(0xFFF9F9FC);
+const Color grey = Color(0xFFF9F9FC);
 
 List<List<String>> demoData = [
   [

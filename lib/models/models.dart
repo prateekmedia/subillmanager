@@ -1,1 +1,1 @@
-export 'addBillModel.dart';
+export 'add_bill_model.dart';

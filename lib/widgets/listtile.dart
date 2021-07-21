@@ -19,9 +19,11 @@ Widget AwesomeListTile(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: context.isDark ? Color(0xFF4F4F4F) : Color(0xFFF4F4F4),
+                  color: context.isDark
+                      ? const Color(0xFF4F4F4F)
+                      : const Color(0xFFF4F4F4),
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child: Icon(
@@ -53,7 +55,8 @@ Widget AwesomeListTile(
                     context.isDark ? primaryColor.brighten(75) : primaryColor,
                 fontSize: 18),
           ),
-          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         )
       : Container();
 }

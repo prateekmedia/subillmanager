@@ -13,6 +13,7 @@ import '../widgets/widgets.dart';
 GetStorage box = GetStorage();
 
 class SettingsScreen extends HookWidget {
+  const SettingsScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     var demo = useState(box.read("demo"));
@@ -22,7 +23,7 @@ class SettingsScreen extends HookWidget {
       tag: "header",
       headerChildren: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Text("Settings",
               style: context.texttheme.headline6!
                   .copyWith(color: Colors.white, fontWeight: FontWeight.w600)),
@@ -31,17 +32,18 @@ class SettingsScreen extends HookWidget {
       centerWidget: false,
       footerChildren: [
         ListTile(
-          leading: Icon(Icons.data_usage),
-          title: Text("Update Credentials"),
-          trailing: Icon(Icons.chevron_right),
+          leading: const Icon(Icons.data_usage),
+          title: const Text("Update Credentials"),
+          trailing: const Icon(Icons.chevron_right),
           onTap: () => Navigator.push(
             context,
-            CupertinoPageRoute(builder: (context) => ConfigureCredentials()),
+            CupertinoPageRoute(
+                builder: (context) => const ConfigureCredentials()),
           ),
         ),
         ListTile(
-          title: Text("Dark Mode"),
-          leading: Icon(Icons.nightlight_round),
+          title: const Text("Dark Mode"),
+          leading: const Icon(Icons.nightlight_round),
           trailing: CupertinoSwitch(
             value: context.isDark,
             activeColor: primaryColor.brighten(20),
@@ -60,7 +62,7 @@ class SettingsScreen extends HookWidget {
         ListTile(
           title: Text(
               demoD.isEmpty || demoD == demoData ? "Demo Mode" : "Cache Mode"),
-          leading: Icon(Icons.developer_mode_outlined),
+          leading: const Icon(Icons.developer_mode_outlined),
           trailing: CupertinoSwitch(
             value: demo.value,
             activeColor: primaryColor.brighten(20),
@@ -75,27 +77,26 @@ class SettingsScreen extends HookWidget {
           },
         ),
         ListTile(
-          leading: Icon(Icons.remove_from_queue),
-          title: Text("Clear Data"),
+          leading: const Icon(Icons.remove_from_queue),
+          title: const Text("Clear Data"),
           onTap: () => showDialog(
             context: context,
             builder: (ctx) => AlertDialog(
-              title: Text("Are you Sure?"),
-              content:
-                  Container(child: Text("This will reset all of you data.")),
+              title: const Text("Are you Sure?"),
+              content: const Text("This will reset all of you data."),
               actions: [
                 TextButton(
                   style: TextButton.styleFrom(
                       primary: context.isDarkMode
                           ? Colors.grey[200]!
                           : primaryColor),
-                  child: Text("CANCEL"),
+                  child: const Text("CANCEL"),
                   onPressed: Get.back,
                 ),
                 TextButton(
                   style: TextButton.styleFrom(
                       primary: context.textTheme.bodyText2!.color),
-                  child: Text("YES"),
+                  child: const Text("YES"),
                   onPressed: () {
                     GetStorage().erase();
                     Get.changeThemeMode(ThemeMode.system);
@@ -114,6 +115,7 @@ class SettingsScreen extends HookWidget {
 }
 
 class ConfigureCredentials extends StatefulWidget {
+  const ConfigureCredentials({Key? key}) : super(key: key);
   @override
   _ConfigureCredentialsState createState() => _ConfigureCredentialsState();
 }
@@ -124,9 +126,9 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
 
   Future<void> _authenticate() async {
     bool authenticated = _authorized;
-    if (UniversalPlatform.isWeb)
+    if (UniversalPlatform.isWeb) {
       authenticated = true;
-    else {
+    } else {
       try {
         if (!authenticated) {
           authenticated = await auth.authenticate(
@@ -161,13 +163,13 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
         headerChildren: [
           IconButton(
             onPressed: () => Navigator.pop(context),
-            icon: Icon(
+            icon: const Icon(
               Icons.chevron_left,
               color: Colors.white,
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text("Update Credentials",
                 style: context.texttheme.headline6!.copyWith(
                     color: Colors.white, fontWeight: FontWeight.w600)),
@@ -175,10 +177,10 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
         ],
         headerMainAxisAlignment: MainAxisAlignment.start,
         centerWidget: !_authorized ? true : false,
-        footerPadding: EdgeInsets.all(15),
+        footerPadding: const EdgeInsets.all(15),
         footerChildren: !_authorized
             ? [
-                Text("You are not authenticated."),
+                const Text("You are not authenticated."),
               ]
             : [
                 Form(
@@ -187,16 +189,16 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Spreadsheet ID"),
+                      const Text("Spreadsheet ID"),
                       TextFormField(
                         controller: spreadID,
-                        decoration: InputDecoration(),
+                        decoration: const InputDecoration(),
                       ),
-                      SizedBox(height: 50),
-                      Text("Google Client ID"),
+                      const SizedBox(height: 50),
+                      const Text("Google Client ID"),
                       TextFormField(
                         controller: googleID,
-                        decoration: InputDecoration(),
+                        decoration: const InputDecoration(),
                         maxLines: null,
                       ),
                     ],
@@ -207,10 +209,12 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _authorized
             ? () {
-                if (spreadID.text.trim().length > 0)
+                if (spreadID.text.trim().isNotEmpty) {
                   box.write("spreadID", spreadID.text);
-                if (googleID.text.trim().length > 0)
+                }
+                if (googleID.text.trim().isNotEmpty) {
                   box.write("googleID", googleID.text);
+                }
                 Navigator.pop(context);
               }
             : _authenticate,

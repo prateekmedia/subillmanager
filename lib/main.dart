@@ -19,10 +19,11 @@ void main() async {
   await GetStorage.init();
   await Hive.initFlutter();
   await Hive.openBox('DEMO');
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     resetData();
@@ -65,13 +66,15 @@ class MyHomePage extends HookWidget {
   late GSheets gsheets;
   late Spreadsheet ss;
 
+  MyHomePage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final sheet = useState<Worksheet?>(null);
     Future<List<List<String>>> initSheet() async {
       _credentials = box.read("googleID");
       _spreadsheetId = box.read("spreadID");
-      if (_credentials != null && _credentials!.trim().length > 0) {
+      if (_credentials != null && _credentials!.trim().isNotEmpty) {
         gsheets = GSheets(_credentials);
 
         // fetch spreadsheet by its id
@@ -98,7 +101,7 @@ class MyHomePage extends HookWidget {
               onDestinationSelected: (int index) {
                 currentIndex.value = index;
                 _pageController!.animateToPage(index,
-                    duration: Duration(milliseconds: 150),
+                    duration: const Duration(milliseconds: 150),
                     curve: Curves.fastLinearToSlowEaseIn);
               },
               labelType: NavigationRailLabelType.selected,
@@ -124,16 +127,16 @@ class MyHomePage extends HookWidget {
           ? BottomNavigationBar(
               selectedItemColor: Colors.white,
               unselectedItemColor:
-                  Color(0xFF6C86A4).brighten(70).withAlpha(210),
+                  const Color(0xFF6C86A4).brighten(70).withAlpha(210),
               backgroundColor: context.primaryColor,
               currentIndex: currentIndex.value,
               onTap: (index) {
                 currentIndex.value = index;
                 _pageController!.animateToPage(index,
-                    duration: Duration(milliseconds: 150),
+                    duration: const Duration(milliseconds: 150),
                     curve: Curves.easeOut);
               },
-              items: [
+              items: const [
                 BottomNavigationBarItem(
                     icon: Icon(Icons.account_balance_outlined),
                     activeIcon: Icon(Icons.account_balance),
@@ -150,7 +153,7 @@ class MyHomePage extends HookWidget {
             getTaskAsync: _getTaskAsync,
             getWorksheet: sheet.value,
             setTaskAsync: initSheet)),
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
         elevation: (UniversalPlatform.isAndroid ||
                 UniversalPlatform.isIOS ||
@@ -170,7 +173,8 @@ class MyHomePage extends HookWidget {
   NavigationRailDestination navRailDestColor(BuildContext context,
       {IconData? icon, IconData? activeIcon, required String label}) {
     return NavigationRailDestination(
-      icon: Icon(icon, color: Color(0xFF6C86A4).brighten(70).withAlpha(210)),
+      icon: Icon(icon,
+          color: const Color(0xFF6C86A4).brighten(70).withAlpha(210)),
       selectedIcon: Icon(
         activeIcon,
         color: primaryColor.brighten(90),
@@ -196,9 +200,9 @@ class MyHomePage extends HookWidget {
         children: [
           HomeScreen(_getTaskAsync,
               initSheet as Future<List<List<String>>> Function()),
-          SettingsScreen(),
+          const SettingsScreen(),
         ],
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
       ),
     );
   }
@@ -232,9 +236,9 @@ class BottomSheet extends HookWidget {
     var gTaskSync = useState(useMemoized(() => _getTaskAsync));
     Future<void> _authenticate() async {
       bool authenticated = _authorized.value;
-      if (UniversalPlatform.isWeb)
+      if (UniversalPlatform.isWeb) {
         authenticated = true;
-      else {
+      } else {
         try {
           if (!authenticated) {
             authenticated = await auth.authenticate(
@@ -264,23 +268,24 @@ class BottomSheet extends HookWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                    constraints: BoxConstraints(maxHeight: 400),
+                    constraints: const BoxConstraints(maxHeight: 400),
                     width: (UniversalPlatform.isAndroid ||
                             UniversalPlatform.isIOS ||
                             context.width < 500)
                         ? context.width * 0.96
                         : 500,
-                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 20, horizontal: 40),
                     decoration: BoxDecoration(
                         color: context.isDark ? Colors.grey[900] : Colors.white,
-                        borderRadius: BorderRadius.only(
+                        borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(20),
                           topRight: Radius.circular(20),
                         )),
                     child: Stack(
                       children: [
                         if (demoMode)
-                          Align(
+                          const Align(
                             alignment: Alignment.topRight,
                             child: Text("DEMO"),
                           ),
@@ -290,7 +295,7 @@ class BottomSheet extends HookWidget {
                               ? [
                                   !loading.value &&
                                           snapshot.hasData &&
-                                          snapshot.data!.length > 0
+                                          snapshot.data!.isNotEmpty
                                       ? Form(
                                           key: _formKey,
                                           child: Column(
@@ -300,9 +305,9 @@ class BottomSheet extends HookWidget {
                                                     MainAxisAlignment.center,
                                                 children: [
                                                   Container(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              vertical: 5),
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 5),
                                                       child: Text(
                                                           "ADD NEW BILL",
                                                           style: context
@@ -321,17 +326,17 @@ class BottomSheet extends HookWidget {
                                                               fontSize: 18)),
                                                 ],
                                               ),
-                                              SizedBox(height: 10),
+                                              const SizedBox(height: 10),
                                               customInputField(
                                                   context,
                                                   _dateController,
                                                   (pageNo.value == 0
                                                       ? true
                                                       : false)),
-                                              SizedBox(height: 10),
+                                              const SizedBox(height: 10),
                                               customInputField(
                                                   context, _unitController),
-                                              SizedBox(
+                                              const SizedBox(
                                                 height: 30,
                                               ),
                                               Row(
@@ -352,7 +357,8 @@ class BottomSheet extends HookWidget {
                                                       onPressed: () =>
                                                           Navigator.pop(
                                                               context),
-                                                      child: Text("CLOSE"),
+                                                      child:
+                                                          const Text("CLOSE"),
                                                     ),
                                                   if (pageNo.value == 0)
                                                     TextButton(
@@ -375,7 +381,7 @@ class BottomSheet extends HookWidget {
                                                             "256.0";
                                                         pageNo.value = 1;
                                                       },
-                                                      child: Text("NEXT"),
+                                                      child: const Text("NEXT"),
                                                     ),
                                                   if (pageNo.value == 1)
                                                     TextButton(
@@ -398,7 +404,7 @@ class BottomSheet extends HookWidget {
                                                             .removeAt(0);
                                                         pageNo.value = 0;
                                                       },
-                                                      child: Text("BACK"),
+                                                      child: const Text("BACK"),
                                                     ),
                                                   if (pageNo.value == 1)
                                                     TextButton(
@@ -414,7 +420,7 @@ class BottomSheet extends HookWidget {
                                                               Get.showSnackbar(GetBar(
                                                                   backgroundColor:
                                                                       primaryColor,
-                                                                  duration: Duration(
+                                                                  duration: const Duration(
                                                                       milliseconds:
                                                                           1500),
                                                                   message:
@@ -471,13 +477,13 @@ class BottomSheet extends HookWidget {
                                                               Get.showSnackbar(GetBar(
                                                                   backgroundColor:
                                                                       primaryColor,
-                                                                  duration: Duration(
+                                                                  duration: const Duration(
                                                                       milliseconds:
                                                                           1500),
                                                                   message:
                                                                       "Succesfully added to Sheets"));
                                                             },
-                                                      child: Text("DONE"),
+                                                      child: const Text("DONE"),
                                                     ),
                                                 ],
                                               ),
@@ -485,7 +491,7 @@ class BottomSheet extends HookWidget {
                                           ),
                                         )
                                       : snapshot.hasData && !loading.value
-                                          ? Center(
+                                          ? const Center(
                                               child: Text(
                                                   "NO Data Available, Configure Credentials First"))
                                           : snapshot.connectionState !=
@@ -504,8 +510,8 @@ class BottomSheet extends HookWidget {
                                                         Text(snapshot.error
                                                             .toString()),
                                                         TextButton(
-                                                          child:
-                                                              Text("Refresh"),
+                                                          child: const Text(
+                                                              "Refresh"),
                                                           onPressed: () =>
                                                               gTaskSync.value =
                                                                   setTaskAsync(),
@@ -515,17 +521,17 @@ class BottomSheet extends HookWidget {
                                                   : Container(),
                                 ]
                               : [
-                                  Center(
+                                  const Center(
                                       child:
                                           Text("You are not authenticated.")),
-                                  SizedBox(height: 15),
+                                  const SizedBox(height: 15),
                                   TextButton(
                                     style: TextButton.styleFrom(
                                         primary: context
                                             .textTheme.headline6!.color!
                                             .withAlpha(180)),
                                     onPressed: _authenticate,
-                                    child: Text("Auth Now"),
+                                    child: const Text("Auth Now"),
                                   ),
                                 ],
                         ),

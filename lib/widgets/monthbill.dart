@@ -12,7 +12,7 @@ Widget AwesomeMonthBill(BuildContext context,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -28,9 +28,7 @@ Widget AwesomeMonthBill(BuildContext context,
                 ],
               ),
             ),
-            Container(
-              child: Column(children: children!),
-            ),
+            Column(children: children!),
           ],
         )
       : Container();
