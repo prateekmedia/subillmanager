@@ -22,13 +22,17 @@ class SettingsScreen extends HookWidget {
       context,
       tag: "header",
       headerChildren: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Text("Settings",
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Text(
+              "Settings",
+              overflow: TextOverflow.ellipsis,
               style: context.texttheme.headline6!
-                  .copyWith(color: Colors.white, fontWeight: FontWeight.w600)),
+                  .copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+            ),
+          ),
         ),
-        Expanded(child: Container()),
       ],
       centerWidget: false,
       footerChildren: [
@@ -169,13 +173,15 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
               color: Colors.white,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Text("Update Credentials",
-                style: context.texttheme.headline6!.copyWith(
-                    color: Colors.white, fontWeight: FontWeight.w600)),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text("Update Credentials",
+                  overflow: TextOverflow.ellipsis,
+                  style: context.texttheme.headline6!.copyWith(
+                      color: Colors.white, fontWeight: FontWeight.w600)),
+            ),
           ),
-          Expanded(child: Container()),
         ],
         headerMainAxisAlignment: MainAxisAlignment.start,
         centerWidget: !_authorized ? true : false,

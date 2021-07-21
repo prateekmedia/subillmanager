@@ -55,10 +55,12 @@ Widget AwesomePopCard(BuildContext context,
             child: Container(
               color: primaryColor,
               padding: const EdgeInsets.fromLTRB(10, 20, 10, 15),
-              child: Row(
-                mainAxisAlignment: headerMainAxisAlignment,
-                crossAxisAlignment: headerCrossAxisAlignment,
-                children: headerChildren,
+              child: SafeArea(
+                child: Row(
+                  mainAxisAlignment: headerMainAxisAlignment,
+                  crossAxisAlignment: headerCrossAxisAlignment,
+                  children: headerChildren,
+                ),
               ),
             ),
           ),

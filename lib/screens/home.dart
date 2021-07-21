@@ -33,27 +33,31 @@ class _HomeScreenState extends State<HomeScreen>
           return AwesomePopCard(
             context,
             headerChildren: [
-              Column(
-                children: [
-                  Text(
-                    (hasData)
-                        ? "₹${(double.parse(snapshot.data![3].reversed.toList()[0].substring(1)) + double.parse(snapshot.data![6].reversed.toList()[0].substring(1))).toStringAsFixed(1)}"
-                        : "₹0.0",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline5!
-                        .copyWith(color: Colors.white),
-                  ),
-                  Text(
-                    "Last month bill",
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText2!
-                        .copyWith(color: Colors.grey.shade300),
-                  ),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      (hasData)
+                          ? "₹${(double.parse(snapshot.data![3].reversed.toList()[0].substring(1)) + double.parse(snapshot.data![6].reversed.toList()[0].substring(1))).toStringAsFixed(1)}"
+                          : "₹0.0",
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline5!
+                          .copyWith(color: Colors.white),
+                    ),
+                    Text(
+                      "Last month bill",
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2!
+                          .copyWith(color: Colors.grey.shade300),
+                    ),
+                  ],
+                ),
               ),
-              Expanded(child: Container()),
               Row(
                 children: [
                   if (demoMode)
