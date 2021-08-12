@@ -4,6 +4,10 @@ MaterialColor primarySwatch = Colors.indigo;
 Color primaryColor = Colors.indigo;
 const Color grey = Color(0xFFF9F9FC);
 
+const Widget noCredentials = Center(
+  child: Text("No data available, configure credentials first"),
+);
+
 List<List<String>> demoData = [
   [
     "Month Date",

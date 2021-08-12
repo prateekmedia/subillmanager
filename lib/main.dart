@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -11,6 +12,7 @@ import 'package:intl/intl.dart' show DateFormat;
 import 'package:local_auth/local_auth.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hive/hive.dart';
+import 'package:subillmanager/widgets/popcard.dart';
 import 'package:universal_platform/universal_platform.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'screens/screens.dart';
@@ -62,8 +64,9 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch: primarySwatch,
+          accentColor: primaryColor,
           brightness: Brightness.dark,
-        ).copyWith(secondary: primaryColor),
+        ),
       ),
       themeMode: availableThemeModes[themeMod()],
       home: MyHomePage(),
@@ -74,7 +77,6 @@ class MyApp extends StatelessWidget {
 
 // ignore: must_be_immutable
 class MyHomePage extends HookWidget {
-  PageController? _pageController;
   final box = GetStorage();
   String? _credentials;
   late String _spreadsheetId;
@@ -101,88 +103,103 @@ class MyHomePage extends HookWidget {
       return [];
     }
 
-    final _getTaskAsync = useMemoized(() => initSheet());
+    final _getTaskAsync = useState(useMemoized(() => initSheet()));
     final currentIndex = useState<int>(0);
-    _pageController = usePageController();
-    return Scaffold(
-      body: Row(
-        children: [
-          if (!UniversalPlatform.isAndroid &&
-              !UniversalPlatform.isIOS &&
-              MediaQuery.of(context).size.width > 500)
-            NavigationRail(
-              backgroundColor: context.primaryColor,
-              selectedIndex: currentIndex.value,
-              onDestinationSelected: (int index) {
-                currentIndex.value = index;
-                _pageController!.animateToPage(index,
-                    duration: const Duration(milliseconds: 150),
-                    curve: Curves.fastLinearToSlowEaseIn);
-              },
-              labelType: NavigationRailLabelType.selected,
-              destinations: [
-                navRailDestColor(context,
-                    icon: Icons.account_balance_outlined,
-                    activeIcon: Icons.account_balance,
-                    label: "Home"),
-                navRailDestColor(context,
-                    icon: Icons.settings_outlined,
-                    activeIcon: Icons.settings,
-                    label: "Settings"),
+    final _pageController = usePageController();
+
+    final demoMode = useState(GetStorage().read("demo"));
+    List demoM = Hive.box('DEMO').get('demo', defaultValue: demoData);
+    return FutureBuilder<List>(
+        future: demoMode.value ? Future.value(demoM) : _getTaskAsync.value,
+        builder: (context, snapshot) {
+          return Scaffold(
+            body: Row(
+              children: [
+                if (!UniversalPlatform.isAndroid &&
+                    !UniversalPlatform.isIOS &&
+                    MediaQuery.of(context).size.width > 500)
+                  NavigationRail(
+                    backgroundColor: context.primaryColor,
+                    selectedIndex: currentIndex.value,
+                    onDestinationSelected: (int index) {
+                      currentIndex.value = index;
+                      _pageController.animateToPage(index,
+                          duration: const Duration(milliseconds: 150),
+                          curve: Curves.fastLinearToSlowEaseIn);
+                    },
+                    labelType: NavigationRailLabelType.selected,
+                    destinations: [
+                      navRailDestColor(context,
+                          icon: Icons.account_balance_outlined,
+                          activeIcon: Icons.account_balance,
+                          label: "Home"),
+                      navRailDestColor(context,
+                          icon: Icons.settings_outlined,
+                          activeIcon: Icons.settings,
+                          label: "Settings"),
+                    ],
+                  ),
+                Expanded(
+                  child: MainContent(
+                    snapshot: snapshot,
+                    currentIndex: currentIndex,
+                    pageController: _pageController,
+                    refreshSheet: () => _getTaskAsync.value = initSheet(),
+                  ),
+                ),
               ],
             ),
-          Expanded(
-              child: mainContent(
-                  currentIndex, _getTaskAsync, _pageController, initSheet)),
-        ],
-      ),
-      bottomNavigationBar: (UniversalPlatform.isAndroid ||
-              UniversalPlatform.isIOS ||
-              MediaQuery.of(context).size.width < 500)
-          ? BottomNavigationBar(
-              selectedItemColor: Colors.white,
-              unselectedItemColor:
-                  const Color(0xFF6C86A4).brighten(70).withAlpha(210),
+            bottomNavigationBar: (UniversalPlatform.isAndroid ||
+                    UniversalPlatform.isIOS ||
+                    MediaQuery.of(context).size.width < 500)
+                ? BottomNavigationBar(
+                    selectedItemColor: Colors.white,
+                    unselectedItemColor:
+                        const Color(0xFF6C86A4).brighten(70).withAlpha(210),
+                    backgroundColor: context.primaryColor,
+                    currentIndex: currentIndex.value,
+                    onTap: (index) {
+                      currentIndex.value = index;
+                      _pageController.animateToPage(index,
+                          duration: const Duration(milliseconds: 150),
+                          curve: Curves.easeOut);
+                    },
+                    items: const [
+                      BottomNavigationBarItem(
+                          icon: Icon(Icons.account_balance_outlined),
+                          activeIcon: Icon(Icons.account_balance),
+                          label: 'Home'),
+                      BottomNavigationBarItem(
+                          icon: Icon(Icons.settings_outlined),
+                          activeIcon: Icon(Icons.settings),
+                          label: 'Settings'),
+                    ],
+                  )
+                : null,
+            floatingActionButton: FloatingActionButton(
+              onPressed: () => Get.bottomSheet(
+                BottomSheet(
+                  snapshot: snapshot,
+                  getWorksheet: sheet.value,
+                ),
+              ),
+              child: const Icon(Icons.add),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100)),
+              elevation: (UniversalPlatform.isAndroid ||
+                      UniversalPlatform.isIOS ||
+                      MediaQuery.of(context).size.width < 500)
+                  ? null
+                  : 0,
               backgroundColor: context.primaryColor,
-              currentIndex: currentIndex.value,
-              onTap: (index) {
-                currentIndex.value = index;
-                _pageController!.animateToPage(index,
-                    duration: const Duration(milliseconds: 150),
-                    curve: Curves.easeOut);
-              },
-              items: const [
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.account_balance_outlined),
-                    activeIcon: Icon(Icons.account_balance),
-                    label: 'Home'),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.settings_outlined),
-                    activeIcon: Icon(Icons.settings),
-                    label: 'Settings'),
-              ],
-            )
-          : null,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Get.bottomSheet(BottomSheet(
-            getTaskAsync: _getTaskAsync,
-            getWorksheet: sheet.value,
-            setTaskAsync: initSheet)),
-        child: const Icon(Icons.add, color: Colors.white),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
-        elevation: (UniversalPlatform.isAndroid ||
-                UniversalPlatform.isIOS ||
-                MediaQuery.of(context).size.width < 500)
-            ? null
-            : 0,
-        backgroundColor: context.primaryColor,
-      ),
-      floatingActionButtonLocation: (UniversalPlatform.isAndroid ||
-              UniversalPlatform.isIOS ||
-              MediaQuery.of(context).size.width < 500)
-          ? FloatingActionButtonLocation.miniEndDocked
-          : FloatingActionButtonLocation.miniStartFloat,
-    );
+            ),
+            floatingActionButtonLocation: (UniversalPlatform.isAndroid ||
+                    UniversalPlatform.isIOS ||
+                    MediaQuery.of(context).size.width < 500)
+                ? FloatingActionButtonLocation.miniEndDocked
+                : FloatingActionButtonLocation.miniStartFloat,
+          );
+        });
   }
 
   NavigationRailDestination navRailDestColor(BuildContext context,
@@ -200,42 +217,156 @@ class MyHomePage extends HookWidget {
       ),
     );
   }
+}
 
-  SizedBox mainContent(
-      var currentIndex,
-      Future<List<List<String>>> _getTaskAsync,
-      PageController? pageController,
-      Function initSheet) {
+class MainContent extends HookWidget {
+  final AsyncSnapshot<List> snapshot;
+  final ValueNotifier<int> currentIndex;
+  final PageController pageController;
+  final void Function() refreshSheet;
+
+  const MainContent({
+    Key? key,
+    required this.currentIndex,
+    required this.pageController,
+    required this.snapshot,
+    required this.refreshSheet,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final demoMode = useState(GetStorage().read("demo"));
+    List demoM = Hive.box('DEMO').get('demo', defaultValue: demoData);
+    bool hasData = snapshot.hasData && snapshot.data!.isNotEmpty;
     return SizedBox.expand(
-      child: PageView(
-        controller: pageController,
-        onPageChanged: (index) {
-          currentIndex.value = index;
-        },
-        children: [
-          HomeScreen(_getTaskAsync,
-              initSheet as Future<List<List<String>>> Function()),
-          const SettingsScreen(),
-        ],
-        physics: const NeverScrollableScrollPhysics(),
-      ),
-    );
+        child: AwesomePopCard(context,
+            headerChildren: currentIndex.value == 0
+                ? [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            (hasData)
+                                ? "₹${(double.parse(snapshot.data![3].reversed.toList()[0].substring(1)) + double.parse(snapshot.data![6].reversed.toList()[0].substring(1))).toStringAsFixed(1)}"
+                                : "₹0.0",
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline5!
+                                .copyWith(color: Colors.white),
+                          ),
+                          Text(
+                            "Last month bill",
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2!
+                                .copyWith(color: Colors.grey.shade300),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        if (demoMode.value)
+                          IconButton(
+                            icon: const Icon(
+                              Icons.developer_mode,
+                              color: Colors.white,
+                            ),
+                            tooltip: "Turn off Demo Mode",
+                            onPressed: () {
+                              GetStorage().write("demo", false);
+                              demoMode.value = GetStorage().read("demo");
+                            },
+                          ),
+                        if (!demoMode.value)
+                          IconButton(
+                            icon: const Icon(
+                              Icons.refresh,
+                              color: Colors.white,
+                            ),
+                            tooltip: "Refresh Data",
+                            onPressed: () {
+                              demoMode.value = GetStorage().read("demo");
+                              refreshSheet();
+                            },
+                          ),
+                        const SizedBox(width: 20),
+                        if (hasData &&
+                            !demoMode.value &&
+                            !const DeepCollectionEquality()
+                                .equals(snapshot.data, demoM))
+                          IconButton(
+                            icon: const Icon(
+                              Icons.check,
+                              color: Colors.white,
+                            ),
+                            tooltip: "Update Cache",
+                            onPressed: () {
+                              Hive.box('DEMO').put('demo', snapshot.data);
+                              GetStorage().write("demo", true);
+                              demoMode.value = GetStorage().read("demo");
+                            },
+                          ),
+                        if (!demoMode.value &&
+                            (!hasData ||
+                                const DeepCollectionEquality()
+                                    .equals(snapshot.data, demoM)))
+                          IconButton(
+                            icon: const Icon(
+                              Icons.center_focus_strong_outlined,
+                              color: Colors.white,
+                            ),
+                            tooltip: "Turn on Demo Mode",
+                            onPressed: () {
+                              GetStorage().write("demo", true);
+                              demoMode.value = GetStorage().read("demo");
+                            },
+                          ),
+                        const SizedBox(width: 10),
+                      ],
+                    ),
+                  ]
+                : [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          "Settings",
+                          overflow: TextOverflow.ellipsis,
+                          style: context.texttheme.headline6!.copyWith(
+                              color: Colors.white, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
+                  ],
+            centerWidget: hasData ? false : true,
+            footer: PageView(
+              controller: pageController,
+              onPageChanged: (index) {
+                currentIndex.value = index;
+              },
+              children: [
+                HomeScreen(snapshot: snapshot),
+                const SettingsScreen(),
+              ],
+              physics: const NeverScrollableScrollPhysics(),
+            )));
   }
 }
 
 class BottomSheet extends HookWidget {
   BottomSheet({
     Key? key,
-    required Future<List<List<String>>> getTaskAsync,
-    required this.setTaskAsync,
     required this.getWorksheet,
-  })  : _getTaskAsync = getTaskAsync,
-        super(key: key);
+    required this.snapshot,
+  }) : super(key: key);
 
-  final Future<List<List<String>>> _getTaskAsync;
+  final AsyncSnapshot<List> snapshot;
   final Worksheet? getWorksheet;
   final LocalAuthentication auth = LocalAuthentication();
-  final Future<List<List<String>>> Function() setTaskAsync;
 
   @override
   Widget build(BuildContext context) {
@@ -245,10 +376,9 @@ class BottomSheet extends HookWidget {
     );
     final TextEditingController? _unitController =
         useTextEditingController(text: "256.0");
-    final pageNo = useState<int>(0); // Up to 1 as there are two people
+    final pageNo = useState<int>(0); // max value = totalpeople - 1
     final listBills = useState<List<BillModel>>([]);
     final _authorized = useState<bool>(false);
-    var gTaskSync = useState(useMemoized(() => _getTaskAsync));
     Future<void> _authenticate() async {
       bool authenticated = _authorized.value;
       if (UniversalPlatform.isWeb) {
@@ -265,297 +395,250 @@ class BottomSheet extends HookWidget {
           authenticated = true;
         }
       }
-
       _authorized.value = authenticated;
     }
 
     if (!_authorized.value) _authenticate();
     bool demoMode = GetStorage().read("demo");
     final loading = useState<bool>(false);
-    gTaskSync.value = setTaskAsync();
 
-    return FutureBuilder<List>(
-        future:
-            Future.value(Hive.box('DEMO').get('demo', defaultValue: demoData)),
-        builder: (context, snapshot) {
-          return SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                    constraints: const BoxConstraints(maxHeight: 400),
-                    width: (UniversalPlatform.isAndroid ||
-                            UniversalPlatform.isIOS ||
-                            context.width < 500)
-                        ? context.width * 0.96
-                        : 500,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 20, horizontal: 40),
-                    decoration: BoxDecoration(
-                        color: context.isDark ? Colors.grey[900] : Colors.white,
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
-                        )),
-                    child: Stack(
-                      children: [
-                        if (demoMode)
-                          const Align(
-                            alignment: Alignment.topRight,
-                            child: Text("DEMO"),
-                          ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: _authorized.value
-                              ? [
-                                  !loading.value &&
-                                          snapshot.hasData &&
-                                          snapshot.data!.isNotEmpty
-                                      ? Form(
-                                          key: _formKey,
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          vertical: 5),
-                                                      child: Text(
-                                                          "ADD NEW BILL",
-                                                          style: context
-                                                              .texttheme
-                                                              .headline6)),
-                                                  Text(
-                                                      " ( ${[
-                                                        snapshot.data![1][0]
-                                                            .split(" ")[0],
-                                                        snapshot.data![4][0]
-                                                            .split(" ")[0],
-                                                      ][pageNo.value]} )",
-                                                      style: context
-                                                          .texttheme.bodyText1!
-                                                          .copyWith(
-                                                              fontSize: 18)),
-                                                ],
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+              constraints: const BoxConstraints(maxHeight: 400),
+              width: (UniversalPlatform.isAndroid ||
+                      UniversalPlatform.isIOS ||
+                      context.width < 500)
+                  ? context.width * 0.96
+                  : 500,
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+              decoration: BoxDecoration(
+                  color: context.isDark ? Colors.grey[900] : Colors.white,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  )),
+              child: Stack(
+                children: [
+                  if (demoMode)
+                    const Align(
+                      alignment: Alignment.topRight,
+                      child: Text("DEMO"),
+                    ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: _authorized.value
+                        ? [
+                            !loading.value &&
+                                    snapshot.hasData &&
+                                    snapshot.data!.isNotEmpty
+                                ? Form(
+                                    key: _formKey,
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 5),
+                                                child: Text("ADD NEW BILL",
+                                                    style: context
+                                                        .texttheme.headline6)),
+                                            Text(
+                                                " ( ${[
+                                                  snapshot.data![1][0]
+                                                      .split(" ")[0],
+                                                  snapshot.data![4][0]
+                                                      .split(" ")[0],
+                                                ][pageNo.value]} )",
+                                                style: context
+                                                    .texttheme.bodyText1!
+                                                    .copyWith(fontSize: 18)),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 10),
+                                        customInputField(
+                                            context,
+                                            _dateController,
+                                            (pageNo.value == 0 ? true : false)),
+                                        const SizedBox(height: 10),
+                                        customInputField(
+                                            context, _unitController),
+                                        const SizedBox(
+                                          height: 30,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            if (pageNo.value == 0)
+                                              TextButton(
+                                                style: TextButton.styleFrom(
+                                                    primary: context.textTheme
+                                                        .headline6!.color!
+                                                        .withAlpha(180)),
+                                                onPressed: () =>
+                                                    Navigator.pop(context),
+                                                child: const Text("CLOSE"),
                                               ),
-                                              const SizedBox(height: 10),
-                                              customInputField(
-                                                  context,
-                                                  _dateController,
-                                                  (pageNo.value == 0
-                                                      ? true
-                                                      : false)),
-                                              const SizedBox(height: 10),
-                                              customInputField(
-                                                  context, _unitController),
-                                              const SizedBox(
-                                                height: 30,
+                                            if (pageNo.value == 0)
+                                              TextButton(
+                                                style: TextButton.styleFrom(
+                                                    primary: context.textTheme
+                                                        .headline6!.color),
+                                                onPressed: () {
+                                                  listBills.value.add(BillModel(
+                                                    id: 1,
+                                                    date: _dateController!.text,
+                                                    unit: _unitController!.text,
+                                                  ));
+                                                  _unitController.text =
+                                                      "256.0";
+                                                  pageNo.value = 1;
+                                                },
+                                                child: const Text("NEXT"),
                                               ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                children: [
-                                                  if (pageNo.value == 0)
-                                                    TextButton(
-                                                      style:
-                                                          TextButton.styleFrom(
-                                                              primary: context
-                                                                  .textTheme
-                                                                  .headline6!
-                                                                  .color!
-                                                                  .withAlpha(
-                                                                      180)),
-                                                      onPressed: () =>
-                                                          Navigator.pop(
-                                                              context),
-                                                      child:
-                                                          const Text("CLOSE"),
-                                                    ),
-                                                  if (pageNo.value == 0)
-                                                    TextButton(
-                                                      style:
-                                                          TextButton.styleFrom(
-                                                              primary: context
-                                                                  .textTheme
-                                                                  .headline6!
-                                                                  .color),
-                                                      onPressed: () {
+                                            if (pageNo.value == 1)
+                                              TextButton(
+                                                style: TextButton.styleFrom(
+                                                    primary: context.textTheme
+                                                        .headline6!.color!
+                                                        .withAlpha(180)),
+                                                onPressed: () {
+                                                  _dateController!.text =
+                                                      listBills.value[0].date!;
+                                                  _unitController!.text =
+                                                      listBills.value[0].unit!;
+                                                  listBills.value.removeAt(0);
+                                                  pageNo.value = 0;
+                                                },
+                                                child: const Text("BACK"),
+                                              ),
+                                            if (pageNo.value == 1)
+                                              TextButton(
+                                                style: TextButton.styleFrom(
+                                                    primary: context.textTheme
+                                                        .headline6!.color),
+                                                onPressed: demoMode
+                                                    ? () {
+                                                        Get.back();
+                                                        Get.showSnackbar(GetBar(
+                                                            backgroundColor:
+                                                                primaryColor,
+                                                            duration:
+                                                                const Duration(
+                                                                    milliseconds:
+                                                                        1500),
+                                                            message:
+                                                                "Demo Complete"));
+                                                      }
+                                                    : () async {
+                                                        loading.value = true;
                                                         listBills.value
                                                             .add(BillModel(
-                                                          id: 1,
+                                                          id: 4,
                                                           date: _dateController!
                                                               .text,
                                                           unit: _unitController!
                                                               .text,
                                                         ));
-                                                        _unitController.text =
-                                                            "256.0";
-                                                        pageNo.value = 1;
-                                                      },
-                                                      child: const Text("NEXT"),
-                                                    ),
-                                                  if (pageNo.value == 1)
-                                                    TextButton(
-                                                      style:
-                                                          TextButton.styleFrom(
-                                                              primary: context
-                                                                  .textTheme
-                                                                  .headline6!
-                                                                  .color!
-                                                                  .withAlpha(
-                                                                      180)),
-                                                      onPressed: () {
-                                                        _dateController!.text =
+                                                        var cell1 = await getWorksheet!
+                                                            .cells
+                                                            .cell(
+                                                                row: snapshot
+                                                                        .data![
+                                                                            0]
+                                                                        .length +
+                                                                    1,
+                                                                column: 1);
+                                                        var cell2 = await getWorksheet!
+                                                            .cells
+                                                            .cell(
+                                                                row: snapshot
+                                                                        .data![
+                                                                            0]
+                                                                        .length +
+                                                                    1,
+                                                                column: 2);
+                                                        var cell5 = await getWorksheet!
+                                                            .cells
+                                                            .cell(
+                                                                row: snapshot
+                                                                        .data![
+                                                                            0]
+                                                                        .length +
+                                                                    1,
+                                                                column: 5);
+                                                        await cell1.post(
                                                             listBills
-                                                                .value[0].date!;
-                                                        _unitController!.text =
+                                                                .value[0].date);
+                                                        await cell2.post(
                                                             listBills
-                                                                .value[0].unit!;
-                                                        listBills.value
-                                                            .removeAt(0);
-                                                        pageNo.value = 0;
+                                                                .value[0].unit);
+                                                        await cell5.post(
+                                                            listBills
+                                                                .value[1].unit);
+                                                        Get.back();
+                                                        Get.showSnackbar(GetBar(
+                                                            backgroundColor:
+                                                                primaryColor,
+                                                            duration:
+                                                                const Duration(
+                                                                    milliseconds:
+                                                                        1500),
+                                                            message:
+                                                                "Succesfully added to Sheets"));
                                                       },
-                                                      child: const Text("BACK"),
-                                                    ),
-                                                  if (pageNo.value == 1)
-                                                    TextButton(
-                                                      style:
-                                                          TextButton.styleFrom(
-                                                              primary: context
-                                                                  .textTheme
-                                                                  .headline6!
-                                                                  .color),
-                                                      onPressed: demoMode
-                                                          ? () {
-                                                              Get.back();
-                                                              Get.showSnackbar(GetBar(
-                                                                  backgroundColor:
-                                                                      primaryColor,
-                                                                  duration: const Duration(
-                                                                      milliseconds:
-                                                                          1500),
-                                                                  message:
-                                                                      "Demo Complete"));
-                                                            }
-                                                          : () async {
-                                                              loading.value =
-                                                                  true;
-                                                              listBills.value
-                                                                  .add(
-                                                                      BillModel(
-                                                                id: 4,
-                                                                date:
-                                                                    _dateController!
-                                                                        .text,
-                                                                unit:
-                                                                    _unitController!
-                                                                        .text,
-                                                              ));
-                                                              var cell1 = await getWorksheet!.cells.cell(
-                                                                  row: snapshot
-                                                                          .data![
-                                                                              0]
-                                                                          .length +
-                                                                      1,
-                                                                  column: 1);
-                                                              var cell2 = await getWorksheet!.cells.cell(
-                                                                  row: snapshot
-                                                                          .data![
-                                                                              0]
-                                                                          .length +
-                                                                      1,
-                                                                  column: 2);
-                                                              var cell5 = await getWorksheet!.cells.cell(
-                                                                  row: snapshot
-                                                                          .data![
-                                                                              0]
-                                                                          .length +
-                                                                      1,
-                                                                  column: 5);
-                                                              await cell1.post(
-                                                                  listBills
-                                                                      .value[0]
-                                                                      .date);
-                                                              await cell2.post(
-                                                                  listBills
-                                                                      .value[0]
-                                                                      .unit);
-                                                              await cell5.post(
-                                                                  listBills
-                                                                      .value[1]
-                                                                      .unit);
-                                                              Get.back();
-                                                              Get.showSnackbar(GetBar(
-                                                                  backgroundColor:
-                                                                      primaryColor,
-                                                                  duration: const Duration(
-                                                                      milliseconds:
-                                                                          1500),
-                                                                  message:
-                                                                      "Succesfully added to Sheets"));
-                                                            },
-                                                      child: const Text("DONE"),
-                                                    ),
-                                                ],
+                                                child: const Text("DONE"),
                                               ),
-                                            ],
-                                          ),
-                                        )
-                                      : snapshot.hasData && !loading.value
-                                          ? const Center(
-                                              child: Text(
-                                                  "NO Data Available, Configure Credentials First"))
-                                          : snapshot.connectionState !=
-                                                      ConnectionState.done ||
-                                                  loading.value
-                                              ? Center(
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                          Color>(primaryColor),
-                                                ))
-                                              : snapshot.hasError
-                                                  ? Column(
-                                                      children: [
-                                                        Text(snapshot.error
-                                                            .toString()),
-                                                        TextButton(
-                                                          child: const Text(
-                                                              "Refresh"),
-                                                          onPressed: () =>
-                                                              gTaskSync.value =
-                                                                  setTaskAsync(),
-                                                        )
-                                                      ],
-                                                    )
-                                                  : Container(),
-                                ]
-                              : [
-                                  const Center(
-                                      child:
-                                          Text("You are not authenticated.")),
-                                  const SizedBox(height: 15),
-                                  TextButton(
-                                    style: TextButton.styleFrom(
-                                        primary: context
-                                            .textTheme.headline6!.color!
-                                            .withAlpha(180)),
-                                    onPressed: _authenticate,
-                                    child: const Text("Auth Now"),
-                                  ),
-                                ],
-                        ),
-                      ],
-                    )),
-              ],
-            ),
-          );
-        });
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : snapshot.hasData && !loading.value
+                                    ? noCredentials
+                                    : snapshot.connectionState !=
+                                                ConnectionState.done ||
+                                            loading.value
+                                        ? Center(
+                                            child: CircularProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    primaryColor),
+                                          ))
+                                        : snapshot.hasError
+                                            ? Column(
+                                                children: [
+                                                  Text(snapshot.error
+                                                      .toString()),
+                                                ],
+                                              )
+                                            : Container(),
+                          ]
+                        : [
+                            const Center(
+                                child: Text("You are not authenticated.")),
+                            const SizedBox(height: 15),
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                  primary: context.textTheme.headline6!.color!
+                                      .withAlpha(180)),
+                              onPressed: _authenticate,
+                              child: const Text("Auth Now"),
+                            ),
+                          ],
+                  ),
+                ],
+              )),
+        ],
+      ),
+    );
   }
 
   Widget customInputField(

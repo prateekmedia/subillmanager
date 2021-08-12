@@ -18,24 +18,9 @@ class SettingsScreen extends HookWidget {
   Widget build(BuildContext context) {
     var demo = useState(box.read("demo"));
     List demoD = Hive.box('DEMO').get('demo') ?? List.empty();
-    return AwesomePopCard(
-      context,
-      tag: "header",
-      headerChildren: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Text(
-              "Settings",
-              overflow: TextOverflow.ellipsis,
-              style: context.texttheme.headline6!
-                  .copyWith(color: Colors.white, fontWeight: FontWeight.w600),
-            ),
-          ),
-        ),
-      ],
-      centerWidget: false,
-      footerChildren: [
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+      children: [
         ListTile(
           leading: const Icon(Icons.data_usage),
           title: const Text("Update Credentials"),
