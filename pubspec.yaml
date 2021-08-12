@@ -14,7 +14,7 @@ dependencies:
   bitsdojo_window: ^0.1.1+1
   collection: ^1.15.0
   flutter_hooks: ^0.18.0
-  get_storage: ^2.0.2
+  get_storage: ^2.0.3
   gsheets: ^0.3.1
   hive_flutter: ^1.1.0
   local_auth: ^1.1.6

@@ -50,18 +50,20 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'SUbillManager',
       theme: ThemeData(
-        primarySwatch: primaryColor as MaterialColor?,
         primaryColor: primaryColor,
-        brightness: Brightness.light,
-        accentColor: primaryColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: primarySwatch,
+          brightness: Brightness.light,
+        ).copyWith(secondary: primaryColor),
       ),
       darkTheme: ThemeData(
-        primarySwatch: primaryColor as MaterialColor?,
         primaryColor: primaryColor,
-        brightness: Brightness.dark,
-        accentColor: primaryColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: primarySwatch,
+          brightness: Brightness.dark,
+        ).copyWith(secondary: primaryColor),
       ),
       themeMode: availableThemeModes[themeMod()],
       home: MyHomePage(),
@@ -166,7 +168,7 @@ class MyHomePage extends HookWidget {
             getTaskAsync: _getTaskAsync,
             getWorksheet: sheet.value,
             setTaskAsync: initSheet)),
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, color: Colors.white),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
         elevation: (UniversalPlatform.isAndroid ||
                 UniversalPlatform.isIOS ||

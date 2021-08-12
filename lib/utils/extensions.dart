@@ -7,7 +7,7 @@ extension UsefulExtensions on BuildContext {
 
   TextTheme get texttheme => Theme.of(this).textTheme;
   Color get primaryColor => Theme.of(this).primaryColor;
-  Color get accentColor => Theme.of(this).accentColor;
+  Color get accentColor => Theme.of(this).colorScheme.secondary;
 }
 
 // Color Tint

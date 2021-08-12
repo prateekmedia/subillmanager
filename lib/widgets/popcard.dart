@@ -18,16 +18,14 @@ Widget AwesomePopCard(BuildContext context,
   if (Platform.isLinux) {
     headerChildren.addAll([
       MinimizeWindowButton(
-        colors: WindowButtonColors(
-            iconNormal: context.isDark ? Colors.white : Colors.black),
+        colors: WindowButtonColors(iconNormal: Colors.white),
       ),
       MaximizeWindowButton(
-        colors: WindowButtonColors(
-            iconNormal: context.isDark ? Colors.white : Colors.black),
+        colors: WindowButtonColors(iconNormal: Colors.white),
       ),
       CloseWindowButton(
         colors: WindowButtonColors(
-          iconNormal: context.isDark ? Colors.white : Colors.black,
+          iconNormal: Colors.white,
           mouseOver: Colors.red,
         ),
       )
