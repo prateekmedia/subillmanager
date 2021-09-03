@@ -28,9 +28,6 @@ void main() async {
   if (Platform.isLinux) {
     doWhenWindowReady(() {
       final win = appWindow;
-      const initialSize = Size(1280, 720);
-      win.size = initialSize;
-      win.alignment = Alignment.center;
       win.title = "SUbillManager";
       win.show();
     });

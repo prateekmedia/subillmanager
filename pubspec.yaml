@@ -15,9 +15,9 @@ dependencies:
   collection: ^1.15.0
   flutter_hooks: ^0.18.0
   get_storage: ^2.0.3
-  gsheets: ^0.3.1
+  gsheets: ^0.3.2
   hive_flutter: ^1.1.0
-  local_auth: ^1.1.6
+  local_auth: ^1.1.7
   universal_platform: ^1.0.0+1
   url_strategy: ^0.2.0
 
