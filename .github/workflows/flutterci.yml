@@ -10,11 +10,14 @@ on:
       - "docs/**"
   workflow_dispatch:
   release:
-    types: created
+    types:
+      - created
 
 jobs:
   build-android:
+    name: Android
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
 
@@ -43,32 +46,22 @@ jobs:
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
 
       - name: Build Flutter app
-        run: flutter build apk
+        run: flutter build apk --split-per-abi
 
       - name: Upload apk to a release
         uses: svenstaro/upload-release-action@master
-        if: github.event_name != 'release'
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/app/outputs/apk/release/app*
-          tag: ${{ github.ref }}-nightly
-          body: Always up to date
-          overwrite: true
+          file: build/app/outputs/apk/release/subillmanager-*
           file_glob: true
-
-      - name: Upload apk to a release
-        uses: svenstaro/upload-release-action@master
-        if: github.event_name == 'release'
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/app/outputs/apk/release/app*
-          tag: ${{ github.ref }}
-          body: Always up to date
+          tag: ${{ github.ref }}${{ github.event_name == 'release' && '' || '-nightly' }}
+          body: ${{ github.event_name == 'release' && '' || 'Always up to date' }}
           overwrite: true
-          file_glob: true
 
   build-linux:
+    name: Linux
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
 
@@ -89,37 +82,53 @@ jobs:
       - name: Build AppImage
         run: ./create_appimage.sh
 
-      - name: Upload AppImage to release
-        uses: svenstaro/upload-release-action@master
-        if: github.event_name != 'release'
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: subillmanager-x86_64.AppImage
-          tag: ${{ github.ref }}-nightly
-          body: Always up to date
-          overwrite: true
-
-      - if: github.event_name == 'release'
-        run: |
+      - run: |
           sudo rm -rf ./AppDir/usr/
           sudo rm -rf ./AppDir/AppRun
           sudo rm -rf ./AppDir/.DirIcon
 
       - name: Compress AppDir
-        if: github.event_name == 'release'
-        uses: master-atul/tar-action@master
-        id: compress
-        with:
-          command: c
-          files: ./AppDir/*
-          outPath: subillmanager-x86_64.tar.gz
+        run: tar czf subillmanager-x86_64.tar.gz -C AppDir/ .
+
+      - name: App tar sha256 sum
+        run: sha256sum subillmanager-x86_64.tar.gz
 
       - uses: svenstaro/upload-release-action@master
-        if: github.event_name == 'release'
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./subillmanager-x86_64*
           file_glob: true
-          tag: ${{github.ref}}
-          body: Always up to date
+          tag: ${{ github.ref }}${{ github.event_name == 'release' && '' || '-nightly' }}
+          body: ${{ github.event_name == 'release' && '' || 'Always up to date' }}
+          overwrite: true
+
+  build_windows:
+    name: Windows
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup flutter
+        uses: subosito/flutter-action@master
+        with:
+          channel: beta
+
+      - name: Enable desktop support
+        run: flutter config --enable-windows-desktop
+
+      - name: Build Flutter app
+        run: flutter build windows
+
+      - uses: papeloto/action-zip@v1
+        with:
+          files: build/windows/runner/release/
+          dest: subillmanager-windows.zip
+
+      - uses: svenstaro/upload-release-action@master
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: subillmanager-windows.zip
+          tag: ${{ github.ref }}${{ github.event_name == 'release' && '' || '-nightly' }}
+          body: ${{ github.event_name == 'release' && '' || 'Always up to date' }}
           overwrite: true
