@@ -21,15 +21,12 @@ Widget AwesomeListTile(
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: context.isDark
-                      ? const Color(0xFF4F4F4F)
-                      : const Color(0xFFF4F4F4),
+                  color: context.isDark ? const Color(0xFF4F4F4F) : const Color(0xFFF4F4F4),
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child: Icon(
                   icon,
-                  color:
-                      context.isDark ? primaryColor.brighten(70) : primaryColor,
+                  color: context.isDark ? primaryColor.brighten(70) : primaryColor,
                 ),
               ),
             ],
@@ -37,26 +34,20 @@ Widget AwesomeListTile(
           title: Text(
             title!,
             style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color:
-                    context.isDark ? primaryColor.brighten(75) : primaryColor),
+                fontWeight: FontWeight.w600, color: context.isDark ? primaryColor.brighten(75) : primaryColor),
           ),
           subtitle: Text(
             subtitle!,
-            style: TextStyle(
-                color:
-                    context.isDark ? primaryColor.brighten(75) : primaryColor),
+            style: TextStyle(color: context.isDark ? primaryColor.brighten(75) : primaryColor),
           ),
           trailing: Text(
             trailing!,
             style: TextStyle(
                 fontWeight: FontWeight.w600,
-                color:
-                    context.isDark ? primaryColor.brighten(75) : primaryColor,
+                color: context.isDark ? primaryColor.brighten(75) : primaryColor,
                 fontSize: 18),
           ),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         )
       : Container();
 }

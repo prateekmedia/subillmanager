@@ -27,8 +27,7 @@ class SettingsScreen extends HookWidget {
           trailing: const Icon(Icons.chevron_right),
           onTap: () => Navigator.push(
             context,
-            CupertinoPageRoute(
-                builder: (context) => const ConfigureCredentials()),
+            CupertinoPageRoute(builder: (context) => const ConfigureCredentials()),
           ),
         ),
         ListTile(
@@ -38,20 +37,17 @@ class SettingsScreen extends HookWidget {
             value: context.isDark,
             activeColor: primaryColor.brighten(20),
             onChanged: (v) {
-              Get.changeThemeMode(
-                  context.isDark ? ThemeMode.light : ThemeMode.dark);
+              Get.changeThemeMode(context.isDark ? ThemeMode.light : ThemeMode.dark);
               box.write("thememode", v ? 2 : 1);
             },
           ),
           onTap: () {
             box.write("thememode", context.isDark ? 1 : 2);
-            Get.changeThemeMode(
-                context.isDark ? ThemeMode.light : ThemeMode.dark);
+            Get.changeThemeMode(context.isDark ? ThemeMode.light : ThemeMode.dark);
           },
         ),
         ListTile(
-          title: Text(
-              demoD.isEmpty || demoD == demoData ? "Demo Mode" : "Cache Mode"),
+          title: Text(demoD.isEmpty || demoD == demoData ? "Demo Mode" : "Cache Mode"),
           leading: const Icon(Icons.developer_mode_outlined),
           trailing: CupertinoSwitch(
             value: demo.value,
@@ -76,16 +72,12 @@ class SettingsScreen extends HookWidget {
               content: const Text("This will reset all of you data."),
               actions: [
                 TextButton(
-                  style: TextButton.styleFrom(
-                      primary: context.isDarkMode
-                          ? Colors.grey[200]!
-                          : primaryColor),
+                  style: TextButton.styleFrom(primary: context.isDarkMode ? Colors.grey[200]! : primaryColor),
                   child: const Text("CANCEL"),
                   onPressed: Get.back,
                 ),
                 TextButton(
-                  style: TextButton.styleFrom(
-                      primary: context.textTheme.bodyText2!.color),
+                  style: TextButton.styleFrom(primary: context.textTheme.bodyText2!.color),
                   child: const Text("YES"),
                   onPressed: () {
                     GetStorage().erase();
@@ -122,9 +114,7 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
       try {
         if (!authenticated) {
           authenticated = await auth.authenticate(
-              localizedReason: 'Authenticate to Update Credentials',
-              useErrorDialogs: true,
-              stickyAuth: true);
+              localizedReason: 'Authenticate to Update Credentials', useErrorDialogs: true, stickyAuth: true);
         }
       } on PlatformException catch (_) {
         authenticated = true;
@@ -163,8 +153,7 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text("Update Credentials",
                   overflow: TextOverflow.ellipsis,
-                  style: context.texttheme.headline6!.copyWith(
-                      color: Colors.white, fontWeight: FontWeight.w600)),
+                  style: context.texttheme.headline6!.copyWith(color: Colors.white, fontWeight: FontWeight.w600)),
             ),
           ),
         ],

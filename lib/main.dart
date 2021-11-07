@@ -11,7 +11,6 @@ import 'package:gsheets/gsheets.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:local_auth/local_auth.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:hive/hive.dart';
 import 'package:subillmanager/widgets/popcard.dart';
 import 'package:universal_platform/universal_platform.dart';
 import 'package:url_strategy/url_strategy.dart';
@@ -41,11 +40,7 @@ class MyApp extends StatelessWidget {
     resetData();
     int themeMod() => GetStorage().read("thememode");
 
-    final availableThemeModes = [
-      ThemeMode.system,
-      ThemeMode.light,
-      ThemeMode.dark
-    ];
+    final availableThemeModes = [ThemeMode.system, ThemeMode.light, ThemeMode.dark];
     return GetMaterialApp(
       title: 'SUbillManager',
       theme: ThemeData(
@@ -112,28 +107,21 @@ class MyHomePage extends HookWidget {
           return Scaffold(
             body: Row(
               children: [
-                if (!UniversalPlatform.isAndroid &&
-                    !UniversalPlatform.isIOS &&
-                    MediaQuery.of(context).size.width > 500)
+                if (!UniversalPlatform.isAndroid && !UniversalPlatform.isIOS && MediaQuery.of(context).size.width > 500)
                   NavigationRail(
                     backgroundColor: context.primaryColor,
                     selectedIndex: currentIndex.value,
                     onDestinationSelected: (int index) {
                       currentIndex.value = index;
                       _pageController.animateToPage(index,
-                          duration: const Duration(milliseconds: 150),
-                          curve: Curves.fastLinearToSlowEaseIn);
+                          duration: const Duration(milliseconds: 150), curve: Curves.fastLinearToSlowEaseIn);
                     },
                     labelType: NavigationRailLabelType.selected,
                     destinations: [
                       navRailDestColor(context,
-                          icon: Icons.account_balance_outlined,
-                          activeIcon: Icons.account_balance,
-                          label: "Home"),
+                          icon: Icons.account_balance_outlined, activeIcon: Icons.account_balance, label: "Home"),
                       navRailDestColor(context,
-                          icon: Icons.settings_outlined,
-                          activeIcon: Icons.settings,
-                          label: "Settings"),
+                          icon: Icons.settings_outlined, activeIcon: Icons.settings, label: "Settings"),
                     ],
                   ),
                 Expanded(
@@ -146,33 +134,28 @@ class MyHomePage extends HookWidget {
                 ),
               ],
             ),
-            bottomNavigationBar: (UniversalPlatform.isAndroid ||
-                    UniversalPlatform.isIOS ||
-                    MediaQuery.of(context).size.width < 500)
-                ? BottomNavigationBar(
-                    selectedItemColor: Colors.white,
-                    unselectedItemColor:
-                        const Color(0xFF6C86A4).brighten(70).withAlpha(210),
-                    backgroundColor: context.primaryColor,
-                    currentIndex: currentIndex.value,
-                    onTap: (index) {
-                      currentIndex.value = index;
-                      _pageController.animateToPage(index,
-                          duration: const Duration(milliseconds: 150),
-                          curve: Curves.easeOut);
-                    },
-                    items: const [
-                      BottomNavigationBarItem(
-                          icon: Icon(Icons.account_balance_outlined),
-                          activeIcon: Icon(Icons.account_balance),
-                          label: 'Home'),
-                      BottomNavigationBarItem(
-                          icon: Icon(Icons.settings_outlined),
-                          activeIcon: Icon(Icons.settings),
-                          label: 'Settings'),
-                    ],
-                  )
-                : null,
+            bottomNavigationBar:
+                (UniversalPlatform.isAndroid || UniversalPlatform.isIOS || MediaQuery.of(context).size.width < 500)
+                    ? BottomNavigationBar(
+                        selectedItemColor: Colors.white,
+                        unselectedItemColor: const Color(0xFF6C86A4).brighten(70).withAlpha(210),
+                        backgroundColor: context.primaryColor,
+                        currentIndex: currentIndex.value,
+                        onTap: (index) {
+                          currentIndex.value = index;
+                          _pageController.animateToPage(index,
+                              duration: const Duration(milliseconds: 150), curve: Curves.easeOut);
+                        },
+                        items: const [
+                          BottomNavigationBarItem(
+                              icon: Icon(Icons.account_balance_outlined),
+                              activeIcon: Icon(Icons.account_balance),
+                              label: 'Home'),
+                          BottomNavigationBarItem(
+                              icon: Icon(Icons.settings_outlined), activeIcon: Icon(Icons.settings), label: 'Settings'),
+                        ],
+                      )
+                    : null,
             floatingActionButton: FloatingActionButton(
               onPressed: () => Get.bottomSheet(
                 BottomSheet(
@@ -181,20 +164,17 @@ class MyHomePage extends HookWidget {
                 ),
               ),
               child: const Icon(Icons.add),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(100)),
-              elevation: (UniversalPlatform.isAndroid ||
-                      UniversalPlatform.isIOS ||
-                      MediaQuery.of(context).size.width < 500)
-                  ? null
-                  : 0,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+              elevation:
+                  (UniversalPlatform.isAndroid || UniversalPlatform.isIOS || MediaQuery.of(context).size.width < 500)
+                      ? null
+                      : 0,
               backgroundColor: context.primaryColor,
             ),
-            floatingActionButtonLocation: (UniversalPlatform.isAndroid ||
-                    UniversalPlatform.isIOS ||
-                    MediaQuery.of(context).size.width < 500)
-                ? FloatingActionButtonLocation.miniEndDocked
-                : FloatingActionButtonLocation.miniStartFloat,
+            floatingActionButtonLocation:
+                (UniversalPlatform.isAndroid || UniversalPlatform.isIOS || MediaQuery.of(context).size.width < 500)
+                    ? FloatingActionButtonLocation.miniEndDocked
+                    : FloatingActionButtonLocation.miniStartFloat,
           );
         });
   }
@@ -202,8 +182,7 @@ class MyHomePage extends HookWidget {
   NavigationRailDestination navRailDestColor(BuildContext context,
       {IconData? icon, IconData? activeIcon, required String label}) {
     return NavigationRailDestination(
-      icon: Icon(icon,
-          color: const Color(0xFF6C86A4).brighten(70).withAlpha(210)),
+      icon: Icon(icon, color: const Color(0xFF6C86A4).brighten(70).withAlpha(210)),
       selectedIcon: Icon(
         activeIcon,
         color: primaryColor.brighten(90),
@@ -248,18 +227,12 @@ class MainContent extends HookWidget {
                                 ? "₹${(double.parse(snapshot.data![3].reversed.toList()[0].substring(1)) + double.parse(snapshot.data![6].reversed.toList()[0].substring(1))).toStringAsFixed(1)}"
                                 : "₹0.0",
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline5!
-                                .copyWith(color: Colors.white),
+                            style: Theme.of(context).textTheme.headline5!.copyWith(color: Colors.white),
                           ),
                           Text(
                             "Last month bill",
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText2!
-                                .copyWith(color: Colors.grey.shade300),
+                            style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.grey.shade300),
                           ),
                         ],
                       ),
@@ -291,10 +264,7 @@ class MainContent extends HookWidget {
                             },
                           ),
                         const SizedBox(width: 20),
-                        if (hasData &&
-                            !demoMode.value &&
-                            !const DeepCollectionEquality()
-                                .equals(snapshot.data, demoM))
+                        if (hasData && !demoMode.value && !const DeepCollectionEquality().equals(snapshot.data, demoM))
                           IconButton(
                             icon: const Icon(
                               Icons.check,
@@ -308,9 +278,7 @@ class MainContent extends HookWidget {
                             },
                           ),
                         if (!demoMode.value &&
-                            (!hasData ||
-                                const DeepCollectionEquality()
-                                    .equals(snapshot.data, demoM)))
+                            (!hasData || const DeepCollectionEquality().equals(snapshot.data, demoM)))
                           IconButton(
                             icon: const Icon(
                               Icons.center_focus_strong_outlined,
@@ -333,8 +301,8 @@ class MainContent extends HookWidget {
                         child: Text(
                           "Settings",
                           overflow: TextOverflow.ellipsis,
-                          style: context.texttheme.headline6!.copyWith(
-                              color: Colors.white, fontWeight: FontWeight.w600),
+                          style:
+                              context.texttheme.headline6!.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
                         ),
                       ),
                     ),
@@ -371,8 +339,7 @@ class BottomSheet extends HookWidget {
     final TextEditingController? _dateController = useTextEditingController(
       text: DateFormat('MMMM dd').format(DateTime.now()),
     );
-    final TextEditingController? _unitController =
-        useTextEditingController(text: "256.0");
+    final TextEditingController? _unitController = useTextEditingController(text: "256.0");
     final pageNo = useState<int>(0); // max value = totalpeople - 1
     final listBills = useState<List<BillModel>>([]);
     final _authorized = useState<bool>(false);
@@ -384,9 +351,7 @@ class BottomSheet extends HookWidget {
         try {
           if (!authenticated) {
             authenticated = await auth.authenticate(
-                localizedReason: 'Authenticate to Add a Field',
-                useErrorDialogs: true,
-                stickyAuth: true);
+                localizedReason: 'Authenticate to Add a Field', useErrorDialogs: true, stickyAuth: true);
           }
         } on PlatformException catch (_) {
           authenticated = true;
@@ -405,9 +370,7 @@ class BottomSheet extends HookWidget {
         children: [
           Container(
               constraints: const BoxConstraints(maxHeight: 400),
-              width: (UniversalPlatform.isAndroid ||
-                      UniversalPlatform.isIOS ||
-                      context.width < 500)
+              width: (UniversalPlatform.isAndroid || UniversalPlatform.isIOS || context.width < 500)
                   ? context.width * 0.96
                   : 500,
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
@@ -428,74 +391,53 @@ class BottomSheet extends HookWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: _authorized.value
                         ? [
-                            !loading.value &&
-                                    snapshot.hasData &&
-                                    snapshot.data!.isNotEmpty
+                            !loading.value && snapshot.hasData && snapshot.data!.isNotEmpty
                                 ? Form(
                                     key: _formKey,
                                     child: Column(
                                       children: [
                                         Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 5),
-                                                child: Text("ADD NEW BILL",
-                                                    style: context
-                                                        .texttheme.headline6)),
+                                                padding: const EdgeInsets.symmetric(vertical: 5),
+                                                child: Text("ADD NEW BILL", style: context.texttheme.headline6)),
                                             Text(
                                                 " ( ${[
-                                                  snapshot.data![1][0]
-                                                      .split(" ")[0],
-                                                  snapshot.data![4][0]
-                                                      .split(" ")[0],
+                                                  snapshot.data![1][0].split(" ")[0],
+                                                  snapshot.data![4][0].split(" ")[0],
                                                 ][pageNo.value]} )",
-                                                style: context
-                                                    .texttheme.bodyText1!
-                                                    .copyWith(fontSize: 18)),
+                                                style: context.texttheme.bodyText1!.copyWith(fontSize: 18)),
                                           ],
                                         ),
                                         const SizedBox(height: 10),
-                                        customInputField(
-                                            context,
-                                            _dateController,
-                                            (pageNo.value == 0 ? true : false)),
+                                        customInputField(context, _dateController, (pageNo.value == 0 ? true : false)),
                                         const SizedBox(height: 10),
-                                        customInputField(
-                                            context, _unitController),
+                                        customInputField(context, _unitController),
                                         const SizedBox(
                                           height: 30,
                                         ),
                                         Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                           children: [
                                             if (pageNo.value == 0)
                                               TextButton(
                                                 style: TextButton.styleFrom(
-                                                    primary: context.textTheme
-                                                        .headline6!.color!
-                                                        .withAlpha(180)),
-                                                onPressed: () =>
-                                                    Navigator.pop(context),
+                                                    primary: context.textTheme.headline6!.color!.withAlpha(180)),
+                                                onPressed: () => Navigator.pop(context),
                                                 child: const Text("CLOSE"),
                                               ),
                                             if (pageNo.value == 0)
                                               TextButton(
-                                                style: TextButton.styleFrom(
-                                                    primary: context.textTheme
-                                                        .headline6!.color),
+                                                style:
+                                                    TextButton.styleFrom(primary: context.textTheme.headline6!.color),
                                                 onPressed: () {
                                                   listBills.value.add(BillModel(
                                                     id: 1,
                                                     date: _dateController!.text,
                                                     unit: _unitController!.text,
                                                   ));
-                                                  _unitController.text =
-                                                      "256.0";
+                                                  _unitController.text = "256.0";
                                                   pageNo.value = 1;
                                                 },
                                                 child: const Text("NEXT"),
@@ -503,14 +445,10 @@ class BottomSheet extends HookWidget {
                                             if (pageNo.value == 1)
                                               TextButton(
                                                 style: TextButton.styleFrom(
-                                                    primary: context.textTheme
-                                                        .headline6!.color!
-                                                        .withAlpha(180)),
+                                                    primary: context.textTheme.headline6!.color!.withAlpha(180)),
                                                 onPressed: () {
-                                                  _dateController!.text =
-                                                      listBills.value[0].date!;
-                                                  _unitController!.text =
-                                                      listBills.value[0].unit!;
+                                                  _dateController!.text = listBills.value[0].date!;
+                                                  _unitController!.text = listBills.value[0].unit!;
                                                   listBills.value.removeAt(0);
                                                   pageNo.value = 0;
                                                 },
@@ -518,78 +456,37 @@ class BottomSheet extends HookWidget {
                                               ),
                                             if (pageNo.value == 1)
                                               TextButton(
-                                                style: TextButton.styleFrom(
-                                                    primary: context.textTheme
-                                                        .headline6!.color),
+                                                style:
+                                                    TextButton.styleFrom(primary: context.textTheme.headline6!.color),
                                                 onPressed: demoMode
                                                     ? () {
                                                         Get.back();
                                                         Get.showSnackbar(GetBar(
-                                                            backgroundColor:
-                                                                primaryColor,
-                                                            duration:
-                                                                const Duration(
-                                                                    milliseconds:
-                                                                        1500),
-                                                            message:
-                                                                "Demo Complete"));
+                                                            backgroundColor: primaryColor,
+                                                            duration: const Duration(milliseconds: 1500),
+                                                            message: "Demo Complete"));
                                                       }
                                                     : () async {
                                                         loading.value = true;
-                                                        listBills.value
-                                                            .add(BillModel(
+                                                        listBills.value.add(BillModel(
                                                           id: 4,
-                                                          date: _dateController!
-                                                              .text,
-                                                          unit: _unitController!
-                                                              .text,
+                                                          date: _dateController!.text,
+                                                          unit: _unitController!.text,
                                                         ));
-                                                        var cell1 = await getWorksheet!
-                                                            .cells
-                                                            .cell(
-                                                                row: snapshot
-                                                                        .data![
-                                                                            0]
-                                                                        .length +
-                                                                    1,
-                                                                column: 1);
-                                                        var cell2 = await getWorksheet!
-                                                            .cells
-                                                            .cell(
-                                                                row: snapshot
-                                                                        .data![
-                                                                            0]
-                                                                        .length +
-                                                                    1,
-                                                                column: 2);
-                                                        var cell5 = await getWorksheet!
-                                                            .cells
-                                                            .cell(
-                                                                row: snapshot
-                                                                        .data![
-                                                                            0]
-                                                                        .length +
-                                                                    1,
-                                                                column: 5);
-                                                        await cell1.post(
-                                                            listBills
-                                                                .value[0].date);
-                                                        await cell2.post(
-                                                            listBills
-                                                                .value[0].unit);
-                                                        await cell5.post(
-                                                            listBills
-                                                                .value[1].unit);
+                                                        var cell1 = await getWorksheet!.cells
+                                                            .cell(row: snapshot.data![0].length + 1, column: 1);
+                                                        var cell2 = await getWorksheet!.cells
+                                                            .cell(row: snapshot.data![0].length + 1, column: 2);
+                                                        var cell5 = await getWorksheet!.cells
+                                                            .cell(row: snapshot.data![0].length + 1, column: 5);
+                                                        await cell1.post(listBills.value[0].date);
+                                                        await cell2.post(listBills.value[0].unit);
+                                                        await cell5.post(listBills.value[1].unit);
                                                         Get.back();
                                                         Get.showSnackbar(GetBar(
-                                                            backgroundColor:
-                                                                primaryColor,
-                                                            duration:
-                                                                const Duration(
-                                                                    milliseconds:
-                                                                        1500),
-                                                            message:
-                                                                "Succesfully added to Sheets"));
+                                                            backgroundColor: primaryColor,
+                                                            duration: const Duration(milliseconds: 1500),
+                                                            message: "Succesfully added to Sheets"));
                                                       },
                                                 child: const Text("DONE"),
                                               ),
@@ -600,32 +497,24 @@ class BottomSheet extends HookWidget {
                                   )
                                 : snapshot.hasData && !loading.value
                                     ? noCredentials
-                                    : snapshot.connectionState !=
-                                                ConnectionState.done ||
-                                            loading.value
+                                    : snapshot.connectionState != ConnectionState.done || loading.value
                                         ? Center(
                                             child: CircularProgressIndicator(
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                                    primaryColor),
+                                            valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                                           ))
                                         : snapshot.hasError
                                             ? Column(
                                                 children: [
-                                                  Text(snapshot.error
-                                                      .toString()),
+                                                  Text(snapshot.error.toString()),
                                                 ],
                                               )
                                             : Container(),
                           ]
                         : [
-                            const Center(
-                                child: Text("You are not authenticated.")),
+                            const Center(child: Text("You are not authenticated.")),
                             const SizedBox(height: 15),
                             TextButton(
-                              style: TextButton.styleFrom(
-                                  primary: context.textTheme.headline6!.color!
-                                      .withAlpha(180)),
+                              style: TextButton.styleFrom(primary: context.textTheme.headline6!.color!.withAlpha(180)),
                               onPressed: _authenticate,
                               child: const Text("Auth Now"),
                             ),
@@ -638,18 +527,14 @@ class BottomSheet extends HookWidget {
     );
   }
 
-  Widget customInputField(
-      BuildContext context, TextEditingController? controller,
-      [bool enabled = true]) {
+  Widget customInputField(BuildContext context, TextEditingController? controller, [bool enabled = true]) {
     return TextFormField(
       controller: controller,
       enabled: enabled,
       textDirection: TextDirection.ltr,
       decoration: InputDecoration(
         disabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-              color: context.isDarkMode ? Colors.grey[800]! : Colors.grey[200]!,
-              width: 1.0),
+          borderSide: BorderSide(color: context.isDarkMode ? Colors.grey[800]! : Colors.grey[200]!, width: 1.0),
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: primaryColor, width: 1.0),

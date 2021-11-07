@@ -43,9 +43,7 @@ Widget AwesomePopCard(BuildContext context,
       ? ListView(
           padding: footerPadding,
           shrinkWrap: centerWidget,
-          children: centerWidget
-              ? [Column(children: footerChildren)]
-              : footerChildren,
+          children: centerWidget ? [Column(children: footerChildren)] : footerChildren,
           physics: const BouncingScrollPhysics(),
         )
       : const SizedBox();
@@ -81,13 +79,11 @@ Widget AwesomePopCard(BuildContext context,
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(cardBorderRadius),
-                  topLeft: Radius.circular(cardBorderRadius)),
+                  topRight: Radius.circular(cardBorderRadius), topLeft: Radius.circular(cardBorderRadius)),
               color: context.isDark ? Colors.grey[900]!.brighten(5) : grey,
             ),
             width: double.infinity,
-            child:
-                footer ?? (centerWidget ? Center(child: listView) : listView),
+            child: footer ?? (centerWidget ? Center(child: listView) : listView),
           ),
         ),
       ),

@@ -11,8 +11,7 @@ class HomeScreen extends StatefulHookWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with AutomaticKeepAliveClientMixin {
+class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -30,9 +29,7 @@ class _HomeScreenState extends State<HomeScreen>
                   SizedBox(
                     child: Text("Recent Bills",
                         style: Theme.of(context).textTheme.headline5!.copyWith(
-                            color: context.isDark
-                                ? primaryColor.brighten(90)
-                                : primaryColor,
+                            color: context.isDark ? primaryColor.brighten(90) : primaryColor,
                             fontWeight: FontWeight.w600)),
                   ),
                 ],
@@ -80,24 +77,16 @@ class _HomeScreenState extends State<HomeScreen>
                   context,
                   title: widget.snapshot.data![0].reversed.toList()[i],
                   visible: (showOnly.value == 0)
-                      ? (double.parse(widget.snapshot.data![3].reversed
-                                      .toList()[i]
-                                      .substring(1)) +
-                                  double.parse(widget.snapshot.data![6].reversed
-                                      .toList()[i]
-                                      .substring(1)))
+                      ? (double.parse(widget.snapshot.data![3].reversed.toList()[i].substring(1)) +
+                                  double.parse(widget.snapshot.data![6].reversed.toList()[i].substring(1)))
                               .toStringAsFixed(1) !=
                           "0.0"
                       : (showOnly.value == 1)
-                          ? double.parse(widget.snapshot.data![3].reversed
-                                      .toList()[i]
-                                      .substring(1))
+                          ? double.parse(widget.snapshot.data![3].reversed.toList()[i].substring(1))
                                   .toStringAsFixed(1) !=
                               "0.0"
                           : (showOnly.value == 2)
-                              ? double.parse(widget.snapshot.data![6].reversed
-                                          .toList()[i]
-                                          .substring(1))
+                              ? double.parse(widget.snapshot.data![6].reversed.toList()[i].substring(1))
                                       .toStringAsFixed(1) !=
                                   "0.0"
                               : true,
@@ -108,9 +97,7 @@ class _HomeScreenState extends State<HomeScreen>
                         borderRadius: BorderRadius.circular(5),
                         boxShadow: [
                           BoxShadow(
-                            color: context.isDark
-                                ? Colors.black38
-                                : Colors.grey[200]!.withOpacity(0.5),
+                            color: context.isDark ? Colors.black38 : Colors.grey[200]!.withOpacity(0.5),
                             spreadRadius: 5,
                             blurRadius: 20,
                           ),
@@ -121,39 +108,25 @@ class _HomeScreenState extends State<HomeScreen>
                           AwesomeListTile(
                             context,
                             icon: Icons.person_outlined,
-                            visible: double.parse(widget
-                                        .snapshot.data![3].reversed
-                                        .toList()[i]
-                                        .substring(1))
+                            visible: double.parse(widget.snapshot.data![3].reversed.toList()[i].substring(1))
                                     .toStringAsFixed(1) !=
                                 "0.0",
                             title: widget.snapshot.data![1][0].split(" ")[0],
-                            subtitle: double.parse(widget
-                                        .snapshot.data![2].reversed
-                                        .toList()[i])
-                                    .toStringAsFixed(1) +
+                            subtitle: double.parse(widget.snapshot.data![2].reversed.toList()[i]).toStringAsFixed(1) +
                                 " UNIT",
-                            trailing:
-                                widget.snapshot.data![3].reversed.toList()[i],
+                            trailing: widget.snapshot.data![3].reversed.toList()[i],
                           ),
                         if (showOnly.value == 0 || showOnly.value == 2)
                           AwesomeListTile(
                             context,
                             icon: Icons.person_outlined,
-                            visible: double.parse(widget
-                                        .snapshot.data![6].reversed
-                                        .toList()[i]
-                                        .substring(1))
+                            visible: double.parse(widget.snapshot.data![6].reversed.toList()[i].substring(1))
                                     .toStringAsFixed(1) !=
                                 "0.0",
                             title: widget.snapshot.data![4][0].split(" ")[0],
-                            subtitle: double.parse(widget
-                                        .snapshot.data![5].reversed
-                                        .toList()[i])
-                                    .toStringAsFixed(1) +
+                            subtitle: double.parse(widget.snapshot.data![5].reversed.toList()[i]).toStringAsFixed(1) +
                                 " UNIT",
-                            trailing:
-                                widget.snapshot.data![6].reversed.toList()[i],
+                            trailing: widget.snapshot.data![6].reversed.toList()[i],
                           ),
                       ]),
                     ),
@@ -170,8 +143,7 @@ class _HomeScreenState extends State<HomeScreen>
                   ? [
                       Center(
                         child: CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(primaryColor),
+                          valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                         ),
                       )
                     ]
