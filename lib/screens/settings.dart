@@ -135,7 +135,8 @@ class _ConfigureCredentialsState extends State<ConfigureCredentials> {
   Widget build(BuildContext context) {
     final spreadID = TextEditingController(text: box.read("spreadID"));
     final googleID = TextEditingController(text: box.read("googleID"));
-    GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    final _formKey = GlobalKey<FormState>();
+
     return Scaffold(
       body: AwesomePopCard(
         context,

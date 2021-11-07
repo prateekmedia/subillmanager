@@ -335,7 +335,7 @@ class BottomSheet extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    final _formKey = GlobalKey<FormState>();
     final TextEditingController? _dateController = useTextEditingController(
       text: DateFormat('MMMM dd').format(DateTime.now()),
     );
