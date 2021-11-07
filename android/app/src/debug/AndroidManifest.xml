@@ -1,7 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.subillmanager">
+    package="com.prateeksu.subillmanager">
+    <application
+        tools:replace="android:label"
+        android:label="SU Bill Manager Debug">
+    </application>
     <!-- Flutter needs it to communicate with the running application
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
 </manifest>
