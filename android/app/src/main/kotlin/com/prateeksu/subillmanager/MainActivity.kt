@@ -1,4 +1,4 @@
-package com.psu.subillmanager
+package com.prateeksu.subillmanager
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -79,24 +79,37 @@ jobs:
       - name: Build Flutter app
         run: flutter build linux
 
+      - run: cp assets/subillmanager.png linux/packaging/usr/share/icons/hicolor/192x192/apps/subillmanager.png
+
+      - name: Build .deb
+        run: |
+          cp -fr build/linux/x64/release/bundle linux/packaging/usr/bin
+          dpkg-deb --build --root-owner-group linux/packaging
+          cp linux/*.deb subillmanager-linux-x86_64.deb
+
+      - name: Build Tarball
+        run: |
+          mkdir -p AppDir/
+          cp -r linux/packaging/usr AppDir/
+          ln -sr AppDir/usr/bin/subillmanager AppDir/subillmanager
+          tar czf subillmanager-linux-x86_64.tar.gz -C AppDir/ .
+
       - name: Build AppImage
-        run: ./create_appimage.sh
-
-      - run: |
-          sudo rm -rf ./AppDir/usr/
-          sudo rm -rf ./AppDir/AppRun
-          sudo rm -rf ./AppDir/.DirIcon
-
-      - name: Compress AppDir
-        run: tar czf subillmanager-x86_64.tar.gz -C AppDir/ .
-
-      - name: App tar sha256 sum
-        run: sha256sum subillmanager-x86_64.tar.gz
+        run: |
+          echo '#!/bin/sh
+cd "$(dirname "$0")"
+exec ./subillmanager' > AppDir/AppRun
+          chmod +x AppDir/AppRun
+          ln -sr AppDir/usr/share/icons/hicolor/192x192/apps/subillmanager.png AppDir/subillmanager.png
+          cp AppDir/usr/share/applications/subillmanager.desktop AppDir/subillmanager.desktop
+          curl -L https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage -o appimagetool-x86_64.AppImage
+          chmod +x appimagetool-x86_64.AppImage
+          ARCH=x86_64 ./appimagetool-x86_64.AppImage AppDir/ subillmanager-linux-x86_64.AppImage
 
       - uses: svenstaro/upload-release-action@master
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ./subillmanager-x86_64*
+          file: ./subillmanager-*
           file_glob: true
           tag: ${{ github.ref }}${{ github.event_name == 'release' && '' || '-nightly' }}
           body: ${{ github.event_name == 'release' && '' || 'Always up to date' }}

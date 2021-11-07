@@ -1,0 +1,9 @@
+Package: subillmanager
+Version: 1.0.0
+Section: base
+Priority: optional
+Homepage: https://github.com/prateekmedia/subillmanager
+Architecture: amd64
+Maintainer: Prateek SU <pankajsunal123@gmail.com>
+Description: SU Bill Manager
+ A simple multi-platform electricity bill manager

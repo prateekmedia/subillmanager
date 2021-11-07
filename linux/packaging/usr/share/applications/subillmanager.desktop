@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=SU Bill Manager
+Icon=subillmanager
+Exec=subillmanager %u
+StartupWMClass=subillmanager
+Categories=Utility;

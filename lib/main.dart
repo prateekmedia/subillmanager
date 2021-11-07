@@ -27,7 +27,7 @@ void main() async {
   if (Platform.isLinux) {
     doWhenWindowReady(() {
       final win = appWindow;
-      win.title = "SUbillManager";
+      win.title = "SU Bill Manager";
       win.show();
     });
   }
@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
 
     final availableThemeModes = [ThemeMode.system, ThemeMode.light, ThemeMode.dark];
     return GetMaterialApp(
-      title: 'SUbillManager',
+      title: 'SU Bill Manager',
       theme: ThemeData(
         primaryColor: primaryColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,
