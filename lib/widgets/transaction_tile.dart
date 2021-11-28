@@ -21,35 +21,25 @@ class TransactionTile extends StatelessWidget {
         color: Colors.grey[context.isDark ? 800 : 200],
       ),
       margin: const EdgeInsets.symmetric(vertical: 6),
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-      child: Row(
-        children: [
-          const FlutterLogo(size: 35),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(date),
-              ],
-            ),
+      child: ListTile(
+        leading: const FlutterLogo(size: 35),
+        minLeadingWidth: 10,
+        title: Text(
+          name,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
           ),
-          Text(
-            "₹ $price",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue[context.isDark ? 200 : 600],
-            ),
+        ),
+        subtitle: Text(date),
+        trailing: Text(
+          "₹ $price",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.blue[context.isDark ? 200 : 600],
           ),
-        ],
+        ),
       ),
     );
   }

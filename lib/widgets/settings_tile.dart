@@ -34,6 +34,7 @@ class SettingTile extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(13),
         child: ListTile(
+          minLeadingWidth: 0,
           tileColor: Colors.grey[context.isDark ? 800 : 300],
           leading: Icon(icon),
           onTap: goToPage != null

@@ -100,7 +100,7 @@ jobs:
           cd "$(dirname "$0")"
           exec ./subillmanager' > AppDir/AppRun
           chmod +x AppDir/AppRun
-          ln -sr AppDir/usr/share/icons/hicolor/192x192/apps/subillmanager.png AppDir/subillmanager.png
+          ln -sr AppDir/usr/share/icons/hicolor/128x128/apps/subillmanager.png AppDir/subillmanager.png
           cp AppDir/usr/share/applications/subillmanager.desktop AppDir/subillmanager.desktop
           curl -L https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage -o appimagetool-x86_64.AppImage
           chmod +x appimagetool-x86_64.AppImage
