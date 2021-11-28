@@ -16,7 +16,13 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final _controller = PageController();
     final _currentPage = useState<int>(0);
-    final titles = ["Home", "Gem", "Settings"];
+    final titles = ["Home", "Transactions", "Settings"];
+
+    void goToTab(int tab) => _controller.animateToPage(
+          tab,
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.fastLinearToSlowEaseIn,
+        );
 
     return Scaffold(
       appBar: suAppBar(
@@ -26,28 +32,24 @@ class _HomeState extends State<Home> {
       body: PageView(
         controller: _controller,
         onPageChanged: (page) => _currentPage.value = page,
-        children: const [
-          HomeTab(),
-          Text("Gem"),
-          SettingsTab(),
+        children: [
+          HomeTab(goToTab: goToTab),
+          const TransactionsTab(),
+          const SettingsTab(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentPage.value,
         landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
-        onTap: (page) => _controller.animateToPage(
-          page,
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.fastLinearToSlowEaseIn,
-        ),
+        onTap: (tab) => goToTab(tab),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(LucideIcons.home),
             label: "Home",
           ),
           BottomNavigationBarItem(
-            icon: Icon(LucideIcons.gem),
-            label: "Home",
+            icon: Icon(LucideIcons.wallet),
+            label: "Transactions",
           ),
           BottomNavigationBarItem(
             icon: Icon(LucideIcons.settings2),

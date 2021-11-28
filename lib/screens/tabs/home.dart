@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:subillmanager/providers/providers.dart';
 import 'package:subillmanager/utils/utils.dart';
 import 'package:subillmanager/widgets/widgets.dart';
 
-class HomeTab extends StatelessWidget {
+class HomeTab extends ConsumerWidget {
   const HomeTab({
     Key? key,
+    required this.goToTab,
   }) : super(key: key);
 
+  final Function(int t) goToTab;
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return suListView(
       children: <Widget>[
         Container(
@@ -24,8 +29,8 @@ class HomeTab extends StatelessWidget {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
+                children: [
+                  const Text(
                     "Monthly balance",
                     style: TextStyle(
                       fontSize: 16,
@@ -33,8 +38,8 @@ class HomeTab extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "₹ 1500",
-                    style: TextStyle(
+                    "${ref.watch(currencyProvider.notifier).currency} 1500",
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -61,9 +66,18 @@ class HomeTab extends StatelessWidget {
             ],
           ),
         ),
-        const Text(
-          "Recent transactions",
-          style: TextStyle(fontSize: 18),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              "Recent transactions",
+              style: TextStyle(fontSize: 18),
+            ),
+            TextButton(
+              onPressed: () => goToTab(1),
+              child: const Text("See all"),
+            ),
+          ],
         ),
         const SizedBox(height: 6),
         const TransactionTile(
@@ -84,6 +98,11 @@ class HomeTab extends StatelessWidget {
         const TransactionTile(
           name: "Person 2",
           date: "February 1",
+          price: 8.9,
+        ),
+        const TransactionTile(
+          name: "Person 2",
+          date: "March 1",
           price: 8.9,
         ),
       ],

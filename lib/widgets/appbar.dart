@@ -6,6 +6,7 @@ AppBar suAppBar(
   required String title,
   bool automaticallyImplyLeading = true,
   Widget? leading,
+  List<Widget>? actions,
 }) {
   return AppBar(
     title: Text(title),
@@ -20,6 +21,7 @@ AppBar suAppBar(
     elevation: 0,
     centerTitle: true,
     automaticallyImplyLeading: false,
+    actions: actions,
     backgroundColor: Colors.transparent,
     titleTextStyle: context.textTheme.headline6,
   );

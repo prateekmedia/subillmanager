@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:subillmanager/providers/providers.dart';
 import 'package:subillmanager/utils/utils.dart';
 
-class TransactionTile extends StatelessWidget {
+class TransactionTile extends ConsumerWidget {
   final String name;
   final String date;
   final double price;
@@ -14,7 +16,7 @@ class TransactionTile extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
@@ -33,7 +35,7 @@ class TransactionTile extends StatelessWidget {
         ),
         subtitle: Text(date),
         trailing: Text(
-          "₹ $price",
+          "${ref.watch(currencyProvider.notifier).currency} $price",
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,

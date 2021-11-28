@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:subillmanager/utils/utils.dart';
 
 class SettingTile extends StatelessWidget {
@@ -37,15 +36,8 @@ class SettingTile extends StatelessWidget {
           minLeadingWidth: 0,
           tileColor: Colors.grey[context.isDark ? 800 : 300],
           leading: Icon(icon),
-          onTap: goToPage != null
-              ? () => Navigator.push(
-                    context,
-                    PageTransition(
-                      type: PageTransitionType.rightToLeftWithFade,
-                      child: goToPage!,
-                    ),
-                  )
-              : onPressed,
+          onTap:
+              goToPage != null ? () => context.pushPage(goToPage!) : onPressed,
           shape: const StadiumBorder(),
           title: Text(title),
           trailing: trailing,
