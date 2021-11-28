@@ -1,7 +1,7 @@
 <p align="center"><img src="https://raw.githubusercontent.com/prateekmedia/subillmanager/main/assets/subillmanager.png" height=80px/></p>
 
 
-<h2 align="center">SU Bill Manager</h2>
+<h2 align="center">SU Bill Manager (Old)</h2>
 
 <p align="center">A simple multi-platform electricity bill manager.</p>
 
@@ -13,10 +13,6 @@
 ![](https://user-images.githubusercontent.com/41370460/108590476-cd7a7300-7389-11eb-8073-f413edfd5ab5.png)
 ![](https://user-images.githubusercontent.com/41370460/108590483-d4a18100-7389-11eb-928b-d951c7ca4e04.png)
 ![](https://user-images.githubusercontent.com/41370460/108590502-e84ce780-7389-11eb-8ee5-0b83a8bf8a58.png)
-
-
-### Direct Download 
-<a href="https://github.com/prateekmedia/subillmanager/releases/latest/"><img src="https://img.shields.io/badge/Download from Github-indigo?style=for-the-badge&logo=Github"/></a>
 
 ---
 
