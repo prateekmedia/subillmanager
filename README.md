@@ -1,4 +1,4 @@
-<p align="center"><img src="https://raw.githubusercontent.com/prateekmedia/subillmanager/main/assets/subillmanager.png" height=80px/></p>
+<p align="center"><img src="https://raw.githubusercontent.com/prateekmedia/subillmanager/old/assets/subillmanager.png" height=80px/></p>
 
 
 <h2 align="center">SU Bill Manager (Old)</h2>
