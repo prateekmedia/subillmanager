@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons/lucide_icons.dart';
+import 'package:subillmanager/screens/tabs/settings/about.dart';
 import 'package:subillmanager/screens/tabs/settings/appearance.dart';
 import 'package:subillmanager/screens/tabs/settings/credentials.dart';
 import 'package:subillmanager/screens/tabs/settings/data.dart';
@@ -27,6 +29,11 @@ class SettingsTab extends StatelessWidget {
           title: "Data",
           icon: Icons.data_usage,
           goToPage: DataSettings(),
+        ),
+        SettingTile(
+          title: "About",
+          icon: LucideIcons.info,
+          goToPage: AboutSettings(),
         ),
       ],
     );
