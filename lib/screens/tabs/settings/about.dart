@@ -46,10 +46,28 @@ class AboutSettings extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 15),
-              Column(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.deepPurple,
+                    ),
                     onPressed: () => showLicensePage(context: context),
+                    child: const Text(
+                      "Github",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    onPressed: () => showLicensePage(
+                      context: context,
+                      applicationIcon: Image.asset('assets/subillmanager.png'),
+                      useRootNavigator: true,
+                    ),
                     child: const Text("Licenses"),
                   ),
                 ],

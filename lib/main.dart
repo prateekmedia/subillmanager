@@ -23,9 +23,15 @@ class MyApp extends ConsumerWidget {
       theme: ThemeData(primarySwatch: Colors.blue),
       darkTheme: ThemeData.dark().copyWith(
         primaryColor: Colors.blue,
-        brightness: Brightness.dark,
-        colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.blue,
+        colorScheme: const ColorScheme.dark().copyWith(
+          surface: Colors.blue[400],
+          primary: Colors.blue[200],
+          secondary: Colors.blue[400],
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
         ),
       ),
       debugShowCheckedModeBanner: false,

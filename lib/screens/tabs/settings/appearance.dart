@@ -34,16 +34,14 @@ class AppearanceSettings extends ConsumerWidget {
             icon: LucideIcons.currency,
             trailing: DropdownButton<int>(
                 value: ref.watch(currencyProvider),
-                items: const [
-                  DropdownMenuItem(
-                    child: Text("INR (₹)"),
-                    value: 0,
+                items: List.generate(
+                  currencies.length,
+                  (index) => DropdownMenuItem(
+                    child:
+                        Text("${currencyName[index]} (${currencies[index]})"),
+                    value: index,
                   ),
-                  DropdownMenuItem(
-                    child: Text("USD (\$)"),
-                    value: 1,
-                  ),
-                ],
+                ),
                 onChanged: (val) =>
                     ref.read(currencyProvider.notifier).value = val ?? 0),
           ),
