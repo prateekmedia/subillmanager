@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:subillmanager/utils/utils.dart';
 import 'package:subillmanager/widgets/widgets.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutSettings extends ConsumerWidget {
   const AboutSettings({Key? key}) : super(key: key);
@@ -49,12 +51,18 @@ class AboutSettings extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(
+                  ElevatedButton.icon(
+                    icon: const Icon(
+                      LucideIcons.github,
+                      color: Colors.white,
+                      size: 15,
+                    ),
                     style: ElevatedButton.styleFrom(
                       primary: Colors.deepPurple,
                     ),
-                    onPressed: () => showLicensePage(context: context),
-                    child: const Text(
+                    onPressed: () =>
+                        launch("https://github.com/prateekmedia/subillmanager"),
+                    label: const Text(
                       "Github",
                       style: TextStyle(
                         color: Colors.white,
