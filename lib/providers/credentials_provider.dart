@@ -31,5 +31,6 @@ class CredentialsNotifier extends ChangeNotifier {
         .prefs
         .remove("spreadsheet_id")
         .whenComplete(() => _spreadsheetId = "");
+    notifyListeners();
   }
 }
