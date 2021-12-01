@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:subillmanager/providers/providers.dart';
+import 'package:subillmanager/screens/tabs/home/add.dart';
 import 'package:subillmanager/utils/utils.dart';
 import 'package:subillmanager/widgets/widgets.dart';
 
@@ -48,9 +49,7 @@ class HomeTab extends ConsumerWidget {
                 ],
               ),
               GestureDetector(
-                onTap: () {
-                  debugPrint("Add");
-                },
+                onTap: () => context.pushPage(const AddEntry()),
                 child: Container(
                   decoration: BoxDecoration(
                     color: context.isDark ? Colors.black45 : Colors.white,

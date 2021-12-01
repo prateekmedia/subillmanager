@@ -13,13 +13,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  lucide_icons: ^0.16.19
   flutter_hooks: ^0.18.1
-  page_transition: ^2.0.4
+  hive_flutter: ^1.1.0
   hooks_riverpod: ^1.0.0
-  shared_preferences: ^2.0.9
+  lucide_icons: ^0.16.19
   package_info_plus: ^1.3.0
-  url_launcher:
+  page_transition: ^2.0.4
+  path_provider: ^2.0.7
+  shared_preferences: ^2.0.9
+  url_launcher: ^6.0.17
 
 dev_dependencies:
   flutter_test:

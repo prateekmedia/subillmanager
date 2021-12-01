@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:subillmanager/utils/constants.dart';
 
 ListView suListView({
   required List<Widget> children,
@@ -9,6 +10,6 @@ ListView suListView({
     ListView(
       controller: controller,
       shrinkWrap: shrinkWrap,
-      padding: padding ?? const EdgeInsets.symmetric(horizontal: 25),
+      padding: padding ?? listViewPadding,
       children: children,
     );

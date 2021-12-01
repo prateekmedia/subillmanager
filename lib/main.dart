@@ -1,11 +1,24 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
+
 import 'package:subillmanager/home.dart';
 import 'package:subillmanager/providers/providers.dart';
 import 'package:subillmanager/utils/utils.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Hive.initFlutter(
+      Platform.isAndroid || Platform.isIOS || Platform.isMacOS
+          ? (await getApplicationDocumentsDirectory()).path
+          : (await getDownloadsDirectory())!
+              .path
+              .replaceFirst('Downloads', '.subillmanager'));
+  await Hive.openBox('cache');
 
   // Initialize SharedPreferences
   await MyPrefs().init();
