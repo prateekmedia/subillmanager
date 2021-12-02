@@ -6,9 +6,12 @@ import 'package:subillmanager/utils/utils.dart';
 import 'package:subillmanager/widgets/widgets.dart';
 
 class HomeTab extends ConsumerWidget {
+  final AsyncSnapshot snapshot;
+
   const HomeTab({
     Key? key,
     required this.goToTab,
+    required this.snapshot,
   }) : super(key: key);
 
   final Function(int t) goToTab;
@@ -39,7 +42,13 @@ class HomeTab extends ConsumerWidget {
                     ),
                   ),
                   Text(
-                    "${ref.watch(currencyProvider.notifier).currency} 1500",
+                    ref.watch(currencyProvider.notifier).currency +
+                        " " +
+                        (ref.watch(cacheModeProvider) == CacheMode.dummy
+                            ? "1500"
+                            : ref.watch(cacheModeProvider) == CacheMode.cache
+                                ? "0"
+                                : "512"),
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -79,31 +88,34 @@ class HomeTab extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 6),
-        const TransactionTile(
-          name: "Person 1",
-          date: "March 1",
-          price: 8.9,
-        ),
-        const TransactionTile(
-          name: "Person 2",
-          date: "March 1",
-          price: 8.9,
-        ),
-        const TransactionTile(
-          name: "Person 1",
-          date: "February 1",
-          price: 8.9,
-        ),
-        const TransactionTile(
-          name: "Person 2",
-          date: "February 1",
-          price: 8.9,
-        ),
-        const TransactionTile(
-          name: "Person 2",
-          date: "March 1",
-          price: 8.9,
-        ),
+        if (ref.watch(cacheModeProvider) == CacheMode.dummy) ...const [
+          TransactionTile(
+            name: "Person 1",
+            date: "March 1",
+            price: 8.9,
+          ),
+          TransactionTile(
+            name: "Person 2",
+            date: "March 1",
+            price: 8.9,
+          ),
+          TransactionTile(
+            name: "Person 1",
+            date: "February 1",
+            price: 8.9,
+          ),
+          TransactionTile(
+            name: "Person 2",
+            date: "February 1",
+            price: 8.9,
+          ),
+          TransactionTile(
+            name: "Person 2",
+            date: "March 1",
+            price: 8.9,
+          ),
+        ] else
+          const Text("No cache data found"),
       ],
     );
   }

@@ -32,21 +32,22 @@ class CredentialsSettings extends ConsumerWidget {
       ),
       body: suListView(
         children: [
+          const SizedBox(height: 8),
           TextField(
             controller: _spreadsheetIdController,
             decoration: InputDecoration(
-              labelText: "Enter Spreadsheet ID",
+              labelText: "Spreadsheet ID",
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(13),
               ),
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 16),
           TextField(
             maxLines: null,
             controller: _clientIdController,
             decoration: InputDecoration(
-              labelText: "Enter Google Client ID",
+              labelText: "Google Client ID",
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(13),
               ),

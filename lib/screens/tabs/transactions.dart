@@ -4,8 +4,13 @@ import 'package:subillmanager/utils/utils.dart';
 import 'package:subillmanager/widgets/widgets.dart';
 
 class TransactionsTab extends ConsumerWidget {
+  final AsyncSnapshot snapshot;
+  final Function refreshData;
+
   const TransactionsTab({
     Key? key,
+    required this.snapshot,
+    required this.refreshData,
   }) : super(key: key);
 
   @override

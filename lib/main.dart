@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
@@ -34,6 +35,8 @@ class MyApp extends ConsumerWidget {
       home: const Home(),
       themeMode: ref.watch(themeTypeProvider),
       theme: ThemeData(primarySwatch: Colors.blue),
+      builder: BotToastInit(),
+      navigatorObservers: [BotToastNavigatorObserver()],
       darkTheme: ThemeData.dark().copyWith(
         primaryColor: Colors.blue,
         colorScheme: const ColorScheme.dark().copyWith(

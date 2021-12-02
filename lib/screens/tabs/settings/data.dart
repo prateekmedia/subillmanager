@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:subillmanager/providers/providers.dart';
@@ -19,10 +20,22 @@ class DataSettings extends ConsumerWidget {
           SettingTile.advanced(
             title: "Cache Mode",
             icon: Icons.sd_card,
-            onPressed: () {},
-            trailing: Switch(
-              value: context.isDark,
-              onChanged: (val) {},
+            trailing: DropdownButton<int>(
+              value: ref.watch(cacheModeProvider).index,
+              items: List.generate(
+                CacheMode.values.length,
+                (index) => DropdownMenuItem(
+                  value: index,
+                  child: Text(
+                    describeEnum(
+                      CacheMode.values
+                          .firstWhere((element) => element.index == index),
+                    ),
+                  ),
+                ),
+              ),
+              onChanged: (val) =>
+                  ref.read(cacheModeProvider.notifier).value = val ?? 0,
             ),
           ),
           SettingTile.advanced(
@@ -48,6 +61,7 @@ class DataSettings extends ConsumerWidget {
                         primary: context.textTheme.bodyText2!.color),
                     child: const Text("YES"),
                     onPressed: () {
+                      ref.read(cacheModeProvider.notifier).reset();
                       ref.read(currencyProvider.notifier).reset();
                       ref.read(themeTypeProvider.notifier).reset();
                       ref.read(credentialsProvider.notifier).reset();
