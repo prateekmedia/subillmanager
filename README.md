@@ -14,6 +14,10 @@
 ![](https://user-images.githubusercontent.com/41370460/108590483-d4a18100-7389-11eb-928b-d951c7ca4e04.png)
 ![](https://user-images.githubusercontent.com/41370460/108590502-e84ce780-7389-11eb-8ee5-0b83a8bf8a58.png)
 
+
+### Direct Download
+<a href="https://github.com/prateekmedia/subillmanager/releases/old-nightly"><img src="https://img.shields.io/badge/Download from Github-indigo?style=for-the-badge&logo=Github"/></a>
+
 ---
 
 ### Build from source
