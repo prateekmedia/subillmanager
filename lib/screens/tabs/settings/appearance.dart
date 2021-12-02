@@ -10,6 +10,8 @@ class AppearanceSettings extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final perUnitCostController =
+        TextEditingController(text: ref.watch(unitCostProvider).toString());
     void changeTheme(bool val) =>
         ref.read(themeTypeProvider.notifier).themeType = val ? 2 : 1;
 
@@ -45,6 +47,19 @@ class AppearanceSettings extends ConsumerWidget {
                 onChanged: (val) =>
                     ref.read(currencyProvider.notifier).value = val ?? 0),
           ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: perUnitCostController,
+            onChanged: (value) =>
+                ref.read(unitCostProvider.notifier).value = double.parse(value),
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              labelText: "Per Unit Cost",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(13),
+              ),
+            ),
+          )
         ],
       ),
     );

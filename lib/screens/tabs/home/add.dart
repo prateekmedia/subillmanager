@@ -42,6 +42,7 @@ class AddEntry extends StatelessWidget {
         const SizedBox(height: 14),
         TextField(
           controller: person1Controller,
+          keyboardType: TextInputType.number,
           decoration: InputDecoration(
             labelText: "Person 1 Unit",
             border: OutlineInputBorder(
@@ -52,6 +53,7 @@ class AddEntry extends StatelessWidget {
         const SizedBox(height: 14),
         TextField(
           controller: person2Controller,
+          keyboardType: TextInputType.number,
           decoration: InputDecoration(
             labelText: "Person 2 Unit",
             border: OutlineInputBorder(

@@ -16,6 +16,7 @@ class TransactionsTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ListView.builder(
+      controller: ScrollController(),
       padding: listViewPadding,
       itemBuilder: (ctx, idx) => const TransactionTile(
         name: "Random Person",

@@ -6,7 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'package:subillmanager/home.dart';
+import 'package:subillmanager/homepage.dart';
 import 'package:subillmanager/providers/providers.dart';
 import 'package:subillmanager/utils/utils.dart';
 
@@ -32,7 +32,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
-      home: const Home(),
+      home: const HomePage(),
       themeMode: ref.watch(themeTypeProvider),
       theme: ThemeData(primarySwatch: Colors.blue),
       builder: BotToastInit(),

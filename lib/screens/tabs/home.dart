@@ -6,7 +6,7 @@ import 'package:subillmanager/utils/utils.dart';
 import 'package:subillmanager/widgets/widgets.dart';
 
 class HomeTab extends ConsumerWidget {
-  final AsyncSnapshot snapshot;
+  final AsyncSnapshot<List> snapshot;
 
   const HomeTab({
     Key? key,
@@ -19,6 +19,7 @@ class HomeTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return suListView(
+      controller: ScrollController(),
       children: <Widget>[
         Container(
           height: 120,
@@ -46,9 +47,14 @@ class HomeTab extends ConsumerWidget {
                         " " +
                         (ref.watch(cacheModeProvider) == CacheMode.dummy
                             ? "1500"
-                            : ref.watch(cacheModeProvider) == CacheMode.cache
+                            : snapshot.data == null
                                 ? "0"
-                                : "512"),
+                                : ref.watch(cacheModeProvider) ==
+                                        CacheMode.cache
+                                    ? "0"
+                                    : (double.parse(snapshot.data![1][2]) +
+                                            double.parse(snapshot.data![2][2]))
+                                        .toString()),
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -114,8 +120,34 @@ class HomeTab extends ConsumerWidget {
             date: "March 1",
             price: 8.9,
           ),
-        ] else
-          const Text("No cache data found"),
+        ] else if (snapshot.hasData && snapshot.data != null)
+          if (snapshot.data!.isNotEmpty)
+            ...List.generate(
+              snapshot.data![0].length - 1,
+              (index) {
+                int itemIndex = snapshot.data![0].length - 1 - index;
+                return Column(
+                  children: List.generate(
+                    snapshot.data!.length - 1,
+                    (nameIndex) => TransactionTile(
+                      name: snapshot.data![nameIndex + 1][0],
+                      date: snapshot.data![0][itemIndex],
+                      price: (double.parse(
+                                  snapshot.data![nameIndex + 1][itemIndex]) -
+                              ((itemIndex == 1)
+                                  ? 0
+                                  : double.parse(snapshot.data![nameIndex + 1]
+                                      [itemIndex - 1]))) *
+                          ref.watch(unitCostProvider),
+                    ),
+                  ),
+                );
+              },
+            )
+          else
+            const Text("No cache data found")
+        else
+          const LinearProgressIndicator(),
       ],
     );
   }

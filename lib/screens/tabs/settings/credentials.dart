@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:subillmanager/providers/providers.dart';
 import 'package:subillmanager/widgets/widgets.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CredentialsSettings extends ConsumerWidget {
   const CredentialsSettings({Key? key}) : super(key: key);
@@ -20,6 +21,13 @@ class CredentialsSettings extends ConsumerWidget {
         title: "Credentials",
         actions: [
           IconButton(
+            tooltip: "Help",
+            onPressed: () =>
+                launch('https://github.com/prateekmedia/subillmanager/wiki'),
+            icon: const Icon(LucideIcons.helpCircle),
+          ),
+          IconButton(
+            tooltip: "Submit",
             onPressed: () {
               ref.read(credentialsProvider).clientId = _clientIdController.text;
               ref.read(credentialsProvider).spreadsheetId =

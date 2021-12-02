@@ -14,6 +14,7 @@ class SettingsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return suListView(
+      controller: ScrollController(),
       children: const [
         SettingTile(
           title: "Appearance",

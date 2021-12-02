@@ -35,7 +35,7 @@ class TransactionTile extends ConsumerWidget {
         ),
         subtitle: Text(date),
         trailing: Text(
-          "${ref.watch(currencyProvider.notifier).currency} $price",
+          "${ref.watch(currencyProvider.notifier).currency} ${price.toStringAsFixed(1)}",
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
