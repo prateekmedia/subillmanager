@@ -47,14 +47,22 @@ class HomeTab extends ConsumerWidget {
                         " " +
                         (ref.watch(cacheModeProvider) == CacheMode.dummy
                             ? "1500"
-                            : snapshot.data == null
+                            : snapshot.data == null ||
+                                    ref.watch(cacheModeProvider) ==
+                                        CacheMode.cache ||
+                                    snapshot.data![1].length < 2
                                 ? "0"
-                                : ref.watch(cacheModeProvider) ==
-                                        CacheMode.cache
-                                    ? "0"
-                                    : (double.parse(snapshot.data![1][2]) +
-                                            double.parse(snapshot.data![2][2]))
-                                        .toString()),
+                                : ((double.parse(snapshot.data![1][
+                                                snapshot.data![1].length - 1]) +
+                                            double.parse(snapshot.data![2][
+                                                snapshot.data![1].length - 1]) -
+                                            (snapshot.data![1].length < 3
+                                                ? 0
+                                                : (double.parse(snapshot.data![1][snapshot.data![1].length - 2]) +
+                                                    double.parse(snapshot.data![2]
+                                                        [snapshot.data![1].length - 2])))) *
+                                        ref.watch(unitCostProvider))
+                                    .toStringAsFixed(1)),
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -123,7 +131,7 @@ class HomeTab extends ConsumerWidget {
         ] else if (snapshot.hasData && snapshot.data != null)
           if (snapshot.data!.isNotEmpty)
             ...List.generate(
-              snapshot.data![0].length - 1,
+              (snapshot.data![0] as List).sublist(0, 4).length - 1,
               (index) {
                 int itemIndex = snapshot.data![0].length - 1 - index;
                 return Column(
@@ -145,7 +153,7 @@ class HomeTab extends ConsumerWidget {
               },
             )
           else
-            const Text("No cache data found")
+            const Text("No data found")
         else
           const LinearProgressIndicator(),
       ],

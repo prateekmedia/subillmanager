@@ -18,7 +18,7 @@ class HomePage extends HookConsumerWidget {
     final _currentPage = useState<int>(0);
     final titles = ["Home", "Transactions", "Settings"];
     final sheet = useState<Worksheet?>(null);
-    List demoM = Hive.box('cache').get('demo', defaultValue: []);
+    List demoM = Hive.box('cache').get('value', defaultValue: []);
 
     void goToTab(int tab) => _controller.animateToPage(
           tab,
@@ -50,7 +50,11 @@ class HomePage extends HookConsumerWidget {
               ? Future.value(demoM)
               : _getTaskAsync.value,
           builder: (context, snapshot) {
-            print("data: " + snapshot.data.toString());
+            if (snapshot.hasData &&
+                snapshot.data != null &&
+                ref.watch(cacheModeProvider).index == 1) {
+              Hive.box('cache').put('value', snapshot.data);
+            }
             return PageView(
               controller: _controller,
               onPageChanged: (page) => _currentPage.value = page,

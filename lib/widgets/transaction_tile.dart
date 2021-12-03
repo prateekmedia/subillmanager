@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:subillmanager/providers/providers.dart';
 import 'package:subillmanager/utils/utils.dart';
+import 'package:subillmanager/widgets/profile_icon.dart';
 
 class TransactionTile extends ConsumerWidget {
   final String name;
@@ -24,7 +25,13 @@ class TransactionTile extends ConsumerWidget {
       ),
       margin: const EdgeInsets.symmetric(vertical: 6),
       child: ListTile(
-        leading: const FlutterLogo(size: 35),
+        leading: profileIcon(
+          context,
+          name: name,
+          bgColor: Colors.blue,
+          size: 35,
+          headlinetype: const TextStyle(),
+        ),
         minLeadingWidth: 10,
         title: Text(
           name,
