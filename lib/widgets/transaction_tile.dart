@@ -40,7 +40,7 @@ class TransactionTile extends ConsumerWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        subtitle: Text(date),
+        subtitle: Text(date.toDateFromSheet()),
         trailing: Text(
           "${ref.watch(currencyProvider.notifier).currency} ${price.toStringAsFixed(1)}",
           style: TextStyle(

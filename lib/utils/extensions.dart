@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:subillmanager/providers/providers.dart';
+
+const gsDateBase = 2209161600 / 86400;
+const gsDateFactor = 86400000;
 
 extension GetTextColorBasedOnBackground on Color {
   Color get getTextColor =>
@@ -11,6 +15,14 @@ extension GetShortNameExtension on String {
   String get getShortName => (length > 0)
       ? trim().split(' ').map((l) => l[0]).take(2).join().toUpperCase()
       : "S";
+
+  String toDateFromSheet({bool localTime = true}) {
+    final date = double.tryParse(this);
+    if (date == null) return this;
+    final millis = (date - gsDateBase) * gsDateFactor;
+    return DateFormat("MMMM dd").format(
+        DateTime.fromMillisecondsSinceEpoch(millis.round(), isUtc: localTime));
+  }
 }
 
 extension CacheM on int {

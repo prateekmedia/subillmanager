@@ -52,14 +52,18 @@ class HomePage extends HookConsumerWidget {
           builder: (context, snapshot) {
             if (snapshot.hasData &&
                 snapshot.data != null &&
-                ref.watch(cacheModeProvider).index == 1) {
+                ref.watch(cacheModeProvider).index == 2) {
               Hive.box('cache').put('value', snapshot.data);
             }
             return PageView(
               controller: _controller,
               onPageChanged: (page) => _currentPage.value = page,
               children: [
-                HomeTab(goToTab: goToTab, snapshot: snapshot),
+                HomeTab(
+                  goToTab: goToTab,
+                  snapshot: snapshot,
+                  worksheet: sheet.value,
+                ),
                 TransactionsTab(
                   snapshot: snapshot,
                   refreshData: () => _getTaskAsync.value = initSheet(),

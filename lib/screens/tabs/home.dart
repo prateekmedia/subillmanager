@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gsheets/gsheets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:subillmanager/providers/providers.dart';
 import 'package:subillmanager/screens/tabs/home/add.dart';
@@ -7,11 +8,13 @@ import 'package:subillmanager/widgets/widgets.dart';
 
 class HomeTab extends ConsumerWidget {
   final AsyncSnapshot<List> snapshot;
+  final Worksheet? worksheet;
 
   const HomeTab({
     Key? key,
     required this.goToTab,
     required this.snapshot,
+    required this.worksheet,
   }) : super(key: key);
 
   final Function(int t) goToTab;
@@ -72,7 +75,7 @@ class HomeTab extends ConsumerWidget {
                 ],
               ),
               GestureDetector(
-                onTap: () => context.pushPage(const AddEntry()),
+                onTap: () => context.pushPage(AddEntry(worksheet: worksheet, snapshot: snapshot)),
                 child: Container(
                   decoration: BoxDecoration(
                     color: context.isDark ? Colors.black45 : Colors.white,

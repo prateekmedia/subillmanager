@@ -1,19 +1,32 @@
+import 'package:bot_toast/bot_toast.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gsheets/gsheets.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:subillmanager/providers/cache_mode_provider.dart';
 import 'package:subillmanager/widgets/appbar.dart';
 import 'package:subillmanager/widgets/list_view.dart';
 
-class AddEntry extends StatelessWidget {
-  const AddEntry({Key? key}) : super(key: key);
+class AddEntry extends HookConsumerWidget {
+  final Worksheet? worksheet;
+  final AsyncSnapshot<List> snapshot;
+
+  const AddEntry({
+    Key? key,
+    required this.snapshot,
+    required this.worksheet,
+  }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final dateController = TextEditingController(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dateController = useTextEditingController(
       text: DateFormat('MMMM dd').format(DateTime.now()),
     );
-    final person1Controller = TextEditingController();
-    final person2Controller = TextEditingController();
+    final person1Controller = useTextEditingController();
+    final person2Controller = useTextEditingController();
+    final isLoading = useState(false);
 
     return Scaffold(
       appBar: suAppBar(
@@ -21,10 +34,27 @@ class AddEntry extends StatelessWidget {
         title: "Add",
         actions: [
           IconButton(
-            onPressed: () {
+            onPressed: () async {
+              isLoading.value = true;
+              if (ref.read(cacheModeProvider).index == 2) {
+                var cell1 = await worksheet!.cells
+                    .cell(row: snapshot.data![0].length + 1, column: 1);
+                var cell2 = await worksheet!.cells
+                    .cell(row: snapshot.data![0].length + 1, column: 2);
+                var cell3 = await worksheet!.cells
+                    .cell(row: snapshot.data![0].length + 1, column: 3);
+                await cell1.post(dateController.text.trim());
+                await cell2.post(person1Controller.text.trim());
+                await cell3.post(person2Controller.text.trim());
+              }
+              isLoading.value = false;
+              BotToast.showText(text: "Successfully added!");
               Navigator.of(context).pop();
             },
-            icon: const Icon(LucideIcons.check),
+            icon: isLoading.value
+                ? const SizedBox(
+                    width: 20, height: 20, child: CircularProgressIndicator())
+                : const Icon(LucideIcons.check),
           ),
         ],
       ),
