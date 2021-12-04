@@ -27,36 +27,41 @@ class TransactionsTab extends ConsumerWidget {
             ),
             itemCount: 15,
           )
-        : suListView(children: [
-            if (snapshot.hasData && snapshot.data != null)
-              if (snapshot.data!.isNotEmpty)
-                ...List.generate(
-                  (snapshot.data![0] as List).length - 1,
-                  (index) {
-                    int itemIndex = snapshot.data![0].length - 1 - index;
-                    return Column(
-                      children: List.generate(
-                        snapshot.data!.length - 1,
-                        (nameIndex) => TransactionTile(
-                          name: snapshot.data![nameIndex + 1][0],
-                          date: snapshot.data![0][itemIndex],
-                          price: (double.parse(snapshot.data![nameIndex + 1]
-                                      [itemIndex]) -
-                                  ((itemIndex == 1)
-                                      ? 0
-                                      : double.parse(
-                                          snapshot.data![nameIndex + 1]
-                                              [itemIndex - 1]))) *
-                              ref.watch(unitCostProvider),
+        : RefreshIndicator(
+            onRefresh: ref.watch(cacheModeProvider).index == 2
+                ? () => refreshData()
+                : () async {},
+            child: suListView(children: [
+              if (snapshot.hasData && snapshot.data != null)
+                if (snapshot.data!.isNotEmpty)
+                  ...List.generate(
+                    (snapshot.data![0] as List).length - 1,
+                    (index) {
+                      int itemIndex = snapshot.data![0].length - 1 - index;
+                      return Column(
+                        children: List.generate(
+                          snapshot.data!.length - 1,
+                          (nameIndex) => TransactionTile(
+                            name: snapshot.data![nameIndex + 1][0],
+                            date: snapshot.data![0][itemIndex],
+                            price: (double.parse(snapshot.data![nameIndex + 1]
+                                        [itemIndex]) -
+                                    ((itemIndex == 1)
+                                        ? 0
+                                        : double.parse(
+                                            snapshot.data![nameIndex + 1]
+                                                [itemIndex - 1]))) *
+                                ref.watch(unitCostProvider),
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                )
+                      );
+                    },
+                  )
+                else
+                  const Text("No data found")
               else
-                const Text("No data found")
-            else
-              const LinearProgressIndicator(),
-          ]);
+                const LinearProgressIndicator(),
+            ]),
+          );
   }
 }

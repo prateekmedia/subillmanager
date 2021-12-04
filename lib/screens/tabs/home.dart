@@ -53,6 +53,7 @@ class HomeTab extends ConsumerWidget {
                             : snapshot.data == null ||
                                     ref.watch(cacheModeProvider) ==
                                         CacheMode.cache ||
+                                    snapshot.data!.isEmpty ||
                                     snapshot.data![1].length < 2
                                 ? "0"
                                 : ((double.parse(snapshot.data![1][
@@ -75,7 +76,8 @@ class HomeTab extends ConsumerWidget {
                 ],
               ),
               GestureDetector(
-                onTap: () => context.pushPage(AddEntry(worksheet: worksheet, snapshot: snapshot)),
+                onTap: () => context.pushPage(
+                    AddEntry(worksheet: worksheet, snapshot: snapshot)),
                 child: Container(
                   decoration: BoxDecoration(
                     color: context.isDark ? Colors.black45 : Colors.white,
