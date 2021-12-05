@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
+
+import 'package:subillmanager/utils/utils.dart';
 import 'package:subillmanager/providers/providers.dart';
 
 const gsDateBase = 2209161600 / 86400;
@@ -34,6 +36,8 @@ extension GenConExt on BuildContext {
   ThemeData get theme => Theme.of(this);
   TextTheme get textTheme => theme.textTheme;
   Color get primaryColor => theme.primaryColor;
+  double get width => MediaQuery.of(this).size.width;
+  bool get isMobile => width < breakpoint;
 
   void pushPage(Widget page) => Navigator.push(
         this,

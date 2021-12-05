@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gsheets/gsheets.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import 'package:subillmanager/utils/utils.dart';
 import 'package:subillmanager/screens/screens.dart';
 import 'package:subillmanager/widgets/widgets.dart';
 import 'package:subillmanager/providers/providers.dart';
@@ -19,6 +20,11 @@ class HomePage extends HookConsumerWidget {
     final titles = ["Home", "Transactions", "Settings"];
     final sheet = useState<Worksheet?>(null);
     List demoM = Hive.box('cache').get('value', defaultValue: []);
+    const Map<String, IconData> items = {
+      "Home": LucideIcons.home,
+      "Transactions": LucideIcons.wallet,
+      "Settings": LucideIcons.settings2,
+    };
 
     void goToTab(int tab) => _controller.animateToPage(
           tab,
@@ -55,42 +61,62 @@ class HomePage extends HookConsumerWidget {
                 ref.watch(cacheModeProvider).index == 2) {
               Hive.box('cache').put('value', snapshot.data);
             }
-            return PageView(
-              controller: _controller,
-              onPageChanged: (page) => _currentPage.value = page,
+            return Row(
               children: [
-                HomeTab(
-                  goToTab: goToTab,
-                  snapshot: snapshot,
-                  worksheet: sheet.value,
+                if (!context.isMobile)
+                  NavigationRail(
+                    backgroundColor: Colors.transparent,
+                    labelType: NavigationRailLabelType.selected,
+                    destinations: List.generate(
+                      items.entries.length,
+                      (index) => NavigationRailDestination(
+                        icon: Icon(items.values.toList()[index]),
+                        label: Text(items.keys.toList()[index]),
+                      ),
+                    ),
+                    onDestinationSelected: (tab) => goToTab(tab),
+                    selectedIndex: _currentPage.value,
+                  ),
+                Expanded(
+                  child: PageView(
+                    physics: context.isMobile
+                        ? null
+                        : const NeverScrollableScrollPhysics(),
+                    scrollDirection:
+                        context.isMobile ? Axis.horizontal : Axis.vertical,
+                    controller: _controller,
+                    onPageChanged: (page) => _currentPage.value = page,
+                    children: [
+                      HomeTab(
+                        goToTab: goToTab,
+                        snapshot: snapshot,
+                        worksheet: sheet.value,
+                      ),
+                      TransactionsTab(
+                        snapshot: snapshot,
+                        refreshData: () => _getTaskAsync.value = initSheet(),
+                      ),
+                      const SettingsTab(),
+                    ],
+                  ),
                 ),
-                TransactionsTab(
-                  snapshot: snapshot,
-                  refreshData: () => _getTaskAsync.value = initSheet(),
-                ),
-                const SettingsTab(),
               ],
             );
           }),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentPage.value,
-        landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
-        onTap: (tab) => goToTab(tab),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(LucideIcons.home),
-            label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(LucideIcons.wallet),
-            label: "Transactions",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(LucideIcons.settings2),
-            label: "Settings",
-          ),
-        ],
-      ),
+      bottomNavigationBar: context.isMobile
+          ? BottomNavigationBar(
+              currentIndex: _currentPage.value,
+              landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
+              onTap: (tab) => goToTab(tab),
+              items: List.generate(
+                items.entries.length,
+                (index) => BottomNavigationBarItem(
+                  icon: Icon(items.values.toList()[index]),
+                  label: items.keys.toList()[index],
+                ),
+              ),
+            )
+          : null,
     );
   }
 }
