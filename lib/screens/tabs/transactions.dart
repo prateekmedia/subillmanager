@@ -5,7 +5,7 @@ import 'package:subillmanager/utils/utils.dart';
 import 'package:subillmanager/widgets/widgets.dart';
 
 class TransactionsTab extends ConsumerWidget {
-  final AsyncSnapshot snapshot;
+  final AsyncSnapshot<List> snapshot;
   final Function refreshData;
 
   const TransactionsTab({
@@ -34,29 +34,7 @@ class TransactionsTab extends ConsumerWidget {
             child: suListView(children: [
               if (snapshot.hasData && snapshot.data != null)
                 if (snapshot.data!.isNotEmpty)
-                  ...List.generate(
-                    (snapshot.data![0] as List).length - 1,
-                    (index) {
-                      int itemIndex = snapshot.data![0].length - 1 - index;
-                      return Column(
-                        children: List.generate(
-                          snapshot.data!.length - 1,
-                          (nameIndex) => TransactionTile(
-                            name: snapshot.data![nameIndex + 1][0],
-                            date: snapshot.data![0][itemIndex],
-                            price: (double.parse(snapshot.data![nameIndex + 1]
-                                        [itemIndex]) -
-                                    ((itemIndex == 1)
-                                        ? 0
-                                        : double.parse(
-                                            snapshot.data![nameIndex + 1]
-                                                [itemIndex - 1]))) *
-                                ref.watch(unitCostProvider),
-                          ),
-                        ),
-                      );
-                    },
-                  )
+                  ...transactionsList(ref, snapshot)
                 else
                   const Text("No data found")
               else

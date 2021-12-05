@@ -135,28 +135,7 @@ class HomeTab extends ConsumerWidget {
           ),
         ] else if (snapshot.hasData && snapshot.data != null)
           if (snapshot.data!.isNotEmpty)
-            ...List.generate(
-              (snapshot.data![0] as List).sublist(0, 4).length - 1,
-              (index) {
-                int itemIndex = snapshot.data![0].length - 1 - index;
-                return Column(
-                  children: List.generate(
-                    snapshot.data!.length - 1,
-                    (nameIndex) => TransactionTile(
-                      name: snapshot.data![nameIndex + 1][0],
-                      date: snapshot.data![0][itemIndex],
-                      price: (double.parse(
-                                  snapshot.data![nameIndex + 1][itemIndex]) -
-                              ((itemIndex == 1)
-                                  ? 0
-                                  : double.parse(snapshot.data![nameIndex + 1]
-                                      [itemIndex - 1]))) *
-                          ref.watch(unitCostProvider),
-                    ),
-                  ),
-                );
-              },
-            )
+            ...transactionsList(ref, snapshot, true)
           else
             const Text("No data found")
         else
