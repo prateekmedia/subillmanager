@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 
 import 'package:subillmanager/utils/utils.dart';
@@ -7,6 +8,16 @@ import 'package:subillmanager/providers/providers.dart';
 
 const gsDateBase = 2209161600 / 86400;
 const gsDateFactor = 86400000;
+
+extension GetResetAllProviders on WidgetRef {
+  resetAllProviders() {
+    read(cacheModeProvider.notifier).reset();
+    read(credentialsProvider.notifier).reset();
+    read(currencyProvider.notifier).reset();
+    read(themeTypeProvider.notifier).reset();
+    read(unitCostProvider.notifier).reset();
+  }
+}
 
 extension GetTextColorBasedOnBackground on Color {
   Color get getTextColor =>

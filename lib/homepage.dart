@@ -50,6 +50,14 @@ class HomePage extends HookConsumerWidget {
       appBar: suAppBar(
         context,
         title: titles[_currentPage.value],
+        actions: [
+          if (_currentPage.value == 1 &&
+              ref.watch(cacheModeProvider).index == 2)
+            IconButton(
+              onPressed: () => _getTaskAsync.value = initSheet(),
+              icon: const Icon(Icons.refresh),
+            ),
+        ],
       ),
       body: FutureBuilder<List>(
           future: ref.watch(cacheModeProvider).index == 1

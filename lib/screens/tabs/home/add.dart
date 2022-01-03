@@ -24,8 +24,16 @@ class AddEntry extends HookConsumerWidget {
     final dateController = useTextEditingController(
       text: DateFormat('MMMM dd').format(DateTime.now()),
     );
-    final person1Controller = useTextEditingController();
-    final person2Controller = useTextEditingController();
+
+    final isItOk =
+        ref.watch(cacheModeProvider).index == 2 && snapshot.data != null;
+
+    int listLength = isItOk ? snapshot.data!.length - 1 : 2;
+
+    List<TextEditingController> personsController = List.generate(
+      listLength,
+      (index) => useTextEditingController(),
+    );
     final isLoading = useState(false);
 
     return Scaffold(
@@ -39,16 +47,17 @@ class AddEntry extends HookConsumerWidget {
               if (ref.read(cacheModeProvider).index == 2) {
                 var cell1 = await worksheet!.cells
                     .cell(row: snapshot.data![0].length + 1, column: 1);
-                var cell2 = await worksheet!.cells
-                    .cell(row: snapshot.data![0].length + 1, column: 2);
-                var cell3 = await worksheet!.cells
-                    .cell(row: snapshot.data![0].length + 1, column: 3);
                 await cell1.post(dateController.text.trim());
-                await cell2.post(person1Controller.text.trim());
-                await cell3.post(person2Controller.text.trim());
+                for (var index = 0; index < listLength; index++) {
+                  var cell = await worksheet!.cells.cell(
+                      row: snapshot.data![0].length + 1, column: index + 2);
+                  await cell.post(personsController[index].text.trim());
+                }
               }
               isLoading.value = false;
-              BotToast.showText(text: "Successfully added!");
+              BotToast.showText(
+                text: isItOk ? "Successfully added!" : "Demo Complete!",
+              );
               Navigator.of(context).pop();
             },
             icon: isLoading.value
@@ -58,40 +67,39 @@ class AddEntry extends HookConsumerWidget {
           ),
         ],
       ),
-      body: suListView(children: [
-        const SizedBox(height: 8),
-        TextField(
-          controller: dateController,
-          decoration: InputDecoration(
-            labelText: "Date",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(13),
+      body: suListView(
+        children: [
+          const SizedBox(height: 8),
+          TextField(
+            controller: dateController,
+            decoration: InputDecoration(
+              labelText: "Date",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(13),
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 14),
-        TextField(
-          controller: person1Controller,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            labelText: "Person 1 Unit",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(13),
+          ...List.generate(
+            listLength,
+            (index) => Padding(
+              padding: const EdgeInsets.only(top: 14.0),
+              child: TextField(
+                controller: personsController[index],
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: (isItOk
+                          ? snapshot.data![index + 1][0]
+                          : "Person ${index + 1}") +
+                      " Unit",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(13),
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 14),
-        TextField(
-          controller: person2Controller,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            labelText: "Person 2 Unit",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(13),
-            ),
-          ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 }

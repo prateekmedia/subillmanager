@@ -32,6 +32,10 @@ class CredentialsSettings extends ConsumerWidget {
               ref.read(credentialsProvider).clientId = _clientIdController.text;
               ref.read(credentialsProvider).spreadsheetId =
                   _spreadsheetIdController.text;
+
+              if (ref.read(cacheModeProvider).index != 2) {
+                ref.read(cacheModeProvider.notifier).value = 2;
+              }
               Navigator.of(context).pop();
             },
             icon: const Icon(LucideIcons.check),

@@ -61,10 +61,7 @@ class DataSettings extends ConsumerWidget {
                         primary: context.textTheme.bodyText2!.color),
                     child: const Text("YES"),
                     onPressed: () {
-                      ref.read(cacheModeProvider.notifier).reset();
-                      ref.read(currencyProvider.notifier).reset();
-                      ref.read(themeTypeProvider.notifier).reset();
-                      ref.read(credentialsProvider.notifier).reset();
+                      ref.resetAllProviders();
                       Navigator.of(context).pop();
                     },
                   ),
